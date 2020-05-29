@@ -7,8 +7,8 @@ class RichTextEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {editorState: EditorState.createEmpty()};
-    
-    this.focus = () => this.refs.editor.focus();
+    this.editorRef = React.createRef();
+    this.focus = () => this.editorRef.current.focus();
     this.onChange = (editorState) => this.setState({editorState});
 
     this.handleKeyCommand = this._handleKeyCommand.bind(this);
@@ -91,7 +91,7 @@ class RichTextEditor extends React.Component {
             keyBindingFn={this.mapKeyToEditorCommand}
             onChange={this.onChange}
             placeholder="Tell a story..."
-            ref="editor"
+            ref={this.editorRef}
             spellCheck={true}
           />
         </div>
