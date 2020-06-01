@@ -9,3 +9,7 @@ https://youtu.be/XGxdCXyMC7k
 # 3rd commit:
 
 https://reactjs.org/docs/refs-and-the-dom.html
+
+# 5th commit:
+
+https://stackoverflow.com/a/40778883/8537000

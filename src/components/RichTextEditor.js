@@ -1,5 +1,5 @@
 import React from 'react';
-import { Editor, EditorState, getDefaultKeyBinding, RichUtils } from 'draft-js';
+import { Editor, EditorState, getDefaultKeyBinding, RichUtils, convertToRaw } from 'draft-js';
 import './RichTextEditor.css';
 import '../../node_modules/draft-js/dist/Draft.css';
 
@@ -59,13 +59,38 @@ class RichTextEditor extends React.Component {
     );
   }
 
+  _onDB() {
+    const contentState = this.state.editorState.getCurrentContent();
+    const editorContentRaw = convertToRaw(contentState);
+    console.log(editorContentRaw);
+    const DB = 'test';
+    let request = window.indexedDB.open(DB, 1);
+    request.onerror = function(event) {
+      alert("Error opening the database");
+    };
+
+    request.onsuccess = function(event) {
+      console.log('hello');
+    }
+
+    request.onupgradeneeded = function(event)
+    {
+      const db = event.target.result;
+      const objectStore = db.createObjectStore(`contents`, {keyPath: "order", autoIncrement: true});
+      objectStore.createIndex("order", "order", {unique: true});
+      for (let i = 0; i < editorContentRaw.blocks.length; i++) {
+        objectStore.put(editorContentRaw.blocks[i]);
+      }
+    };
+  }
+
   render() {
     const {editorState} = this.state;
 
     // If the user changes block type before entering any text, we can
     // either style the placeholder or hide it. Let's just hide it now.
     let className = 'RichEditor-editor';
-    var contentState = editorState.getCurrentContent();
+    let contentState = editorState.getCurrentContent();
     if (!contentState.hasText()) {
       if (contentState.getBlockMap().first().getType() !== 'unstyled') {
         className += ' RichEditor-hidePlaceholder';
@@ -74,6 +99,7 @@ class RichTextEditor extends React.Component {
 
     return (
       <div className="RichEditor-root">
+        <button onClick={this._onDB.bind(this)}>SaveData</button>
         <BlockStyleControls
           editorState={editorState}
           onToggle={this.toggleBlockType}
@@ -176,7 +202,7 @@ const BlockStyleControls = (props) => {
   );
 };
 
-var INLINE_STYLES = [
+const INLINE_STYLES = [
   {label: 'Bold', style: 'BOLD'},
   {label: 'Italic', style: 'ITALIC'},
   {label: 'Underline', style: 'UNDERLINE'},
