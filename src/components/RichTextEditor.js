@@ -64,6 +64,18 @@ class RichTextEditor extends React.Component {
     const editorContentRaw = convertToRaw(contentState);
     console.log(editorContentRaw);
     const DB = 'test';
+
+    let DBDeleteRequest = window.indexedDB.deleteDatabase(DB);
+
+    DBDeleteRequest.onerror = function (event) {
+      console.log('Error deleting database.');
+    };
+
+    DBDeleteRequest.onsuccess = function (event) {
+      console.log('Database deleted successfully');
+      console.log(event.result);
+    };
+
     let request = window.indexedDB.open(DB, 1);
     request.onerror = function(event) {
       alert("Error opening the database");
