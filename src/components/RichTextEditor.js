@@ -118,10 +118,52 @@ class RichTextEditor extends React.Component {
 
       req.onsuccess = function (event) {
         let cursor = event.target.result;
+        let offset = 0;
 
         if (cursor != null) {
-          allTeX.push(cursor.value.text);
-          console.log(cursor.value.text);
+          // allTeX.push(cursor.value.text);
+          let someTeX = cursor.value;
+          // console.log(someTeX);
+          let oSort = [], someTeXInlineStyleSort = [];
+
+          for (let i = 0; i < someTeX.inlineStyleRanges.length; i++) {
+            let o = someTeX.inlineStyleRanges[i].offset;
+            oSort.push(o);
+          }
+          oSort.sort((a, b) => a - b);
+
+          for (let i = 0; i < oSort.length; i++) {
+            for (let item in someTeX.inlineStyleRanges) {
+              if (someTeX.inlineStyleRanges[item].offset === oSort[i]) {
+                someTeXInlineStyleSort.push(someTeX.inlineStyleRanges[item]);
+              }
+            }
+          }
+
+          // console.log(someTeXInlineStyleSort);
+
+          if (someTeX.inlineStyleRanges.length === 0) {
+            allTeX.push(texMap[someTeX.type] + '{' + someTeX.text + '}<br/>');
+          } else {
+            for (let i = 0; i < someTeXInlineStyleSort.length; i++) {
+              let x = oSort[i];
+              let p = someTeXInlineStyleSort[i].length;
+              let q = someTeXInlineStyleSort[i].style;
+
+              if (i === 0) {
+                allTeX.push(someTeX.text.slice(0, x));
+              } else {
+                allTeX.push(someTeX.text.slice(offset+1, x));
+              }
+              allTeX.push(texMap[q] + '{' + someTeX.text.slice(x, x+p) + '}');
+
+              if (i === someTeXInlineStyleSort.length-1) {
+                allTeX.push(someTeX.text.slice(-(someTeX.text.length - x - p)) + '<br/>');
+              }
+              offset = x;
+            }
+          }
+
           cursor.continue();
         } else {
           displayTeX(allTeX);
@@ -134,12 +176,12 @@ class RichTextEditor extends React.Component {
     }
 
     function displayTeX(tex) {
-      let listHTML = '';
+      let listHTML = '<pre><code class="latex">';
       for (let i = 0; i < tex.length; i++) {
-        let item = tex[i];
-        listHTML += item;
+        let note = tex[i];
+        listHTML += note;
       }
-
+      listHTML += '</code></pre>';
       document.getElementById('tex').innerHTML = listHTML;
     }
   }
@@ -188,6 +230,13 @@ class RichTextEditor extends React.Component {
     );
   }
 }
+
+const texMap = {
+  'header-two': '\\subsection',
+  'BOLD': '\\textbf',
+  'ITALIC': '\\textit',
+  'header-four': '\\subsubsubsection'
+};
 
 // Custom overrides for "code" style.
 const styleMap = {
