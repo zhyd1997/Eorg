@@ -14,3 +14,7 @@ https://reactjs.org/docs/refs-and-the-dom.html
 
 https://stackoverflow.com/a/40778883/8537000
 https://stackoverflow.com/a/28013371/8537000
+
+# 8th commit:
+
+[build-a-basic-web-app-with-indexedDB](https://dev.to/andyhaskell/build-a-basic-web-app-with-indexeddb-38ef)

@@ -96,6 +96,54 @@ class RichTextEditor extends React.Component {
     };
   }
 
+  _toTeX() {
+    let db, dbReq = indexedDB.open('test', 1);
+
+    dbReq.onsuccess = function (event) {
+      db = event.target.result;
+      console.log("open 'test' successfully!!!");
+      getAndDisplaysTeX(db);
+    }
+
+    dbReq.onerror = function (event) {
+      alert('error opening database ' + event.target.errorCode);
+    }
+
+    function getAndDisplaysTeX(db) {
+      let tx = db.transaction(['contents'], 'readonly');
+      let store = tx.objectStore('contents');
+
+      let req = store.openCursor();
+      let allTeX = [];
+
+      req.onsuccess = function (event) {
+        let cursor = event.target.result;
+
+        if (cursor != null) {
+          allTeX.push(cursor.value.text);
+          console.log(cursor.value.text);
+          cursor.continue();
+        } else {
+          displayTeX(allTeX);
+        }
+      }
+
+      req.onerror = function (event) {
+        alert('error in cursor request ' + event.target.errorCode);
+      }
+    }
+
+    function displayTeX(tex) {
+      let listHTML = '';
+      for (let i = 0; i < tex.length; i++) {
+        let item = tex[i];
+        listHTML += item;
+      }
+
+      document.getElementById('tex').innerHTML = listHTML;
+    }
+  }
+
   render() {
     const {editorState} = this.state;
 
@@ -112,6 +160,8 @@ class RichTextEditor extends React.Component {
     return (
       <div className="RichEditor-root">
         <button onClick={this._onDB.bind(this)}>SaveData</button>
+        <br/>
+        <button onClick={this._toTeX.bind(this)}>TeX</button>
         <BlockStyleControls
           editorState={editorState}
           onToggle={this.toggleBlockType}
@@ -133,6 +183,7 @@ class RichTextEditor extends React.Component {
             spellCheck={true}
           />
         </div>
+        <div id={'tex'}></div>
       </div>
     );
   }
