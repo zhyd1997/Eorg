@@ -123,8 +123,7 @@ class RichTextEditor extends React.Component {
 				}
 			}
 
-			TeX = [...TeX]
-			allTeX = Array.from(TeX)
+			allTeX.push(TeX)
 		}
 
 		this.displayTeX(allTeX)
