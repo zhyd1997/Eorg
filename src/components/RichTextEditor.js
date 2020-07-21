@@ -157,6 +157,8 @@ class RichTextEditor extends React.Component {
 					if (someTeX.inlineStyleRanges.length === 0) {
 						allTeX.push(texMap[someTeX.type] + '{' + someTeX.text + '}<br/>');
 					} else {
+						// TODO leetcode-like problem
+
 						for (let i = 0; i < someTeXInlineStyleSort.length; i++) {
 							let x = oSort[i];
 							let p = someTeXInlineStyleSort[i].length;
