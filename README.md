@@ -20,29 +20,3 @@
 # Usage
 
 > Just support one style per letters
-
-# References:
-
-## Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## 1st commit: 
-
-[Create A Minimal Rich Text Editor Using React and Draft.js -- Quick and Easy](https://youtu.be/XGxdCXyMC7k)
-
-## 3rd commit:
-
-[React refs](https://reactjs.org/docs/refs-and-the-dom.html)
-
-## 5th commit:
-
-[Trying to use getCurrentContent in draftjs file
-](https://stackoverflow.com/a/40778883/8537000)
-
-[properly initializing an IndexedDB object store
-](https://stackoverflow.com/a/28013371/8537000)
-
-## 8th commit:
-
-[build-a-basic-web-app-with-indexedDB](https://dev.to/andyhaskell/build-a-basic-web-app-with-indexeddb-38ef)
