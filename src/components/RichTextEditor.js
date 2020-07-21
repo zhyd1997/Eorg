@@ -74,122 +74,63 @@ class RichTextEditor extends React.Component {
 		);
 	}
 
-	_onDB() {
+	convertToTeX() {
 		const contentState = this.state.editorState.getCurrentContent();
 		const editorContentRaw = convertToRaw(contentState);
 		console.log(editorContentRaw);
-		const DB = 'test';
 
-		let DBDeleteRequest = window.indexedDB.deleteDatabase(DB);
+		let allTeX = [], offset = 0, someTeX = editorContentRaw.blocks
 
-		DBDeleteRequest.onerror = function (event) {
-			console.log('Error deleting database.');
-		};
+		for (let k = 0; k < someTeX.length; k++) {
+			let TeX = []
+			let oSort = [], someTeXInlineStyleSort = [];
 
-		DBDeleteRequest.onsuccess = function (event) {
-			console.log('Database deleted successfully');
-			console.log(event.result);
-		};
-
-		let request = window.indexedDB.open(DB, 1);
-		request.onerror = function (event) {
-			alert("Error opening the database");
-		};
-
-		request.onsuccess = function (event) {
-			console.log('indexedDB request is successful');
-		}
-
-		request.onupgradeneeded = function (event) {
-			const db = event.target.result;
-			const objectStore = db.createObjectStore(`contents`, {keyPath: "order", autoIncrement: true});
-			objectStore.createIndex("order", "order", {unique: true});
-			for (let i = 0; i < editorContentRaw.blocks.length; i++) {
-				objectStore.put(editorContentRaw.blocks[i]);
+			for (let i = 0; i < someTeX[k].inlineStyleRanges.length; i++) {
+				let o = someTeX[k].inlineStyleRanges[i].offset;
+				oSort.push(o);
 			}
-		};
-	}
+			oSort.sort((a, b) => a - b);
 
-	_toTeX() {
-		let db, dbReq = indexedDB.open('test', 1);
-
-		dbReq.onsuccess = function (event) {
-			db = event.target.result;
-			console.log("open 'test' indexedDB successfully!!!");
-			getAndDisplaysTeX(db);
-		}
-
-		dbReq.onerror = function (event) {
-			alert('error opening database ' + event.target.errorCode);
-		}
-
-		function getAndDisplaysTeX(db) {
-			let tx = db.transaction(['contents'], 'readonly');
-			let store = tx.objectStore('contents');
-
-			let req = store.openCursor();
-			let allTeX = [];
-
-			req.onsuccess = function (event) {
-				let cursor = event.target.result;
-				let offset = 0;
-
-				if (cursor != null) {
-					// allTeX.push(cursor.value.text);
-					let someTeX = cursor.value;
-					// console.log(someTeX);
-					let oSort = [], someTeXInlineStyleSort = [];
-
-					for (let i = 0; i < someTeX.inlineStyleRanges.length; i++) {
-						let o = someTeX.inlineStyleRanges[i].offset;
-						oSort.push(o);
+			for (let i = 0; i < oSort.length; i++) {
+				for (let item in someTeX[k].inlineStyleRanges) {
+					if (someTeX[k].inlineStyleRanges[item].offset === oSort[i]) {
+						someTeXInlineStyleSort.push(someTeX[k].inlineStyleRanges[item]);
 					}
-					oSort.sort((a, b) => a - b);
-
-					for (let i = 0; i < oSort.length; i++) {
-						for (let item in someTeX.inlineStyleRanges) {
-							if (someTeX.inlineStyleRanges[item].offset === oSort[i]) {
-								someTeXInlineStyleSort.push(someTeX.inlineStyleRanges[item]);
-							}
-						}
-					}
-
-					if (someTeX.inlineStyleRanges.length === 0) {
-						allTeX.push(texMap[someTeX.type] + '{' + someTeX.text + '}<br/>');
-					} else {
-						// TODO leetcode-like problem
-
-						for (let i = 0; i < someTeXInlineStyleSort.length; i++) {
-							let x = oSort[i];
-							let p = someTeXInlineStyleSort[i].length;
-							let q = someTeXInlineStyleSort[i].style;
-
-							if (i === 0) {
-								allTeX.push(someTeX.text.slice(0, x));
-							} else {
-								allTeX.push(someTeX.text.slice(offset+1, x));
-							}
-							allTeX.push(texMap[q] + '{' + someTeX.text.slice(x, x+p) + '}');
-
-							if (i === someTeXInlineStyleSort.length-1) {
-								allTeX.push(someTeX.text.slice(-(someTeX.text.length - x - p)) + '<br/>');
-							}
-							offset = x;
-						}
-					}
-
-				cursor.continue();
-				} else {
-					displayTeX(allTeX);
 				}
+			}
+
+			if (someTeX[k].inlineStyleRanges.length === 0) {
+				TeX.push(texMap[someTeX[k].type] + '{' + someTeX[k].text + '}<br/>')
+			} else {
+				// TODO leetcode-like problem
+
+				for (let i = 0; i < someTeXInlineStyleSort.length; i++) {
+					let x = oSort[i];
+					let p = someTeXInlineStyleSort[i].length;
+					let q = someTeXInlineStyleSort[i].style;
+
+					if (i === 0) {
+						TeX.push(someTeX[k].text.slice(0, x));
+					} else {
+						TeX.push(someTeX[k].text.slice(offset + 1, x));
+					}
+					TeX.push(texMap[q] + '{' + someTeX[k].text.slice(x, x + p) + '}');
+
+					if (i === someTeXInlineStyleSort.length - 1) {
+						TeX.push(someTeX[k].text.slice(-(someTeX[k].text.length - x - p)) + '<br/>');
+					}
+					offset = x;
+				}
+			}
+
+			TeX = [...TeX]
+			allTeX = Array.from(TeX)
 		}
 
-		req.onerror = function (event) {
-			alert('error in cursor request ' + event.target.errorCode);
-		}
+		this.displayTeX(allTeX)
 	}
 
-	function displayTeX(tex) {
+	displayTeX = (tex) => {
 		let listHTML = '<pre><code class="latex">';
 		for (let i = 0; i < tex.length; i++) {
 			let note = tex[i];
@@ -198,54 +139,52 @@ class RichTextEditor extends React.Component {
 		listHTML += '</code></pre>';
 		document.getElementById('tex').innerHTML = listHTML;
 	}
-}
 
-  render() {
-    const {editorState} = this.state;
+	render() {
+		const {editorState} = this.state;
 
-	// If the user changes block type before entering any text, we can
-	// either style the placeholder or hide it. Let's just hide it now.
-	let className = 'RichEditor-editor';
-	let contentState = editorState.getCurrentContent();
-	if (!contentState.hasText()) {
-		if (contentState.getBlockMap().first().getType() !== 'unstyled') {
-			className += ' RichEditor-hidePlaceholder';
+		// If the user changes block type before entering any text, we can
+		// either style the placeholder or hide it. Let's just hide it now.
+		let className = 'RichEditor-editor';
+		let contentState = editorState.getCurrentContent();
+		if (!contentState.hasText()) {
+			if (contentState.getBlockMap().first().getType() !== 'unstyled') {
+				className += ' RichEditor-hidePlaceholder';
+			}
 		}
-	}
 
-	return (
-		<div>
-			<div className="RichEditor-root">
-				<button onClick={this._onDB.bind(this)}>Save</button>&nbsp;
-				<button onClick={this._toTeX.bind(this)}>Display</button>
-				<BlockStyleControls
-					editorState={editorState}
-					onToggle={this.toggleBlockType}
-				/>
-				<InlineStyleControls
-					editorState={editorState}
-					onToggle={this.toggleInlineStyle}
-				/>
-				<div className={className} onClick={this.focus}>
-					<Editor
-						blockStyleFn={getBlockStyle}
-						customStyleMap={styleMap}
+		return (
+			<div>
+				<div className="RichEditor-root">
+					<button onClick={this.convertToTeX.bind(this)}>Display</button>
+					<BlockStyleControls
 						editorState={editorState}
-						handleKeyCommand={this.handleKeyCommand}
-						keyBindingFn={this.mapKeyToEditorCommand}
-						onChange={this.onChange}
-						placeholder="Tell a story..."
-						ref={this.editorRef}
-						spellCheck={true}
+						onToggle={this.toggleBlockType}
 					/>
+					<InlineStyleControls
+						editorState={editorState}
+						onToggle={this.toggleInlineStyle}
+					/>
+					<div className={className} onClick={this.focus}>
+						<Editor
+							blockStyleFn={getBlockStyle}
+							customStyleMap={styleMap}
+							editorState={editorState}
+							handleKeyCommand={this.handleKeyCommand}
+							keyBindingFn={this.mapKeyToEditorCommand}
+							onChange={this.onChange}
+							placeholder="Tell a story..."
+							ref={this.editorRef}
+							spellCheck={true}
+						/>
+					</div>
 				</div>
+				<div
+					id='tex'
+				></div>
 			</div>
-			<div
-				id='tex'
-			></div>
-		</div>
-	);
-}
+		);
+	}
 }
 
 const texMap = {
