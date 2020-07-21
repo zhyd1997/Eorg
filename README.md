@@ -19,4 +19,4 @@
 
 # Usage
 
-> Just support one style per letters
+> Just support one style per letter
