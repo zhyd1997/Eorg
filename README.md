@@ -6,13 +6,13 @@
 
 # Features
 
-## DONE highlight latex code
+## **DONE** highlight latex code
 
    - [highlight.js](https://github.com/highlightjs/highlight.js)
 
-# Leetcode-Like Problem
+## **TODO** Leetcode-Like Problem
 
-## 1. split algorithm
+1. split algorithm [bug]
 
 > ... // TODO
 
