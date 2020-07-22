@@ -71,7 +71,7 @@ class RichTextEditor extends React.Component {
 		const editorContentRaw = convertToRaw(contentState);
 		console.log(editorContentRaw);
 
-		let allTeX = [], offset = 0, someTeX = editorContentRaw.blocks
+		let allTeX = [], offset = 0, length = 0, someTeX = editorContentRaw.blocks
 
 		for (let k = 0; k < someTeX.length; k++) {
 			let TeX = ''
@@ -109,7 +109,7 @@ class RichTextEditor extends React.Component {
 					if (i === 0) {
 						TeX += someTeX[k].text.slice(0, x)
 					} else {
-						TeX += someTeX[k].text.slice(offset + 1, x)
+						TeX += someTeX[k].text.slice(offset+length, x)
 					}
 					TeX += texMap[q] + '{' + someTeX[k].text.slice(x, x + p) + '}'
 
@@ -117,6 +117,7 @@ class RichTextEditor extends React.Component {
 						TeX += someTeX[k].text.slice(-(someTeX[k].text.length - x - p)) + '<br/>'
 					}
 					offset = x;
+					length = p
 				}
 			}
 
