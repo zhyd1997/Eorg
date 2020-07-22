@@ -1,5 +1,5 @@
 * DONE highlight latex code
-  - [[https://github.com/highlightjs/highlight.js][highlight]]
+  - [[https://github.com/highlightjs/highlight.js][highlight.js]]
 * In Progress Leetcode-Like Problem                                     :bug:
   - split algorithm :: inline style text processing
 * TODO editor [0/3]

@@ -82,7 +82,7 @@ class RichTextEditor extends React.Component {
 		let allTeX = [], offset = 0, someTeX = editorContentRaw.blocks
 
 		for (let k = 0; k < someTeX.length; k++) {
-			let TeX = []
+			let TeX = ''
 			let oSort = [], someTeXInlineStyleSort = [];
 
 			for (let i = 0; i < someTeX[k].inlineStyleRanges.length; i++) {
@@ -100,7 +100,12 @@ class RichTextEditor extends React.Component {
 			}
 
 			if (someTeX[k].inlineStyleRanges.length === 0) {
-				TeX.push(texMap[someTeX[k].type] + '{' + someTeX[k].text + '}<br/>')
+				if (someTeX[k].type === 'unstyled') {
+					TeX += someTeX[k].text
+				} else {
+					TeX += texMap[someTeX[k].type] + '{' + someTeX[k].text + '}'
+				}
+				TeX += '<br />'
 			} else {
 				// TODO leetcode-like problem
 
@@ -110,14 +115,14 @@ class RichTextEditor extends React.Component {
 					let q = someTeXInlineStyleSort[i].style;
 
 					if (i === 0) {
-						TeX.push(someTeX[k].text.slice(0, x));
+						TeX += someTeX[k].text.slice(0, x)
 					} else {
-						TeX.push(someTeX[k].text.slice(offset + 1, x));
+						TeX += someTeX[k].text.slice(offset + 1, x)
 					}
-					TeX.push(texMap[q] + '{' + someTeX[k].text.slice(x, x + p) + '}');
+					TeX += texMap[q] + '{' + someTeX[k].text.slice(x, x + p) + '}'
 
 					if (i === someTeXInlineStyleSort.length - 1) {
-						TeX.push(someTeX[k].text.slice(-(someTeX[k].text.length - x - p)) + '<br/>');
+						TeX += someTeX[k].text.slice(-(someTeX[k].text.length - x - p)) + '<br/>'
 					}
 					offset = x;
 				}
