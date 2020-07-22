@@ -109,12 +109,12 @@ class RichTextEditor extends React.Component {
 					if (i === 0) {
 						TeX += someTeX[k].text.slice(0, x)
 					} else {
-						TeX += someTeX[k].text.slice(offset+length, x)
+						TeX += someTeX[k].text.slice(offset + length, x)
 					}
 					TeX += texMap[q] + '{' + someTeX[k].text.slice(x, x + p) + '}'
 
 					if (i === someTeXInlineStyleSort.length - 1) {
-						TeX += someTeX[k].text.slice(-(someTeX[k].text.length - x - p)) + '<br/>'
+						TeX += someTeX[k].text.slice(x + p) + '<br/>'
 					}
 					offset = x;
 					length = p
