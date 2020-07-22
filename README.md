@@ -6,16 +6,7 @@
 
 # Features
 
-## **DONE** highlight latex code
-
-   - [highlight.js](https://github.com/highlightjs/highlight.js)
-
-## **TODO** Leetcode-Like Problem
-
-1. split algorithm [bug]
-
-> ... // TODO
-
+migrate to [project management](https://github.com/zhyd1997/Eorg/projects)
 
 # Usage
 
