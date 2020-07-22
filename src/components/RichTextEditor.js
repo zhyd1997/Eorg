@@ -19,14 +19,6 @@ class RichTextEditor extends React.Component {
 		this.toggleInlineStyle = this._toggleInlineStyle.bind(this);
 	}
 
-	componentDidMount() {
-		this.highlightCallBack()
-	}
-
-	componentDidUpdate() {
-		this.highlightCallBack()
-	}
-
 	highlightCallBack = () => {
 		document.querySelectorAll('pre code')
 			.forEach(block => hljs.highlightBlock(block))
