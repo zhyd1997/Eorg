@@ -1,6 +1,6 @@
 * DONE highlight latex code
-  - [[https://github.com/highlightjs/highlight.js][highlight.js]]
-* In Progress Leetcode-Like Problem                                     :bug:
+  - [[https://github.com/highlightjs/highlight.js][highlight.js]] :: ~latex~
+* DONE Leetcode-Like Problem
   - split algorithm :: inline style text processing
 * TODO editor [0/3]
   - [ ] table component :: like org-mode table
