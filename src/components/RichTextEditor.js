@@ -194,9 +194,10 @@ const texMap = {
 	'header-one': '\\section',
 	'header-two': '\\subsection',
 	'header-three': '\\subsubsection',
-	'header-four': '\\subsubsubsection',
 	'BOLD': '\\textbf',
 	'ITALIC': '\\textit',
+	'UNDERLINE': '\\underline',
+	'CODE': '\\texttt'
 };
 
 // Custom overrides for "code" style.
@@ -245,7 +246,7 @@ const BLOCK_TYPES = [
 	{label: 'H1', style: 'header-one'},
 	{label: 'H2', style: 'header-two'},
 	{label: 'H3', style: 'header-three'},
-	{label: 'H4', style: 'header-four'},
+	// {label: 'H4', style: 'header-four'},
 	// {label: 'H5', style: 'header-five'},
 	// {label: 'H6', style: 'header-six'},
 	// {label: 'Blockquote', style: 'blockquote'},
@@ -280,8 +281,8 @@ const BlockStyleControls = (props) => {
 const INLINE_STYLES = [
 	{label: 'Bold', style: 'BOLD'},
 	{label: 'Italic', style: 'ITALIC'},
-	// {label: 'Underline', style: 'UNDERLINE'},
-	// {label: 'Monospace', style: 'CODE'},
+	{label: 'Underline', style: 'UNDERLINE'},
+	{label: 'Monospace', style: 'CODE'},
 ];
 
 const InlineStyleControls = (props) => {
