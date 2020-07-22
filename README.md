@@ -7,6 +7,7 @@
 # Features
 
 migrate to [project management](https://github.com/zhyd1997/Eorg/projects)
+![wish list](https://i.imgur.com/zY5pbjh.png)
 
 # Usage
 
