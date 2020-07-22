@@ -142,6 +142,7 @@ class RichTextEditor extends React.Component {
 		}
 		listHTML += '</code></pre>';
 		document.getElementById('tex').innerHTML = listHTML;
+		this.highlightCallBack()
 	}
 
 	render() {
@@ -183,9 +184,7 @@ class RichTextEditor extends React.Component {
 						/>
 					</div>
 				</div>
-				<div
-					id='tex'
-				></div>
+				<div id='tex' />
 			</div>
 		);
 	}
