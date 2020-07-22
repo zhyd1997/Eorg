@@ -2,3 +2,9 @@
   width: 700px;
   margin: 50px;
 }
+
+pre {
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
