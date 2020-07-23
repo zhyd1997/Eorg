@@ -60,77 +60,6 @@ class RichTextEditor extends React.Component {
 		);
 	}
 
-	convertToTeX() {
-		const contentState = this.state.editorState.getCurrentContent();
-		const editorContentRaw = convertToRaw(contentState);
-		console.log(editorContentRaw);
-
-		let allTeX = [], offset = 0, length = 0, someTeX = editorContentRaw.blocks
-
-		for (let k = 0; k < someTeX.length; k++) {
-			let TeX = ''
-			let oSort = [], someTeXInlineStyleSort = [];
-
-			for (let i = 0; i < someTeX[k].inlineStyleRanges.length; i++) {
-				let o = someTeX[k].inlineStyleRanges[i].offset;
-				oSort.push(o);
-			}
-			oSort.sort((a, b) => a - b);
-
-			for (let i = 0; i < oSort.length; i++) {
-				for (let item in someTeX[k].inlineStyleRanges) {
-					if (someTeX[k].inlineStyleRanges[item].offset === oSort[i]) {
-						someTeXInlineStyleSort.push(someTeX[k].inlineStyleRanges[item]);
-					}
-				}
-			}
-
-			if (someTeX[k].inlineStyleRanges.length === 0) {
-				if (someTeX[k].type === 'unstyled') {
-					TeX += someTeX[k].text
-				} else {
-					TeX += texMap[someTeX[k].type] + '{' + someTeX[k].text + '}'
-				}
-				TeX += '<br />'
-			} else {
-
-				for (let i = 0; i < someTeXInlineStyleSort.length; i++) {
-					let x = oSort[i];
-					let p = someTeXInlineStyleSort[i].length;
-					let q = someTeXInlineStyleSort[i].style;
-
-					if (i === 0) {
-						TeX += someTeX[k].text.slice(0, x)
-					} else {
-						TeX += someTeX[k].text.slice(offset + length, x)
-					}
-					TeX += texMap[q] + '{' + someTeX[k].text.slice(x, x + p) + '}'
-
-					if (i === someTeXInlineStyleSort.length - 1) {
-						TeX += someTeX[k].text.slice(x + p) + '<br/>'
-					}
-					offset = x;
-					length = p
-				}
-			}
-
-			allTeX.push(TeX)
-		}
-
-		this.displayTeX(allTeX)
-	}
-
-	displayTeX = (tex) => {
-		let listHTML = '<pre><code class="latex">';
-		for (let i = 0; i < tex.length; i++) {
-			let note = tex[i];
-			listHTML += note;
-		}
-		listHTML += '</code></pre>';
-		document.getElementById('tex').innerHTML = listHTML;
-		highlightCallBack()
-	}
-
 	render() {
 		const {editorState} = this.state;
 
@@ -144,9 +73,78 @@ class RichTextEditor extends React.Component {
 			}
 		}
 
+		const convertToTeX = () => {
+			const editorContentRaw = convertToRaw(contentState);
+
+			let allTeX = [], offset = 0, length = 0, someTeX = editorContentRaw.blocks
+
+			for (let k = 0; k < someTeX.length; k++) {
+				let TeX = ''
+				let oSort = [], someTeXInlineStyleSort = [];
+
+				for (let i = 0; i < someTeX[k].inlineStyleRanges.length; i++) {
+					let o = someTeX[k].inlineStyleRanges[i].offset;
+					oSort.push(o);
+				}
+				oSort.sort((a, b) => a - b);
+
+				for (let i = 0; i < oSort.length; i++) {
+					for (let item in someTeX[k].inlineStyleRanges) {
+						if (someTeX[k].inlineStyleRanges[item].offset === oSort[i]) {
+							someTeXInlineStyleSort.push(someTeX[k].inlineStyleRanges[item]);
+						}
+					}
+				}
+
+				if (someTeX[k].inlineStyleRanges.length === 0) {
+					if (someTeX[k].type === 'unstyled') {
+						TeX += someTeX[k].text
+					} else {
+						TeX += texMap[someTeX[k].type] + '{' + someTeX[k].text + '}'
+					}
+					TeX += '<br />'
+				} else {
+
+					for (let i = 0; i < someTeXInlineStyleSort.length; i++) {
+						let x = oSort[i];
+						let p = someTeXInlineStyleSort[i].length;
+						let q = someTeXInlineStyleSort[i].style;
+
+						if (i === 0) {
+							TeX += someTeX[k].text.slice(0, x)
+						} else {
+							TeX += someTeX[k].text.slice(offset + length, x)
+						}
+						TeX += texMap[q] + '{' + someTeX[k].text.slice(x, x + p) + '}'
+
+						if (i === someTeXInlineStyleSort.length - 1) {
+							TeX += someTeX[k].text.slice(x + p) + '<br/>'
+						}
+						offset = x;
+						length = p
+					}
+				}
+
+				allTeX.push(TeX)
+			}
+
+			displayTeX(allTeX)
+		}
+
+		const displayTeX = (tex) => {
+			let listHTML = '<pre><code class="latex">';
+			for (let i = 0; i < tex.length; i++) {
+				let note = tex[i];
+				listHTML += note;
+			}
+			listHTML += '</code></pre>';
+			document.getElementById('tex').innerHTML = listHTML;
+			highlightCallBack()
+		}
+
 		return (
 			<div>
-				<button onClick={this.convertToTeX.bind(this)}>Display</button>
+				<button onClick={convertToTeX}>Display</button>
 				<div className="RichEditor-root">
 					<BlockStyleControls
 						editorState={editorState}
