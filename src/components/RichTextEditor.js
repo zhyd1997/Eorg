@@ -80,17 +80,18 @@ class RichTextEditor extends React.Component {
 
 			for (let k = 0; k < someTeX.length; k++) {
 				let TeX = ''
-				let oSort = [], someTeXInlineStyleSort = [];
+				let styledStartOffset = [], someTeXInlineStyleSort = [];
 
 				for (let i = 0; i < someTeX[k].inlineStyleRanges.length; i++) {
 					let o = someTeX[k].inlineStyleRanges[i].offset;
-					oSort.push(o);
+					styledStartOffset.push(o);
 				}
-				oSort.sort((a, b) => a - b);
 
-				for (let i = 0; i < oSort.length; i++) {
+				styledStartOffset.sort((a, b) => a - b);
+
+				for (let i = 0; i < styledStartOffset.length; i++) {
 					for (let item in someTeX[k].inlineStyleRanges) {
-						if (someTeX[k].inlineStyleRanges[item].offset === oSort[i]) {
+						if (someTeX[k].inlineStyleRanges[item].offset === styledStartOffset[i]) {
 							someTeXInlineStyleSort.push(someTeX[k].inlineStyleRanges[item]);
 						}
 					}
@@ -104,24 +105,23 @@ class RichTextEditor extends React.Component {
 					}
 					TeX += '<br />'
 				} else {
-
 					for (let i = 0; i < someTeXInlineStyleSort.length; i++) {
-						let x = oSort[i];
-						let p = someTeXInlineStyleSort[i].length;
-						let q = someTeXInlineStyleSort[i].style;
+						let startOffset = styledStartOffset[i];
+						let styledTextLength = someTeXInlineStyleSort[i].length;
+						let textStyle = someTeXInlineStyleSort[i].style;
 
 						if (i === 0) {
-							TeX += someTeX[k].text.slice(0, x)
+							TeX += someTeX[k].text.slice(0, startOffset)
 						} else {
-							TeX += someTeX[k].text.slice(offset + length, x)
+							TeX += someTeX[k].text.slice(offset + length, startOffset)
 						}
-						TeX += texMap[q] + '{' + someTeX[k].text.slice(x, x + p) + '}'
+						TeX += texMap[textStyle] + '{' + someTeX[k].text.slice(startOffset, startOffset + styledTextLength) + '}'
 
 						if (i === someTeXInlineStyleSort.length - 1) {
-							TeX += someTeX[k].text.slice(x + p) + '<br/>'
+							TeX += someTeX[k].text.slice(startOffset + styledTextLength) + '<br/>'
 						}
-						offset = x;
-						length = p
+						offset = startOffset;
+						length = styledTextLength
 					}
 				}
 
