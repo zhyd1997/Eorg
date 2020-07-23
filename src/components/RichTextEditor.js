@@ -2,8 +2,7 @@ import React from 'react';
 import {Editor, EditorState, getDefaultKeyBinding, RichUtils, convertToRaw} from 'draft-js';
 import './RichTextEditor.css';
 import '../../node_modules/draft-js/dist/Draft.css';
-import hljs from 'highlight.js'
-import 'highlight.js/styles/monokai.css'
+import highlightCallBack from './Highlight'
 
 class RichTextEditor extends React.Component {
 	constructor(props) {
@@ -17,11 +16,6 @@ class RichTextEditor extends React.Component {
 		this.mapKeyToEditorCommand = this._mapKeyToEditorCommand.bind(this);
 		this.toggleBlockType = this._toggleBlockType.bind(this);
 		this.toggleInlineStyle = this._toggleInlineStyle.bind(this);
-	}
-
-	highlightCallBack = () => {
-		document.querySelectorAll('pre code')
-			.forEach(block => hljs.highlightBlock(block))
 	}
 
 	_handleKeyCommand(command, editorState) {
@@ -99,7 +93,6 @@ class RichTextEditor extends React.Component {
 				}
 				TeX += '<br />'
 			} else {
-				// TODO leetcode-like problem
 
 				for (let i = 0; i < someTeXInlineStyleSort.length; i++) {
 					let x = oSort[i];
@@ -135,7 +128,7 @@ class RichTextEditor extends React.Component {
 		}
 		listHTML += '</code></pre>';
 		document.getElementById('tex').innerHTML = listHTML;
-		this.highlightCallBack()
+		highlightCallBack()
 	}
 
 	render() {
