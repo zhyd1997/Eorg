@@ -146,8 +146,8 @@ class RichTextEditor extends React.Component {
 
 		return (
 			<div>
+				<button onClick={this.convertToTeX.bind(this)}>Display</button>
 				<div className="RichEditor-root">
-					<button onClick={this.convertToTeX.bind(this)}>Display</button>
 					<BlockStyleControls
 						editorState={editorState}
 						onToggle={this.toggleBlockType}
