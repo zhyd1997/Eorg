@@ -12,3 +12,5 @@ Migrated to [project management](https://github.com/zhyd1997/Eorg/projects)
 # Usage
 
 > Just support one style per letter
+>
+![demo](https://i.imgur.com/yj0qt0N.png)
