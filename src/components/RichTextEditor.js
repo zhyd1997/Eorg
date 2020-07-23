@@ -97,6 +97,11 @@ class RichTextEditor extends React.Component {
 					}
 				}
 
+				/**
+				 * ** text split algorithm **
+				 * split with inlineStyledText offset and its length
+				 */
+
 				if (someTeX[k].inlineStyleRanges.length === 0) {
 					if (someTeX[k].type === 'unstyled') {
 						TeX += someTeX[k].text
