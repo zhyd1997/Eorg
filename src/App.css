@@ -6,7 +6,7 @@ pre {
   overflow-x: auto;
   white-space: pre-wrap;
   word-wrap: break-word;
-  padding: 35px 5px;
+  padding: 35px 0;
 }
 
 .two {
@@ -29,6 +29,13 @@ pre {
 #tex {
   width: 48%;
   height: 520px;
-  background-color: black;
+  background-color: #6c757d;
   margin-left: 4%;
+}
+
+.compiled {
+  color: #999;
+  background-color: #5a6268;
+  padding: 16px;
+  margin: 0;
 }

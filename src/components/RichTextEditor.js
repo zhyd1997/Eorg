@@ -255,7 +255,9 @@ class RichTextEditor extends React.Component {
 						/>
 					</div>
 				</div>
-				<div id='tex'/>
+				<div id='tex'>
+					<p className='compiled'>{'% LaTeX code will appear below...'}</p>
+				</div>
 			</div>
 		);
 	}

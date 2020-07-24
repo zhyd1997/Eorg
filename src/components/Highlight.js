@@ -1,5 +1,5 @@
 import hljs from "highlight.js";
-import 'highlight.js/styles/monokai.css'
+import 'highlight.js/styles/zenburn.css'
 
 const highlightCallBack = () => {
 	document.querySelectorAll('pre code')
