@@ -1,5 +1,4 @@
 .App {
-  width: 700px;
   margin: 50px;
 }
 
@@ -7,4 +6,29 @@ pre {
   overflow-x: auto;
   white-space: pre-wrap;
   word-wrap: break-word;
+  padding: 35px 5px;
+}
+
+.two {
+  display: flex;
+}
+
+.Menu {
+  display: flex;
+  position: relative;
+}
+
+.math {
+  right: 100px;
+}
+
+.display {
+  right: 0;
+}
+
+#tex {
+  width: 48%;
+  height: 520px;
+  background-color: black;
+  margin-left: 4%;
 }

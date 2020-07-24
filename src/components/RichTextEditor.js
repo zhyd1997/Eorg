@@ -215,11 +215,9 @@ class RichTextEditor extends React.Component {
 		}
 
 		return (
-			<div>
-				<button onClick={convertToTeX}>
-					{'Display'}
-				</button>
+			<div className='two'>
 				<div className="RichEditor-root">
+					<div className="Menu">
 					<BlockStyleControls
 						editorState={editorState}
 						onToggle={this.toggleBlockType}
@@ -228,11 +226,19 @@ class RichTextEditor extends React.Component {
 						editorState={editorState}
 						onToggle={this.toggleInlineStyle}
 					/>
-					<button onClick={this._insertTeX}
-						// className="TeXEditor-insert"
+					<button
+						onClick={this._insertTeX}
+						className="TeXEditor-insert math"
 					>
 						{'Math'}
 					</button>
+						<button
+							onClick={convertToTeX}
+							className='TeXEditor-insert display'
+						>
+							{'Display'}
+						</button>
+				</div>
 					<div className={className} onClick={this.focus}>
 						<Editor
 							blockRendererFn={this._blockRenderer}
