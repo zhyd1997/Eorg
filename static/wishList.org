@@ -3,8 +3,14 @@
   - [ ] wrap line :: use CSS (maybe ~text-overflow~)
 * DONE Leetcode-Like Problem
   - string split algorithm :: inline style text processing
-* In Progress editor [0/1]
-  - [ ] math equation :: [[https://github.com/KaTeX/KaTeX][KaTeX]] 
+* In Progress editor 
+  - [ ] math equation :: [[https://github.com/KaTeX/KaTeX][KaTeX]] [0/4]
+    - [ ] auto-complete :: Trie
+    - [ ] inline mode
+    - [ ] display mode
+    - [ ] modal 
 ** TODO table
 ** TODO image
 ** TODO ~.sty~ template 
+* TODO [#A] code spliting :: component reused
+* TODO [#B] UI/UX
