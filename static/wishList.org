@@ -1,10 +1,10 @@
-* In Progress latex code [1/2]
-  - [X] [[https://github.com/highlightjs/highlight.js][highlight.js]] :: ~latex~
+* In Progress latex [1/2]
+  - [X] highlight ~latex~ code ::  [[https://github.com/highlightjs/highlight.js][highlight.js]]
   - [ ] wrap line :: use CSS (maybe ~text-overflow~)
 * DONE Leetcode-Like Problem
-  - split algorithm :: inline style text processing
-* In Progress editor [0/4]
-  - [ ] table component :: like org-mode table
-  - [ ] upload image
-  - [ ] ~.sty~ template support
-  - [ ] math equation input :: [[https://github.com/KaTeX/KaTeX][KaTeX]] 
+  - string split algorithm :: inline style text processing
+* In Progress editor [0/1]
+  - [ ] math equation :: [[https://github.com/KaTeX/KaTeX][KaTeX]] 
+** TODO table
+** TODO image
+** TODO ~.sty~ template 
