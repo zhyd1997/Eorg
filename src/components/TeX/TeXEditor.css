@@ -30,8 +30,8 @@
 .TeXEditor-tex {
   background-color: #fff;
   cursor: pointer;
-  margin: 20px auto;
-  padding: 20px;
+  /*margin: 20px auto;*/
+  /*padding: 20px;*/
   /*-webkit-transition: background-color 0.2s fade-in-out;*/
   user-select: none;
   -webkit-user-select: none;
