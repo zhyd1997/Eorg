@@ -3,11 +3,24 @@ import {Editor, EditorState, getDefaultKeyBinding, RichUtils, convertToRaw} from
 import './RichTextEditor.css';
 import '../../node_modules/draft-js/dist/Draft.css';
 import highlightCallBack from './Highlight'
+import {Map} from "immutable";
+import TeXBlock from "./TeX/TeXBlock";
+import {removeTeXBlock} from "./TeX/modifiers/removeTeXBlock";
+import {insertTeXBlock} from "./TeX/modifiers/insertTeXBlock";
+import './TeX/TeXEditor.css'
+
+/**
+ * Editor Template and KaTeX support are all referenced to Draft.js official example.
+ */
 
 class RichTextEditor extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {editorState: EditorState.createEmpty()};
+		this.state = {
+			editorState: EditorState.createEmpty(),
+			liveTeXEdits: Map(),
+		};
+
 		this.editorRef = React.createRef();
 		this.focus = () => this.editorRef.current.focus();
 		this.onChange = (editorState) => this.setState({editorState});
@@ -21,7 +34,7 @@ class RichTextEditor extends React.Component {
 	_handleKeyCommand(command, editorState) {
 		const newState = RichUtils.handleKeyCommand(editorState, command);
 		if (newState) {
-			this.onChange(newState);
+			this._onChange(newState);
 			return true;
 		}
 		return false;
@@ -60,6 +73,47 @@ class RichTextEditor extends React.Component {
 		);
 	}
 
+	_blockRenderer = (block) => {
+		if (block.getType() === 'atomic') {
+			return {
+				component: TeXBlock,
+				editable: false,
+				props: {
+					onStartEdit: (blockKey) => {
+						const {liveTeXEdits} = this.state;
+						this.setState({liveTeXEdits: liveTeXEdits.set(blockKey, true)});
+					},
+					onFinishEdit: (blockKey, newContentState) => {
+						const {liveTeXEdits} = this.state;
+						this.setState({
+							liveTeXEdits: liveTeXEdits.remove(blockKey),
+							editorState: EditorState.createWithContent(newContentState),
+						});
+					},
+					onRemove: (blockKey) => this._removeTeX(blockKey),
+				},
+			};
+		}
+		return null;
+	};
+
+	_onChange = (editorState) => this.setState({editorState});
+
+	_removeTeX = (blockKey) => {
+		const {editorState, liveTeXEdits} = this.state;
+		this.setState({
+			liveTeXEdits: liveTeXEdits.remove(blockKey),
+			editorState: removeTeXBlock(editorState, blockKey),
+		});
+	};
+
+	_insertTeX = () => {
+		this.setState({
+			liveTeXEdits: Map(),
+			editorState: insertTeXBlock(this.state.editorState),
+		});
+	};
+
 	render() {
 		const {editorState} = this.state;
 
@@ -75,9 +129,18 @@ class RichTextEditor extends React.Component {
 
 		const convertToTeX = () => {
 			const editorContentRaw = convertToRaw(contentState);
+			console.log(editorContentRaw)
 
 			let allTeX = [], offset = 0, length = 0, someTeX = editorContentRaw.blocks
+			let Math = [], someMath = editorContentRaw.entityMap
 
+			if (Object.keys(someMath).length) {
+				for (let i = 0; i < Object.keys(someMath).length; i++) {
+					Math.push(Object.values(someMath)[i].data.content)
+				}
+			}
+
+			let count = 0
 			for (let k = 0; k < someTeX.length; k++) {
 				let TeX = ''
 				let styledStartOffset = [], someTeXInlineStyleSort = [];
@@ -105,6 +168,10 @@ class RichTextEditor extends React.Component {
 				if (someTeX[k].inlineStyleRanges.length === 0) {
 					if (someTeX[k].type === 'unstyled') {
 						TeX += someTeX[k].text
+					} else if (someTeX[k].type === 'atomic') {
+						someTeX[k].text = Math[count]
+						TeX += someTeX[k].text
+						count++
 					} else {
 						TeX += texMap[someTeX[k].type] + '{' + someTeX[k].text + '}'
 					}
@@ -149,7 +216,9 @@ class RichTextEditor extends React.Component {
 
 		return (
 			<div>
-				<button onClick={convertToTeX}>Display</button>
+				<button onClick={convertToTeX}>
+					{'Display'}
+				</button>
 				<div className="RichEditor-root">
 					<BlockStyleControls
 						editorState={editorState}
@@ -159,8 +228,14 @@ class RichTextEditor extends React.Component {
 						editorState={editorState}
 						onToggle={this.toggleInlineStyle}
 					/>
+					<button onClick={this._insertTeX}
+						// className="TeXEditor-insert"
+					>
+						{'Math'}
+					</button>
 					<div className={className} onClick={this.focus}>
 						<Editor
+							blockRendererFn={this._blockRenderer}
 							blockStyleFn={getBlockStyle}
 							customStyleMap={styleMap}
 							editorState={editorState}
@@ -168,12 +243,13 @@ class RichTextEditor extends React.Component {
 							keyBindingFn={this.mapKeyToEditorCommand}
 							onChange={this.onChange}
 							placeholder="Tell a story..."
+							readOnly={this.state.liveTeXEdits.count()}
 							ref={this.editorRef}
 							spellCheck={true}
 						/>
 					</div>
 				</div>
-				<div id='tex' />
+				<div id='tex'/>
 			</div>
 		);
 	}
@@ -209,8 +285,8 @@ function getBlockStyle(block) {
 }
 
 class StyleButton extends React.Component {
-	constructor() {
-		super();
+	constructor(props) {
+		super(props);
 		this.onToggle = (e) => {
 			e.preventDefault();
 			this.props.onToggle(this.props.style);
