@@ -44,6 +44,7 @@
 .TeXEditor-panel {
   font-family: 'Helvetica', sans-serif;
   font-weight: 200;
+  width: 100%;
 }
 
 .TeXEditor-panel .TeXEditor-texValue {
@@ -57,11 +58,13 @@
   padding: 14px;
   resize: none;
   -webkit-box-sizing: border-box;
-  width: 420px;
+  width: 100%;
 }
 
 .TeXEditor-buttons {
   text-align: center;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .TeXEditor-saveButton,
@@ -75,13 +78,12 @@
   margin: 10px auto;
   padding: 6px;
   -webkit-border-radius: 3px;
-  width: 100px;
+  width: 99px;
 }
 
 .TeXEditor-removeButton {
   border-color: #aaa;
   color: #999;
-  margin-left: 8px;
 }
 
 .TeXEditor-invalidButton {

@@ -6,7 +6,7 @@ pre {
   overflow-x: auto;
   white-space: pre-wrap;
   word-wrap: break-word;
-  padding: 35px 0;
+  padding: 38px 0;
 }
 
 .double-column {
@@ -21,23 +21,27 @@ pre {
 }
 
 .math {
+  font-family: 'Helvetica', sans-serif;
+  font-size: 14px;
   background-color: transparent;
   border: none;
-  padding: 6px;
 }
 
-.display {
-  /*color: whitesmoke;*/
+.save {
+  font-family: 'Helvetica', sans-serif;
+  color: whitesmoke;
   text-align: center;
-  /*background-color: #6c757d;*/
+  background-color: #6c757d;
   border: 1px solid #6c757d;
   border-radius: 3px;
-  /*padding: 6px;*/
+  margin-right: 16px;
+  padding: 3px;
+  display: inline-block;
 }
 
-.display:hover {
-  /*background-color: #5a6268;*/
-  border: 1px solid whitesmoke;
+.save:hover {
+  background-color: #5a6268;
+  border: 1px solid #5a6268;
   box-shadow: 0 0 0 1px gray;
   cursor: pointer;
 }
@@ -51,6 +55,6 @@ pre {
 .compiled {
   color: #999;
   background-color: #5a6268;
-  padding: 16px;
+  padding: 18px;
   margin: 0;
 }

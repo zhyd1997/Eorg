@@ -245,10 +245,10 @@ class RichTextEditor extends React.Component {
 							</button>
 							<button
 								onClick={convertToTeX}
-								className="display RichEditor-styleButton"
+								className="save"
 								type="button"
 							>
-								Display
+								Save
 							</button>
 						</div>
 					</div>
