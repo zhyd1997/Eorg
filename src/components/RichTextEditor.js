@@ -1,12 +1,14 @@
-import React from 'react';
-import {Editor, EditorState, getDefaultKeyBinding, RichUtils, convertToRaw} from 'draft-js';
-import './RichTextEditor.css';
-import '../../node_modules/draft-js/dist/Draft.css';
+import React from 'react'
+import {
+	Editor, EditorState, getDefaultKeyBinding, RichUtils, convertToRaw,
+} from 'draft-js'
+import './RichTextEditor.css'
+import '../../node_modules/draft-js/dist/Draft.css'
+import { Map } from 'immutable'
 import highlightCallBack from './Highlight'
-import {Map} from "immutable";
-import TeXBlock from "./TeX/TeXBlock";
-import {removeTeXBlock} from "./TeX/modifiers/removeTeXBlock";
-import {insertTeXBlock} from "./TeX/modifiers/insertTeXBlock";
+import TeXBlock from './TeX/TeXBlock'
+import removeTeXBlock from './TeX/modifiers/removeTeXBlock'
+import insertTeXBlock from './TeX/modifiers/insertTeXBlock'
 import './TeX/TeXEditor.css'
 
 /**
@@ -15,147 +17,149 @@ import './TeX/TeXEditor.css'
 
 class RichTextEditor extends React.Component {
 	constructor(props) {
-		super(props);
+		super(props)
 		this.state = {
 			editorState: EditorState.createEmpty(),
 			liveTeXEdits: Map(),
-		};
-
-		this.editorRef = React.createRef();
-		this.focus = () => this.editorRef.current.focus();
-		this.onChange = (editorState) => this.setState({editorState});
-
-		this.handleKeyCommand = this._handleKeyCommand.bind(this);
-		this.mapKeyToEditorCommand = this._mapKeyToEditorCommand.bind(this);
-		this.toggleBlockType = this._toggleBlockType.bind(this);
-		this.toggleInlineStyle = this._toggleInlineStyle.bind(this);
-	}
-
-	_handleKeyCommand(command, editorState) {
-		const newState = RichUtils.handleKeyCommand(editorState, command);
-		if (newState) {
-			this._onChange(newState);
-			return true;
 		}
-		return false;
+
+		this.editorRef = React.createRef()
+		this.focus = () => this.editorRef.current.focus()
+		this.onChange = (editorState) => this.setState({ editorState })
+
+		this.handleKeyCommand = this.handleKeyCommand.bind(this)
+		this.mapKeyToEditorCommand = this.mapKeyToEditorCommand.bind(this)
+		this.toggleBlockType = this.toggleBlockType.bind(this)
+		this.toggleInlineStyle = this.toggleInlineStyle.bind(this)
 	}
 
-	_mapKeyToEditorCommand(e) {
-		if (e.keyCode === 9 /* TAB */) {
-			const newEditorState = RichUtils.onTab(
-				e,
-				this.state.editorState,
-				4, /* maxDepth */
-			);
-			if (newEditorState !== this.state.editorState) {
-				this.onChange(newEditorState);
-			}
-			return;
-		}
-		return getDefaultKeyBinding(e);
-	}
-
-	_toggleBlockType(blockType) {
-		this.onChange(
-			RichUtils.toggleBlockType(
-				this.state.editorState,
-				blockType
-			)
-		);
-	}
-
-	_toggleInlineStyle(inlineStyle) {
-		this.onChange(
-			RichUtils.toggleInlineStyle(
-				this.state.editorState,
-				inlineStyle
-			)
-		);
-	}
-
-	_blockRenderer = (block) => {
+	blockRenderer = (block) => {
 		if (block.getType() === 'atomic') {
 			return {
 				component: TeXBlock,
 				editable: false,
 				props: {
 					onStartEdit: (blockKey) => {
-						const {liveTeXEdits} = this.state;
-						this.setState({liveTeXEdits: liveTeXEdits.set(blockKey, true)});
+						const { liveTeXEdits } = this.state
+						this.setState({ liveTeXEdits: liveTeXEdits.set(blockKey, true) })
 					},
 					onFinishEdit: (blockKey, newContentState) => {
-						const {liveTeXEdits} = this.state;
+						const { liveTeXEdits } = this.state
 						this.setState({
 							liveTeXEdits: liveTeXEdits.remove(blockKey),
 							editorState: EditorState.createWithContent(newContentState),
-						});
+						})
 					},
-					onRemove: (blockKey) => this._removeTeX(blockKey),
+					onRemove: (blockKey) => this.removeTeX(blockKey),
 				},
-			};
+			}
 		}
-		return null;
+		return null
 	};
 
-	_onChange = (editorState) => this.setState({editorState});
+	onChange = (editorState) => this.setState({ editorState });
 
-	_removeTeX = (blockKey) => {
-		const {editorState, liveTeXEdits} = this.state;
+	removeTeX = (blockKey) => {
+		const { editorState, liveTeXEdits } = this.state
 		this.setState({
 			liveTeXEdits: liveTeXEdits.remove(blockKey),
 			editorState: removeTeXBlock(editorState, blockKey),
-		});
+		})
 	};
 
-	_insertTeX = () => {
+	insertTeX = () => {
 		this.setState({
 			liveTeXEdits: Map(),
 			editorState: insertTeXBlock(this.state.editorState),
-		});
+		})
 	};
 
+	handleKeyCommand(command, editorState) {
+		const newState = RichUtils.handleKeyCommand(editorState, command)
+		if (newState) {
+			this.onChange(newState)
+			return true
+		}
+		return false
+	}
+
+	mapKeyToEditorCommand(e) {
+		if (e.keyCode === 9 /* TAB */) {
+			const newEditorState = RichUtils.onTab(
+				e,
+				this.state.editorState,
+				4, /* maxDepth */
+			)
+			if (newEditorState !== this.state.editorState) {
+				this.onChange(newEditorState)
+			}
+			return
+		}
+		return getDefaultKeyBinding(e)
+	}
+
+	toggleBlockType(blockType) {
+		this.onChange(
+			RichUtils.toggleBlockType(
+				this.state.editorState,
+				blockType,
+			),
+		)
+	}
+
+	toggleInlineStyle(inlineStyle) {
+		this.onChange(
+			RichUtils.toggleInlineStyle(
+				this.state.editorState,
+				inlineStyle,
+			),
+		)
+	}
+
 	render() {
-		const {editorState} = this.state;
+		const { editorState } = this.state
 
 		// If the user changes block type before entering any text, we can
 		// either style the placeholder or hide it. Let's just hide it now.
-		let className = 'RichEditor-editor';
-		let contentState = editorState.getCurrentContent();
+		let className = 'RichEditor-editor'
+		const contentState = editorState.getCurrentContent()
 		if (!contentState.hasText()) {
 			if (contentState.getBlockMap().first().getType() !== 'unstyled') {
-				className += ' RichEditor-hidePlaceholder';
+				className += ' RichEditor-hidePlaceholder'
 			}
 		}
 
 		const convertToTeX = () => {
-			const editorContentRaw = convertToRaw(contentState);
-			console.log(editorContentRaw)
+			const editorContentRaw = convertToRaw(contentState)
 
-			let allTeX = [], offset = 0, length = 0, someTeX = editorContentRaw.blocks
-			let Math = [], someMath = editorContentRaw.entityMap
+			const allTeX = []; let offset = 0; let length = 0; const
+				someTeX = editorContentRaw.blocks
+			const Math = []; const
+				someMath = editorContentRaw.entityMap
 
 			if (Object.keys(someMath).length) {
-				for (let i = 0; i < Object.keys(someMath).length; i++) {
+				for (let i = 0; i < Object.keys(someMath).length; i += 1) {
 					Math.push(Object.values(someMath)[i].data.content)
 				}
 			}
 
 			let count = 0
-			for (let k = 0; k < someTeX.length; k++) {
+			for (let k = 0; k < someTeX.length; k += 1) {
 				let TeX = ''
-				let styledStartOffset = [], someTeXInlineStyleSort = [];
+				const styledStartOffset = []; const
+					someTeXInlineStyleSort = []
 
-				for (let i = 0; i < someTeX[k].inlineStyleRanges.length; i++) {
-					let o = someTeX[k].inlineStyleRanges[i].offset;
-					styledStartOffset.push(o);
+				for (let i = 0; i < someTeX[k].inlineStyleRanges.length; i += 1) {
+					const o = someTeX[k].inlineStyleRanges[i].offset
+					styledStartOffset.push(o)
 				}
 
-				styledStartOffset.sort((a, b) => a - b);
+				styledStartOffset.sort((a, b) => a - b)
 
-				for (let i = 0; i < styledStartOffset.length; i++) {
-					for (let item in someTeX[k].inlineStyleRanges) {
+				for (let i = 0; i < styledStartOffset.length; i += 1) {
+					for (const item in someTeX[k].inlineStyleRanges) {
 						if (someTeX[k].inlineStyleRanges[item].offset === styledStartOffset[i]) {
-							someTeXInlineStyleSort.push(someTeX[k].inlineStyleRanges[item]);
+							someTeXInlineStyleSort.push(someTeX[k].inlineStyleRanges[item])
 						}
 					}
 				}
@@ -171,28 +175,28 @@ class RichTextEditor extends React.Component {
 					} else if (someTeX[k].type === 'atomic') {
 						someTeX[k].text = Math[count]
 						TeX += someTeX[k].text
-						count++
+						count += 1
 					} else {
-						TeX += texMap[someTeX[k].type] + '{' + someTeX[k].text + '}'
+						TeX += `${texMap[someTeX[k].type]}{${someTeX[k].text}}`
 					}
 					TeX += '<br />'
 				} else {
-					for (let i = 0; i < someTeXInlineStyleSort.length; i++) {
-						let startOffset = styledStartOffset[i];
-						let styledTextLength = someTeXInlineStyleSort[i].length;
-						let textStyle = someTeXInlineStyleSort[i].style;
+					for (let i = 0; i < someTeXInlineStyleSort.length; i += 1) {
+						const startOffset = styledStartOffset[i]
+						const styledTextLength = someTeXInlineStyleSort[i].length
+						const textStyle = someTeXInlineStyleSort[i].style
 
 						if (i === 0) {
 							TeX += someTeX[k].text.slice(0, startOffset)
 						} else {
 							TeX += someTeX[k].text.slice(offset + length, startOffset)
 						}
-						TeX += texMap[textStyle] + '{' + someTeX[k].text.slice(startOffset, startOffset + styledTextLength) + '}'
+						TeX += `${texMap[textStyle]}{${someTeX[k].text.slice(startOffset, startOffset + styledTextLength)}}`
 
 						if (i === someTeXInlineStyleSort.length - 1) {
-							TeX += someTeX[k].text.slice(startOffset + styledTextLength) + '<br/>'
+							TeX += `${someTeX[k].text.slice(startOffset + styledTextLength)}<br/>`
 						}
-						offset = startOffset;
+						offset = startOffset
 						length = styledTextLength
 					}
 				}
@@ -204,44 +208,46 @@ class RichTextEditor extends React.Component {
 		}
 
 		const displayTeX = (tex) => {
-			let listHTML = '<pre><code class="latex">';
-			for (let i = 0; i < tex.length; i++) {
-				let note = tex[i];
-				listHTML += note;
+			let listHTML = '<pre><code class="latex">'
+			for (let i = 0; i < tex.length; i += 1) {
+				const note = tex[i]
+				listHTML += note
 			}
-			listHTML += '</code></pre>';
-			document.getElementById('tex').innerHTML = listHTML;
+			listHTML += '</code></pre>'
+			document.getElementById('tex').innerHTML = listHTML
 			highlightCallBack()
 		}
 
 		return (
-			<div className='two'>
+			<div className="two">
 				<div className="RichEditor-root">
 					<div className="Menu">
-					<BlockStyleControls
-						editorState={editorState}
-						onToggle={this.toggleBlockType}
-					/>
-					<InlineStyleControls
-						editorState={editorState}
-						onToggle={this.toggleInlineStyle}
-					/>
-					<button
-						onClick={this._insertTeX}
-						className="TeXEditor-insert math"
-					>
-						{'Math'}
-					</button>
+						<BlockStyleControls
+							editorState={editorState}
+							onToggle={this.toggleBlockType}
+						/>
+						<InlineStyleControls
+							editorState={editorState}
+							onToggle={this.toggleInlineStyle}
+						/>
+						<button
+							onClick={this.insertTeX}
+							className="TeXEditor-insert math"
+							type="button"
+						>
+							Math
+						</button>
 						<button
 							onClick={convertToTeX}
-							className='TeXEditor-insert display'
+							className="TeXEditor-insert display"
+							type="button"
 						>
-							{'Display'}
+							Display
 						</button>
-				</div>
+					</div>
 					<div className={className} onClick={this.focus}>
 						<Editor
-							blockRendererFn={this._blockRenderer}
+							blockRendererFn={this.blockRenderer}
 							blockStyleFn={getBlockStyle}
 							customStyleMap={styleMap}
 							editorState={editorState}
@@ -251,15 +257,15 @@ class RichTextEditor extends React.Component {
 							placeholder="Tell a story..."
 							readOnly={this.state.liveTeXEdits.count()}
 							ref={this.editorRef}
-							spellCheck={true}
+							spellCheck
 						/>
 					</div>
 				</div>
-				<div id='tex'>
-					<p className='compiled'>{'% LaTeX code will appear below...'}</p>
+				<div id="tex">
+					<p className="compiled">% LaTeX code will appear below...</p>
 				</div>
 			</div>
-		);
+		)
 	}
 }
 
@@ -267,11 +273,11 @@ const texMap = {
 	'header-one': '\\section',
 	'header-two': '\\subsection',
 	'header-three': '\\subsubsection',
-	'BOLD': '\\textbf',
-	'ITALIC': '\\textit',
-	'UNDERLINE': '\\underline',
-	'CODE': '\\texttt'
-};
+	BOLD: '\\textbf',
+	ITALIC: '\\textit',
+	UNDERLINE: '\\underline',
+	CODE: '\\texttt',
+}
 
 // Custom overrides for "code" style.
 const styleMap = {
@@ -281,44 +287,44 @@ const styleMap = {
 		fontSize: 16,
 		padding: 2,
 	},
-};
+}
 
 function getBlockStyle(block) {
 	switch (block.getType()) {
-		case 'blockquote':
-			return 'RichEditor-blockquote';
-		default:
-			return null;
+	case 'blockquote':
+		return 'RichEditor-blockquote'
+	default:
+		return null
 	}
 }
 
 class StyleButton extends React.Component {
 	constructor(props) {
-		super(props);
+		super(props)
 		this.onToggle = (e) => {
-			e.preventDefault();
-			this.props.onToggle(this.props.style);
-		};
+			e.preventDefault()
+			this.props.onToggle(this.props.style)
+		}
 	}
 
 	render() {
-		let className = 'RichEditor-styleButton';
+		let className = 'RichEditor-styleButton'
 		if (this.props.active) {
-			className += ' RichEditor-activeButton';
+			className += ' RichEditor-activeButton'
 		}
 
 		return (
 			<span className={className} onMouseDown={this.onToggle}>
-        {this.props.label}
-      </span>
-		);
+				{this.props.label}
+			</span>
+		)
 	}
 }
 
 const BLOCK_TYPES = [
-	{label: 'H1', style: 'header-one'},
-	{label: 'H2', style: 'header-two'},
-	{label: 'H3', style: 'header-three'},
+	{ label: 'H1', style: 'header-one' },
+	{ label: 'H2', style: 'header-two' },
+	{ label: 'H3', style: 'header-three' },
 	// {label: 'H4', style: 'header-four'},
 	// {label: 'H5', style: 'header-five'},
 	// {label: 'H6', style: 'header-six'},
@@ -326,19 +332,19 @@ const BLOCK_TYPES = [
 	// {label: 'UL', style: 'unordered-list-item'},
 	// {label: 'OL', style: 'ordered-list-item'},
 	// {label: 'Code Block', style: 'code-block'},
-];
+]
 
 const BlockStyleControls = (props) => {
-	const {editorState} = props;
-	const selection = editorState.getSelection();
+	const { editorState } = props
+	const selection = editorState.getSelection()
 	const blockType = editorState
 		.getCurrentContent()
 		.getBlockForKey(selection.getStartKey())
-		.getType();
+		.getType()
 
 	return (
 		<div className="RichEditor-controls">
-			{BLOCK_TYPES.map((type) =>
+			{BLOCK_TYPES.map((type) => (
 				<StyleButton
 					key={type.label}
 					active={type.style === blockType}
@@ -346,24 +352,24 @@ const BlockStyleControls = (props) => {
 					onToggle={props.onToggle}
 					style={type.style}
 				/>
-			)}
+			))}
 		</div>
-	);
-};
+	)
+}
 
 const INLINE_STYLES = [
-	{label: 'Bold', style: 'BOLD'},
-	{label: 'Italic', style: 'ITALIC'},
-	{label: 'Underline', style: 'UNDERLINE'},
-	{label: 'Monospace', style: 'CODE'},
-];
+	{ label: 'Bold', style: 'BOLD' },
+	{ label: 'Italic', style: 'ITALIC' },
+	{ label: 'Underline', style: 'UNDERLINE' },
+	{ label: 'Monospace', style: 'CODE' },
+]
 
 const InlineStyleControls = (props) => {
-	const currentStyle = props.editorState.getCurrentInlineStyle();
+	const currentStyle = props.editorState.getCurrentInlineStyle()
 
 	return (
 		<div className="RichEditor-controls">
-			{INLINE_STYLES.map((type) =>
+			{INLINE_STYLES.map((type) => (
 				<StyleButton
 					key={type.label}
 					active={currentStyle.has(type.style)}
@@ -371,9 +377,9 @@ const InlineStyleControls = (props) => {
 					onToggle={props.onToggle}
 					style={type.style}
 				/>
-			)}
+			))}
 		</div>
-	);
-};
+	)
+}
 
-export default RichTextEditor;
+export default RichTextEditor

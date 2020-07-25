@@ -2,7 +2,6 @@
   "name": "rich_text_editor",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "dependencies": {
     "core-js": "^3.6.5",
     "draft-js": "^0.11.5",
@@ -20,7 +19,8 @@
     "build": "rm -rf docs && react-scripts build && mv build docs",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "commit": "npx git-cz"
+    "commit": "npx git-cz",
+    "lint": "npx eslint ."
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -38,7 +38,12 @@
     ]
   },
   "devDependencies": {
-    "cz-conventional-changelog": "3.2.0"
+    "cz-conventional-changelog": "3.2.0",
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-react": "^7.20.3",
+    "eslint-plugin-react-hooks": "^4.0.0"
   },
   "config": {
     "commitizen": {
