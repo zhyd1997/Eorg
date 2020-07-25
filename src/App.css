@@ -9,8 +9,10 @@ pre {
   padding: 35px 0;
 }
 
-.two {
+.double-column {
   display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .Menu {
@@ -27,10 +29,9 @@ pre {
 }
 
 #tex {
-  width: 48%;
-  height: 520px;
+  width: 45%;
   background-color: #6c757d;
-  margin-left: 4%;
+  flex-grow: 1;
 }
 
 .compiled {

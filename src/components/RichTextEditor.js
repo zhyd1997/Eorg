@@ -219,7 +219,7 @@ class RichTextEditor extends React.Component {
 		}
 
 		return (
-			<div className="two">
+			<div className="double-column">
 				<div className="RichEditor-root">
 					<div className="Menu">
 						<BlockStyleControls
