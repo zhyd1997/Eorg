@@ -10,7 +10,7 @@ src/setupTests.js
 src/index.js
 src/App.js
 src/components/Highlight.js
-src/components/RichTextEditor.js
+// src/components/RichTextEditor.js
 
 // src/components/TeX/modifiers/removeTeXBlock.js
 // src/components/TeX/modifiers/insertTeXBlock.js

@@ -132,9 +132,13 @@ class RichTextEditor extends React.Component {
 		const convertToTeX = () => {
 			const editorContentRaw = convertToRaw(contentState)
 
-			const allTeX = []; let offset = 0; let length = 0; const
+			const allTeX = []
+			let offset = 0
+			let length = 0
+			const
 				someTeX = editorContentRaw.blocks
-			const Math = []; const
+			const Math = []
+			const
 				someMath = editorContentRaw.entityMap
 
 			if (Object.keys(someMath).length) {
@@ -146,7 +150,8 @@ class RichTextEditor extends React.Component {
 			let count = 0
 			for (let k = 0; k < someTeX.length; k += 1) {
 				let TeX = ''
-				const styledStartOffset = []; const
+				const styledStartOffset = []
+				const
 					someTeXInlineStyleSort = []
 
 				for (let i = 0; i < someTeX[k].inlineStyleRanges.length; i += 1) {
@@ -230,20 +235,22 @@ class RichTextEditor extends React.Component {
 							editorState={editorState}
 							onToggle={this.toggleInlineStyle}
 						/>
-						<button
-							onClick={this.insertTeX}
-							className="TeXEditor-insert math"
-							type="button"
-						>
-							Math
-						</button>
-						<button
-							onClick={convertToTeX}
-							className="TeXEditor-insert display"
-							type="button"
-						>
-							Display
-						</button>
+						<div className="RichEditor-controls TeXEditor-insert">
+							<button
+								onClick={this.insertTeX}
+								className="math RichEditor-styleButton"
+								type="button"
+							>
+								Math
+							</button>
+							<button
+								onClick={convertToTeX}
+								className="display RichEditor-styleButton"
+								type="button"
+							>
+								Display
+							</button>
+						</div>
 					</div>
 					<div className={className} onClick={this.focus}>
 						<Editor

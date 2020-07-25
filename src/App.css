@@ -21,11 +21,25 @@ pre {
 }
 
 .math {
-  right: 100px;
+  background-color: transparent;
+  border: none;
+  padding: 6px;
 }
 
 .display {
-  right: 0;
+  /*color: whitesmoke;*/
+  text-align: center;
+  /*background-color: #6c757d;*/
+  border: 1px solid #6c757d;
+  border-radius: 3px;
+  /*padding: 6px;*/
+}
+
+.display:hover {
+  /*background-color: #5a6268;*/
+  border: 1px solid whitesmoke;
+  box-shadow: 0 0 0 1px gray;
+  cursor: pointer;
 }
 
 #tex {

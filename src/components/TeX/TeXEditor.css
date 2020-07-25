@@ -91,20 +91,6 @@
 }
 
 .TeXEditor-insert {
-  background-color: #6c757d;
-  border: 1px solid #6c757d;
-  color: white;
-  border-radius: 3px;
-  /*bottom: 30px;*/
-  position: absolute;
-  /*right: 30px;*/
-  padding: 6px;
-  top: -4px;
-}
-
-.TeXEditor-insert:hover {
-  background-color: #5a6268;
-  border: 1px solid #5a6268;
-  box-shadow: 0 0 0 1px gray;
-  cursor: pointer;
+  margin-left: auto;
+  text-align: center;
 }
