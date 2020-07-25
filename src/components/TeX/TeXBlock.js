@@ -2,6 +2,11 @@ import katex from 'katex'
 import React from 'react'
 
 class KaTexOutput extends React.Component {
+	constructor(props) {
+		super(props)
+		this.container = React.createRef()
+	}
+
 	componentDidMount() {
 		this.update()
 	}
@@ -15,13 +20,13 @@ class KaTexOutput extends React.Component {
 	update() {
 		katex.render(
 			this.props.content,
-			this.refs.container,
+			this.container.current,
 			{ displayMode: true },
 		)
 	}
 
 	render() {
-		return <div ref="container" onClick={this.props.onClick} />
+		return <div ref={this.container} onClick={this.props.onClick} />
 	}
 }
 
@@ -29,6 +34,7 @@ class TeXBlock extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = { editMode: false }
+		this.textareaRef = React.createRef()
 
 		this.onClick = () => {
 			if (this.state.editMode) {
@@ -120,7 +126,7 @@ class TeXBlock extends React.Component {
 					<textarea
 						className="TeXEditor-texValue"
 						onChange={this.onValueChange}
-						ref="textarea"
+						ref={this.textareaRef.current}
 						value={this.state.texValue}
 					/>
 					<div className="TeXEditor-buttons">
