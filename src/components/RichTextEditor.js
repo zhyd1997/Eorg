@@ -68,10 +68,10 @@ class RichTextEditor extends React.Component {
 	};
 
 	insertTeX = () => {
-		this.setState({
+		this.setState((prevState) => ({
 			liveTeXEdits: Map(),
-			editorState: insertTeXBlock(this.state.editorState),
-		})
+			editorState: insertTeXBlock(prevState.editorState),
+		}))
 	};
 
 	handleKeyCommand(command, editorState) {
@@ -248,7 +248,7 @@ class RichTextEditor extends React.Component {
 								className="save"
 								type="button"
 							>
-								Save
+								preview
 							</button>
 						</div>
 					</div>
@@ -305,27 +305,21 @@ function getBlockStyle(block) {
 	}
 }
 
-class StyleButton extends React.Component {
-	constructor(props) {
-		super(props)
-		this.onToggle = (e) => {
-			e.preventDefault()
-			this.props.onToggle(this.props.style)
-		}
+const StyleButton = (props) => {
+	const onToggle = (e) => {
+		e.preventDefault()
+		props.onToggle(props.style)
+	}
+	let className = 'RichEditor-styleButton'
+	if (props.active) {
+		className += ' RichEditor-activeButton'
 	}
 
-	render() {
-		let className = 'RichEditor-styleButton'
-		if (this.props.active) {
-			className += ' RichEditor-activeButton'
-		}
-
-		return (
-			<span className={className} onMouseDown={this.onToggle}>
-				{this.props.label}
-			</span>
-		)
-	}
+	return (
+		<span className={className} onMouseDown={onToggle}>
+			{props.label}
+		</span>
+	)
 }
 
 const BLOCK_TYPES = [
