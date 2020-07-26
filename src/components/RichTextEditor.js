@@ -148,23 +148,31 @@ class RichTextEditor extends React.Component {
 			}
 
 			let count = 0
+
+			/**
+			 * TODO optimization
+			 *  -- Oops!!!
+			 *  O(n^3) algorithm
+			 */
+
 			for (let k = 0; k < someTeX.length; k += 1) {
 				let TeX = ''
 				const styledStartOffset = []
 				const
 					someTeXInlineStyleSort = []
+				const someTeXInline = someTeX[k].inlineStyleRanges
 
-				for (let i = 0; i < someTeX[k].inlineStyleRanges.length; i += 1) {
-					const o = someTeX[k].inlineStyleRanges[i].offset
+				for (let i = 0; i < someTeXInline.length; i += 1) {
+					const o = someTeXInline[i].offset
 					styledStartOffset.push(o)
 				}
 
 				styledStartOffset.sort((a, b) => a - b)
 
 				for (let i = 0; i < styledStartOffset.length; i += 1) {
-					for (const item in someTeX[k].inlineStyleRanges) {
-						if (someTeX[k].inlineStyleRanges[item].offset === styledStartOffset[i]) {
-							someTeXInlineStyleSort.push(someTeX[k].inlineStyleRanges[item])
+					for (let j = 0; j < Object.values(someTeXInline).length; j += 1) {
+						if (Object.values(someTeXInline)[j].offset === styledStartOffset[i]) {
+							someTeXInlineStyleSort.push(Object.values(someTeXInline)[j])
 						}
 					}
 				}
@@ -174,7 +182,7 @@ class RichTextEditor extends React.Component {
 				 * split with inlineStyledText offset and its length
 				 */
 
-				if (someTeX[k].inlineStyleRanges.length === 0) {
+				if (someTeXInline.length === 0) {
 					if (someTeX[k].type === 'unstyled') {
 						TeX += someTeX[k].text
 					} else if (someTeX[k].type === 'atomic') {
