@@ -141,8 +141,9 @@ class RichTextEditor extends React.Component {
 			const
 				someMath = editorContentRaw.entityMap
 
+			// Math Equations Processing
 			if (Object.keys(someMath).length) {
-				for (let i = 0; i < Object.keys(someMath).length; i += 1) {
+				for (let i = 0; i < Object.keys(someMath).length; i += 1) { // Iterating <entityMap> ...
 					Math.push(Object.values(someMath)[i].data.content)
 				}
 			}
@@ -155,7 +156,7 @@ class RichTextEditor extends React.Component {
 			 *  O(n^3) algorithm
 			 */
 
-			for (let k = 0; k < someTeX.length; k += 1) {
+			for (let k = 0; k < someTeX.length; k += 1) { // Iterating <blocks> ...
 				let TeX = ''
 				const styledStartOffset = []
 				const

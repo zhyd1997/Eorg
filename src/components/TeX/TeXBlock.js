@@ -1,33 +1,33 @@
 import katex from 'katex'
 import React from 'react'
 
-class KaTexOutput extends React.Component {
-	constructor(props) {
-		super(props)
-		this.container = React.createRef()
-	}
+const KaTexOutput = ({ content, onClick }) => {
+	const container = React.useRef(null)
+	const prevProps = usePrevious(content)
 
-	componentDidMount() {
-		this.update()
-	}
-
-	componentDidUpdate(prevProps) {
-		if (prevProps.content !== this.props.content) {
-			this.update()
+	React.useEffect(() => {
+		if (prevProps !== content) {
+			update()
 		}
+	})
+
+	function usePrevious(value) {
+		const ref = React.useRef(null)
+		React.useEffect(() => {
+			ref.current = value
+		})
+		return ref.current
 	}
 
-	update() {
+	function update() {
 		katex.render(
-			this.props.content,
-			this.container.current,
+			content,
+			container.current,
 			{ displayMode: true },
 		)
 	}
 
-	render() {
-		return <div ref={this.container} onClick={this.props.onClick} />
-	}
+	return <div ref={container} onClick={onClick} />
 }
 
 class TeXBlock extends React.Component {
