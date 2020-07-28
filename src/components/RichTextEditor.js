@@ -150,7 +150,6 @@ class RichTextEditor extends React.Component {
 				someMath = editorContentRaw.entityMap
 
 			// Math Equations Processing
-			console.log(someMath)
 			if (Object.keys(someMath).length) {
 				for (let i = 0; i < Object.keys(someMath).length; i += 1) { // Iterating <entityMap> ...
 					if (someMath[i].type === 'TOKEN') {
