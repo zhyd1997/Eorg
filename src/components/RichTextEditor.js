@@ -6,10 +6,12 @@ import './RichTextEditor.css'
 import '../../node_modules/draft-js/dist/Draft.css'
 import { Map } from 'immutable'
 import highlightCallBack from './Highlight'
-import TeXBlock from './TeX/TeXBlock'
+import BlockComponent from './BlockComponent'
 import removeTeXBlock from './TeX/modifiers/removeTeXBlock'
 import insertTeXBlock from './TeX/modifiers/insertTeXBlock'
+import createTable from './Table/modifiers/createTable'
 import './TeX/TeXEditor.css'
+import './Table/Table.css'
 
 /**
  * Editor Template and KaTeX support are all referenced to Draft.js official example.
@@ -36,7 +38,7 @@ class RichTextEditor extends React.Component {
 	blockRenderer = (block) => {
 		if (block.getType() === 'atomic') {
 			return {
-				component: TeXBlock,
+				component: BlockComponent,
 				editable: false,
 				props: {
 					onStartEdit: (blockKey) => {
@@ -73,6 +75,12 @@ class RichTextEditor extends React.Component {
 			editorState: insertTeXBlock(prevState.editorState),
 		}))
 	};
+
+	createTable = () => {
+		this.setState((prevState) => ({
+			editorState: createTable(prevState.editorState),
+		}))
+	}
 
 	handleKeyCommand(command, editorState) {
 		const newState = RichUtils.handleKeyCommand(editorState, command)
@@ -142,9 +150,16 @@ class RichTextEditor extends React.Component {
 				someMath = editorContentRaw.entityMap
 
 			// Math Equations Processing
+			console.log(someMath)
 			if (Object.keys(someMath).length) {
 				for (let i = 0; i < Object.keys(someMath).length; i += 1) { // Iterating <entityMap> ...
-					Math.push(Object.values(someMath)[i].data.content)
+					if (someMath[i].type === 'TOKEN') {
+						Math.push(Object.values(someMath)[i].data.content)
+					} else if (someMath[i].type === 'table') {
+						// TODO table
+
+						Math.push('sorry, but the table feature has not finished !!!')
+					}
 				}
 			}
 
@@ -251,6 +266,13 @@ class RichTextEditor extends React.Component {
 								type="button"
 							>
 								Math
+							</button>
+							<button
+								onClick={this.createTable}
+								className="math RichEditor-styleButton"
+								type="button"
+							>
+								Table
 							</button>
 							<button
 								onClick={convertToTeX}
