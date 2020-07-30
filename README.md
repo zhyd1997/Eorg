@@ -1,16 +1,6 @@
 # README
 
-![demo](https://i.imgur.com/yj0qt0N.png)
-
-打算开发一个富文本编辑器 Eorg（暂时就这样称呼吧），查了一下 Wikipedia，用 `contenteditable` 的比较多，但是 MDN 指出 `.execCommand`
-已经过时了，所以就选了 [Draft.js](https://github.com/facebook/draft-js) 框架实现
-
-## Similar Tools
-> Overleaf --> `rich-text mode` (not good)
->
-> AucTeX --> `preview-latex` (rely on Emacs)
-
-![Eorg V4.0](https://i.imgur.com/0zpyyCo.png)
+Migrated to [blog](https://zhangyadong.me/)
 
 # Features
 
