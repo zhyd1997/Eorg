@@ -3,15 +3,17 @@ import {
 	Editor, EditorState, getDefaultKeyBinding, RichUtils, convertToRaw,
 } from 'draft-js'
 import './RichTextEditor.css'
-import '../../node_modules/draft-js/dist/Draft.css'
+import 'draft-js/dist/Draft.css'
 import { Map } from 'immutable'
 import highlightCallBack from './Highlight'
 import BlockComponent from './BlockComponent'
 import removeTeXBlock from './TeX/modifiers/removeTeXBlock'
 import insertTeXBlock from './TeX/modifiers/insertTeXBlock'
 import createTable from './Table/modifiers/createTable'
+import ModalTable from './Table/ModalTable'
 import './TeX/TeXEditor.css'
 import './Table/Table.css'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 /**
  * Editor Template and KaTeX support are all referenced to Draft.js official example.
@@ -103,6 +105,7 @@ class RichTextEditor extends React.Component {
 			}
 			return
 		}
+		// eslint-disable-next-line consistent-return
 		return getDefaultKeyBinding(e)
 	}
 
@@ -149,7 +152,7 @@ class RichTextEditor extends React.Component {
 			const
 				someMath = editorContentRaw.entityMap
 
-			// Math Equations Processing
+			// Blocks Processing
 			if (Object.keys(someMath).length) {
 				for (let i = 0; i < Object.keys(someMath).length; i += 1) { // Iterating <entityMap> ...
 					if (someMath[i].type === 'TOKEN') {
@@ -266,13 +269,10 @@ class RichTextEditor extends React.Component {
 							>
 								Math
 							</button>
-							<button
+							<ModalTable
 								onClick={this.createTable}
-								className="math RichEditor-styleButton"
-								type="button"
-							>
-								Table
-							</button>
+								buttonLabel="Table"
+							/>
 							<button
 								onClick={convertToTeX}
 								className="save"
@@ -282,6 +282,8 @@ class RichTextEditor extends React.Component {
 							</button>
 						</div>
 					</div>
+					{/* eslint-disable-next-line max-len */}
+					{/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
 					<div className={className} onClick={this.focus}>
 						<Editor
 							blockRendererFn={this.blockRenderer}
@@ -346,6 +348,7 @@ const StyleButton = (props) => {
 	}
 
 	return (
+		// eslint-disable-next-line jsx-a11y/no-static-element-interactions
 		<span className={className} onMouseDown={onToggle}>
 			{props.label}
 		</span>

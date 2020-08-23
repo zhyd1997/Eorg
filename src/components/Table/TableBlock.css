@@ -1,0 +1,5 @@
+.myTable caption {
+    caption-side: top;
+    text-align: center;
+    color: black;
+}

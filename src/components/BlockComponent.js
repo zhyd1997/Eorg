@@ -1,6 +1,6 @@
 import React from 'react'
 import TeXBlock from './TeX/TeXBlock'
-import Table from './Table/Table'
+import TableBlock from './Table/TableBlock'
 
 const BlockComponent = (props) => {
 	const entity = props.contentState.getEntity(
@@ -17,9 +17,13 @@ const BlockComponent = (props) => {
 				contentState={props.contentState}
 			/>
 		)
-	} else if (type === 'table') {
+	} else if (type === 'TABLE') {
 		media = (
-			<Table props={props} />
+			<TableBlock
+				blockProps={props.blockProps}
+				block={props.block}
+				contentState={props.contentState}
+			/>
 		)
 	}
 

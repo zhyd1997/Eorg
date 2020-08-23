@@ -3,17 +3,28 @@
     border-collapse: collapse;
 }
 
+.hoverTable caption {
+    caption-side: top;
+    text-align: center;
+}
+
+.hoverTable th {
+    text-align: center;
+    border: #999999 1px solid;
+    background-color: #5a6268;
+}
+
 .hoverTable td {
     padding: 7px;
-    border: #4e95f4 1px solid;
+    border: #999999 1px solid;
 }
 
 /* Define the default color for all the table rows */
 .hoverTable tr {
-    background: #b8d1f3;
+    background: #6c757d;
 }
 
 /* Define the hover highlight color for the table row */
 .hoverTable tr:hover {
-    background-color: #ffff99;
+    background-color: #5a6268;
 }

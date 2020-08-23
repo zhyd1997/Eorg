@@ -6,7 +6,7 @@ import {
 function createTable(editorState) {
 	const contentState = editorState.getCurrentContent()
 	const contentStateWithEntity = contentState.createEntity(
-		'table',
+		'TABLE',
 		'IMMUTABLE',
 		{ content: '' },
 	)
