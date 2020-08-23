@@ -1,8 +1,9 @@
 import React from 'react'
-import { tableShape } from './ModalTable'
 
 const T = (props) => {
-	const { onDoubleClick } = props
+	const {
+		onDoubleClick, row, column, caption,
+	} = props
 	const container = React.useRef(null)
 
 	/**
@@ -14,42 +15,40 @@ const T = (props) => {
 	 *  tBody = tbody>tr*rowNum>td*colNum{cell $}
 	 */
 
-	return tableShape.map((metadata) => {
-		const rows = []
-		const rowsTh = []
-		const cols = []
-		const colsTh = []
+	const rows = []
+	const rowsTh = []
+	const cols = []
+	const colsTh = []
 
-		// colsTh
-		for (let i = 0; i < metadata.column; i += 1) {
-			colsTh.push(<th key={i}>heading</th>)
+	// colsTh
+	for (let i = 0; i < column; i += 1) {
+		colsTh.push(<th key={i}>heading</th>)
+	}
+
+	// rowsTh
+	rowsTh.push(
+		<thead key="hhh">
+			<tr>{colsTh}</tr>
+		</thead>,
+	)
+
+	// tbody
+	if (row > 1) {
+		for (let i = 0; i < column; i += 1) {
+			cols.push(<td key={i}>cell</td>)
 		}
-
-		// rowsTh
-		rowsTh.push(
-			<thead key="hhh">
-				<tr>{colsTh}</tr>
-			</thead>,
-		)
-
-		// tbody
-		if (metadata.row > 1) {
-			for (let i = 0; i < metadata.column; i += 1) {
-				cols.push(<td key={i}>cell</td>)
-			}
-			for (let i = 1; i < metadata.row; i += 1) {
-				rows.push(<tr key={i}>{cols}</tr>)
-			}
+		for (let i = 1; i < row; i += 1) {
+			rows.push(<tr key={i}>{cols}</tr>)
 		}
+	}
 
-		return (
-			<table className="hoverTable" onDoubleClick={onDoubleClick} ref={container}>
-				<caption>{metadata.caption}</caption>
-				{rowsTh}
-				<tbody>{rows}</tbody>
-			</table>
-		)
-	})
+	return (
+		<table className="hoverTable" onDoubleClick={onDoubleClick} ref={container}>
+			<caption>{caption}</caption>
+			{rowsTh}
+			<tbody>{rows}</tbody>
+		</table>
+	)
 }
 
 class TableBlock extends React.Component {
@@ -61,9 +60,16 @@ class TableBlock extends React.Component {
 	}
 
 	render() {
+		const entity = this.props.contentState.getEntity(
+			this.props.block.getEntityAt(0),
+		)
+		const shape = entity.getData()
 		return (
 			<div>
 				<T
+					row={shape.row}
+					column={shape.column}
+					caption={shape.caption}
 					onDoubleClick={this.onDoubleClick}
 				/>
 			</div>
