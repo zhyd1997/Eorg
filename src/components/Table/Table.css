@@ -17,6 +17,7 @@
 .hoverTable td {
     padding: 7px;
     border: #999999 1px solid;
+    text-align: center;
 }
 
 /* Define the default color for all the table rows */

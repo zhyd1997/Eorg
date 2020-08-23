@@ -157,7 +157,7 @@ class RichTextEditor extends React.Component {
 				for (let i = 0; i < Object.keys(someMath).length; i += 1) { // Iterating <entityMap> ...
 					if (someMath[i].type === 'TOKEN') {
 						Math.push(Object.values(someMath)[i].data.content)
-					} else if (someMath[i].type === 'table') {
+					} else if (someMath[i].type === 'TABLE') {
 						// TODO table
 
 						Math.push('sorry, but the table feature has not finished !!!')

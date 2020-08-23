@@ -16,3 +16,5 @@ src/components/Highlight.js
 // src/components/TeX/modifiers/insertTeXBlock.js
 
 src/components/TeX/TeXBlock.js
+
+src/components/Table/modifiers/editTable.js
