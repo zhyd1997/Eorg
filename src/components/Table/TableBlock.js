@@ -51,30 +51,24 @@ const T = (props) => {
 	)
 }
 
-class TableBlock extends React.Component {
-	constructor(props) {
-		super(props)
-
-		this.onDoubleClick = () => {
-		}
+const TableBlock = (props) => {
+	function onDoubleClick() {
 	}
 
-	render() {
-		const entity = this.props.contentState.getEntity(
-			this.props.block.getEntityAt(0),
-		)
-		const shape = entity.getData()
-		return (
-			<div>
-				<T
-					row={shape.row}
-					column={shape.column}
-					caption={shape.caption}
-					onDoubleClick={this.onDoubleClick}
-				/>
-			</div>
-		)
-	}
+	const entity = props.contentState.getEntity(
+		props.block.getEntityAt(0),
+	)
+	const shape = entity.getData()
+	return (
+		<div>
+			<T
+				row={shape.row}
+				column={shape.column}
+				caption={shape.caption}
+				onDoubleClick={onDoubleClick}
+			/>
+		</div>
+	)
 }
 
 export default TableBlock
