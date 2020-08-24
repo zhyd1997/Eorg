@@ -84,7 +84,7 @@ class TeXBlock extends React.Component {
 			this.props.blockProps.onStartEdit(this.props.block.getKey())
 		}
 		this.finishEdit = (newContentState) => {
-			this.props.blockProps.onFinishEdit(
+			this.props.blockProps.onFinishTeXEdit(
 				this.props.block.getKey(),
 				newContentState,
 			)

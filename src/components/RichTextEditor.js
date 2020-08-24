@@ -24,7 +24,7 @@ class RichTextEditor extends React.Component {
 		super(props)
 		this.state = {
 			editorState: EditorState.createEmpty(),
-			liveTeXEdits: Map(),
+			liveCustomBlockEdits: Map(),
 		}
 
 		this.editorRef = React.createRef()
@@ -44,15 +44,19 @@ class RichTextEditor extends React.Component {
 				editable: false,
 				props: {
 					onStartEdit: (blockKey) => {
-						const { liveTeXEdits } = this.state
-						this.setState({ liveTeXEdits: liveTeXEdits.set(blockKey, true) })
+						const { liveCustomBlockEdits } = this.state
+						this.setState({ liveCustomBlockEdits: liveCustomBlockEdits.set(blockKey, true) })
 					},
-					onFinishEdit: (blockKey, newContentState) => {
-						const { liveTeXEdits } = this.state
+					onFinishTeXEdit: (blockKey, newContentState) => {
+						const { liveCustomBlockEdits } = this.state
 						this.setState({
-							liveTeXEdits: liveTeXEdits.remove(blockKey),
+							liveCustomBlockEdits: liveCustomBlockEdits.remove(blockKey),
 							editorState: EditorState.createWithContent(newContentState),
 						})
+					},
+					onFinishTableEdit: (blockKey) => {
+						const { liveCustomBlockEdits } = this.state
+						this.setState({ liveCustomBlockEdits: liveCustomBlockEdits.remove(blockKey) })
 					},
 					onRemove: (blockKey) => this.removeTeX(blockKey),
 				},
@@ -64,16 +68,16 @@ class RichTextEditor extends React.Component {
 	onChange = (editorState) => this.setState({ editorState });
 
 	removeTeX = (blockKey) => {
-		const { editorState, liveTeXEdits } = this.state
+		const { editorState, liveCustomBlockEdits } = this.state
 		this.setState({
-			liveTeXEdits: liveTeXEdits.remove(blockKey),
+			liveCustomBlockEdits: liveCustomBlockEdits.remove(blockKey),
 			editorState: removeTeXBlock(editorState, blockKey),
 		})
 	};
 
 	insertTeX = () => {
 		this.setState((prevState) => ({
-			liveTeXEdits: Map(),
+			liveCustomBlockEdits: Map(),
 			editorState: insertTeXBlock(prevState.editorState),
 		}))
 	};
@@ -294,7 +298,7 @@ class RichTextEditor extends React.Component {
 							keyBindingFn={this.mapKeyToEditorCommand}
 							onChange={this.onChange}
 							placeholder="Tell a story..."
-							readOnly={this.state.liveTeXEdits.count()}
+							readOnly={this.state.liveCustomBlockEdits.count()}
 							ref={this.editorRef}
 							spellCheck
 						/>
