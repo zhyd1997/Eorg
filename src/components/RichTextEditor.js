@@ -5,6 +5,7 @@ import {
 import './RichTextEditor.css'
 import 'draft-js/dist/Draft.css'
 import { Map } from 'immutable'
+import { isMobile } from 'react-device-detect'
 import highlightCallBack from './Highlight'
 import BlockComponent from './BlockComponent'
 import removeTeXBlock from './TeX/modifiers/removeTeXBlock'
@@ -251,6 +252,18 @@ class RichTextEditor extends React.Component {
 			listHTML += '</code></pre>'
 			document.getElementById('tex').innerHTML = listHTML
 			highlightCallBack()
+		}
+
+		if (isMobile) {
+			return (
+				<p>
+					Sorry, but
+					&nbsp;
+					<b>Eorg</b>
+					&nbsp;
+					haven&#39;t support on Mobile, please open it on PC.
+				</p>
+			)
 		}
 
 		return (
