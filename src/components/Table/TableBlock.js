@@ -1,5 +1,7 @@
 import React from 'react'
 
+const coordinate = [] // which table cell clicked
+
 const TableOutput = (props) => {
 	const {
 		onClick, row, column, caption, cell, onBlur,
@@ -37,7 +39,14 @@ const TableOutput = (props) => {
 		for (let i = 1; i < row; i += 1) {
 			const cols = [] // look out, it's local in for loop, not out like @row
 			for (let j = 0; j < column; j += 1) {
-				cols.push(<td key={i + j}>{cell[i][j]}</td>) // TODO key-2
+				cols.push(
+					<td
+						key={i + j} // TODO key-2
+						onDoubleClick={() => coordinate.push([i, j])}
+					>
+						{cell[i][j]}
+					</td>,
+				)
 			}
 			rows.push(<tr key={i}>{cols}</tr>) // TODO key-3
 		}
@@ -67,19 +76,15 @@ const TableBlock = (props) => {
 	}
 
 	function handleBlur(evt) {
-		/**
-		 * find the coordinate of the node clicked (TH/TD). --> (i, j)
-		 * 1. select the closest('table')
-		 * 2. the index of its closest('tr')                --> i
-		 * 3. the index of <td> at its closest('tr')        --> j
-		 */
-
-		/**
-		 * update shape.cell[i][j]
-		 */
-
 		const trTarget = evt.target
 		trTarget.contentEditable = false
+
+		// find the coordinate of the node clicked
+		const x1 = coordinate[coordinate.length - 1][0]
+		const y1 = coordinate[coordinate.length - 1][1]
+
+		// update shape.cell[i][j]
+		shape.cell[x1][y1] = trTarget.innerHTML
 		props.blockProps.onFinishTableEdit(props.block.getKey())
 	}
 
