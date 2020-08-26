@@ -2,7 +2,7 @@ import React from 'react'
 
 const TableOutput = (props) => {
 	const {
-		onClick, row, column, caption, onBlur,
+		onClick, row, column, caption, cell, onBlur,
 	} = props
 	const container = React.useRef(null)
 
@@ -17,16 +17,16 @@ const TableOutput = (props) => {
 
 	const rows = []
 	const rowsTh = []
-	const cols = []
 	const colsTh = []
 
 	// colsTh
 	for (let i = 0; i < column; i += 1) {
-		colsTh.push(<th key={i}>heading</th>)
+		colsTh.push(<th key={i}>{cell[0][i]}</th>)
 	}
 
 	// rowsTh
 	rowsTh.push(
+		// TODO key-1
 		<thead key="hhh">
 			<tr>{colsTh}</tr>
 		</thead>,
@@ -34,11 +34,12 @@ const TableOutput = (props) => {
 
 	// tbody
 	if (row > 1) {
-		for (let i = 0; i < column; i += 1) {
-			cols.push(<td key={i}>cell</td>)
-		}
 		for (let i = 1; i < row; i += 1) {
-			rows.push(<tr key={i}>{cols}</tr>)
+			const cols = [] // look out, it's local in for loop, not out like @row
+			for (let j = 0; j < column; j += 1) {
+				cols.push(<td key={i + j}>{cell[i][j]}</td>) // TODO key-2
+			}
+			rows.push(<tr key={i}>{cols}</tr>) // TODO key-3
 		}
 	}
 
@@ -54,6 +55,11 @@ const TableOutput = (props) => {
 }
 
 const TableBlock = (props) => {
+	const entity = props.contentState.getEntity(
+		props.block.getEntityAt(0),
+	)
+	const shape = entity.getData()
+
 	function handleClick(evt) {
 		const trTarget = evt.target
 		props.blockProps.onStartEdit(props.block.getKey())
@@ -61,20 +67,28 @@ const TableBlock = (props) => {
 	}
 
 	function handleBlur(evt) {
+		/**
+		 * find the coordinate of the node clicked (TH/TD). --> (i, j)
+		 * 1. select the closest('table')
+		 * 2. the index of its closest('tr')                --> i
+		 * 3. the index of <td> at its closest('tr')        --> j
+		 */
+
+		/**
+		 * update shape.cell[i][j]
+		 */
+
 		const trTarget = evt.target
 		trTarget.contentEditable = false
 		props.blockProps.onFinishTableEdit(props.block.getKey())
 	}
 
-	const entity = props.contentState.getEntity(
-		props.block.getEntityAt(0),
-	)
-	const shape = entity.getData()
 	return (
 		<TableOutput
 			row={shape.row}
 			column={shape.column}
 			caption={shape.caption}
+			cell={shape.cell}
 			onClick={handleClick}
 			onBlur={handleBlur}
 		/>
