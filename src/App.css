@@ -2,13 +2,6 @@
   margin: 50px;
 }
 
-pre {
-  overflow-x: auto;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  padding: 38px 0;
-}
-
 .double-column {
   display: flex;
   flex-wrap: wrap;
@@ -44,17 +37,4 @@ pre {
   border: 1px solid #5a6268;
   box-shadow: 0 0 0 1px gray;
   cursor: pointer;
-}
-
-#tex {
-  width: 47%;
-  background-color: #6c757d;
-  flex-grow: 1;
-}
-
-.compiled {
-  color: #999;
-  background-color: #5a6268;
-  padding: 18px;
-  margin: 0;
 }
