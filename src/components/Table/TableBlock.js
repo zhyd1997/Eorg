@@ -6,6 +6,19 @@ const TableOutput = (props) => {
 	} = props
 	const container = React.useRef(null)
 
+	/**
+	 * if rowNum === 1
+	 *  tBody = (thead>tr>th*colNum{heading $})
+	 *      +
+	 *          (tbody>tr*rowNum - 1>td*colNum{cell $})
+	 * else
+	 *  tBody = tbody>tr*rowNum>td*colNum{cell $}
+	 */
+
+	const rows = []
+	const rowsTh = []
+	const colsTh = []
+
 	const [coordinate, setCoordinate] = React.useState([])
 
 	function handleClick(evt) {
@@ -27,19 +40,6 @@ const TableOutput = (props) => {
 		blockProps.onFinishTableEdit(block.getKey())
 	}
 
-	/**
-	 * if rowNum === 1
-	 *  tBody = (thead>tr>th*colNum{heading $})
-	 *      +
-	 *          (tbody>tr*rowNum - 1>td*colNum{cell $})
-	 * else
-	 *  tBody = tbody>tr*rowNum>td*colNum{cell $}
-	 */
-
-	const rows = []
-	const rowsTh = []
-	const colsTh = []
-
 	// colsTh
 	for (let i = 0; i < column; i += 1) {
 		colsTh.push(<th key={i}>{cell[0][i]}</th>)
@@ -59,9 +59,12 @@ const TableOutput = (props) => {
 			const cols = [] // look out, it's local in for loop, not out like @row
 			for (let j = 0; j < column; j += 1) {
 				cols.push(
+					// eslint-disable-next-line max-len
+					// eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-noninteractive-element-interactions
 					<td
 						key={i + j} // TODO key-2
-						onDoubleClick={() => setCoordinate([i, j])}
+						onClick={() => setCoordinate([i, j])}
+						id={`Tooltip-${i + j}`}
 					>
 						{cell[i][j]}
 					</td>,

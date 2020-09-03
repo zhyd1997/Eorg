@@ -1,17 +1,18 @@
 import React from 'react'
 import {
-	Editor, EditorState, getDefaultKeyBinding, RichUtils, convertToRaw,
+	Editor, EditorState, getDefaultKeyBinding, RichUtils,
 } from 'draft-js'
 import './RichTextEditor.css'
 import 'draft-js/dist/Draft.css'
 import { Map } from 'immutable'
 import { isMobile } from 'react-device-detect'
-import highlightCallBack from './Highlight'
 import BlockComponent from './BlockComponent'
 import removeTeXBlock from './TeX/modifiers/removeTeXBlock'
 import insertTeXBlock from './TeX/modifiers/insertTeXBlock'
 import createTable from './Table/modifiers/createTable'
 import ModalTable from './Table/ModalTable'
+import convertToTeX, { allTeX } from './convertContent/convert'
+import { postData, getPDF } from './previewPDF/preview'
 import './TeX/TeXEditor.css'
 import './Table/Table.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -26,6 +27,7 @@ class RichTextEditor extends React.Component {
 		this.state = {
 			editorState: EditorState.createEmpty(),
 			liveCustomBlockEdits: Map(),
+			data: {},
 		}
 
 		this.editorRef = React.createRef()
@@ -145,113 +147,27 @@ class RichTextEditor extends React.Component {
 			}
 		}
 
-		const convertToTeX = () => {
-			const editorContentRaw = convertToRaw(contentState)
-
-			const allTeX = []
-			let offset = 0
-			let length = 0
-			const
-				someTeX = editorContentRaw.blocks
-			const Math = []
-			const
-				someMath = editorContentRaw.entityMap
-
-			// Blocks Processing
-			if (Object.keys(someMath).length) {
-				for (let i = 0; i < Object.keys(someMath).length; i += 1) { // Iterating <entityMap> ...
-					if (someMath[i].type === 'TOKEN') {
-						Math.push(Object.values(someMath)[i].data.content)
-					} else if (someMath[i].type === 'TABLE') {
-						// TODO table
-
-						Math.push('sorry, but the table feature has not finished !!!')
-					}
-				}
-			}
-
-			let count = 0
+		const loadPDF = () => {
+			convertToTeX(contentState)
+			console.log('waiting for setState...')
+			this.setState({
+				data: allTeX,
+			})
+			console.log('finished setState!!!')
 
 			/**
-			 * TODO optimization
-			 *  -- Oops!!!
-			 *  O(n^3) algorithm
+			 * TODO load pdf
+			 * load pdf if and only if this.state.data is not empty and not equal to prevState.data
 			 */
 
-			for (let k = 0; k < someTeX.length; k += 1) { // Iterating <blocks> ...
-				let TeX = ''
-				const styledStartOffset = []
-				const
-					someTeXInlineStyleSort = []
-				const someTeXInline = someTeX[k].inlineStyleRanges
-
-				for (let i = 0; i < someTeXInline.length; i += 1) {
-					const o = someTeXInline[i].offset
-					styledStartOffset.push(o)
-				}
-
-				styledStartOffset.sort((a, b) => a - b)
-
-				for (let i = 0; i < styledStartOffset.length; i += 1) {
-					for (let j = 0; j < Object.values(someTeXInline).length; j += 1) {
-						if (Object.values(someTeXInline)[j].offset === styledStartOffset[i]) {
-							someTeXInlineStyleSort.push(Object.values(someTeXInline)[j])
-						}
-					}
-				}
-
-				/**
-				 * ** text split algorithm **
-				 * split with inlineStyledText offset and its length
-				 */
-
-				if (someTeXInline.length === 0) {
-					if (someTeX[k].type === 'unstyled') {
-						TeX += someTeX[k].text
-					} else if (someTeX[k].type === 'atomic') {
-						someTeX[k].text = Math[count]
-						TeX += someTeX[k].text
-						count += 1
-					} else {
-						TeX += `${texMap[someTeX[k].type]}{${someTeX[k].text}}`
-					}
-					TeX += '<br />'
+			setTimeout(() => {
+				if (Object.values(this.state.data).length !== 0) {
+					setTimeout(() => postData(this.state.data), 6000)
+					setTimeout(getPDF, 30000)
 				} else {
-					for (let i = 0; i < someTeXInlineStyleSort.length; i += 1) {
-						const startOffset = styledStartOffset[i]
-						const styledTextLength = someTeXInlineStyleSort[i].length
-						const textStyle = someTeXInlineStyleSort[i].style
-
-						if (i === 0) {
-							TeX += someTeX[k].text.slice(0, startOffset)
-						} else {
-							TeX += someTeX[k].text.slice(offset + length, startOffset)
-						}
-						TeX += `${texMap[textStyle]}{${someTeX[k].text.slice(startOffset, startOffset + styledTextLength)}}`
-
-						if (i === someTeXInlineStyleSort.length - 1) {
-							TeX += `${someTeX[k].text.slice(startOffset + styledTextLength)}<br/>`
-						}
-						offset = startOffset
-						length = styledTextLength
-					}
+					console.log('Nothing you wrote')
 				}
-
-				allTeX.push(TeX)
-			}
-
-			displayTeX(allTeX)
-		}
-
-		const displayTeX = (tex) => {
-			let listHTML = '<pre><code class="latex">'
-			for (let i = 0; i < tex.length; i += 1) {
-				const note = tex[i]
-				listHTML += note
-			}
-			listHTML += '</code></pre>'
-			document.getElementById('tex').innerHTML = listHTML
-			highlightCallBack()
+			}, 3000)
 		}
 
 		if (isMobile) {
@@ -291,7 +207,7 @@ class RichTextEditor extends React.Component {
 								buttonLabel="Table"
 							/>
 							<button
-								onClick={convertToTeX}
+								onClick={loadPDF}
 								className="save"
 								type="button"
 							>
@@ -317,22 +233,15 @@ class RichTextEditor extends React.Component {
 						/>
 					</div>
 				</div>
-				<div id="tex">
-					<p className="compiled">% LaTeX code will appear below...</p>
-				</div>
+				<iframe
+					id="pdf"
+					title="hello"
+					width="47%"
+					height="300px"
+				/>
 			</div>
 		)
 	}
-}
-
-const texMap = {
-	'header-one': '\\section',
-	'header-two': '\\subsection',
-	'header-three': '\\subsubsection',
-	BOLD: '\\textbf',
-	ITALIC: '\\textit',
-	UNDERLINE: '\\underline',
-	CODE: '\\texttt',
 }
 
 // Custom overrides for "code" style.
