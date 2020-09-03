@@ -3,7 +3,7 @@ import {
 	EditorState,
 } from 'draft-js'
 
-const examples = '\\KaTeX'
+const examples = '\\LaTeX'
 
 function insertTeXBlock(editorState) {
 	const contentState = editorState.getCurrentContent()
