@@ -149,25 +149,21 @@ class RichTextEditor extends React.Component {
 
 		const loadPDF = () => {
 			convertToTeX(contentState)
-			console.log('waiting for setState...')
 			this.setState({
 				data: allTeX,
-			})
-			console.log('finished setState!!!')
+			}, () => {
+				/**
+				 * TODO load pdf
+				 * load pdf if and only if this.state.data is not empty and not equal to prevState.data
+				 */
 
-			/**
-			 * TODO load pdf
-			 * load pdf if and only if this.state.data is not empty and not equal to prevState.data
-			 */
-
-			setTimeout(() => {
 				if (Object.values(this.state.data).length !== 0) {
-					setTimeout(() => postData(this.state.data), 6000)
+					postData(this.state.data)
 					setTimeout(getPDF, 30000)
 				} else {
 					console.log('Nothing you wrote')
 				}
-			}, 3000)
+			})
 		}
 
 		if (isMobile) {
