@@ -154,10 +154,12 @@ class RichTextEditor extends React.Component {
 			}, () => {
 				/**
 				 * TODO load pdf
-				 * load pdf if and only if this.state.data is not empty and not equal to prevState.data
+				 *  if and only if
+				 *      - [x] this.state.data is not empty
+				 *      - [ ] and not equal to prevState.data
 				 */
 
-				if (Object.values(this.state.data).length !== 0) {
+				if (this.state.data[0].length !== 0) { // its initial value is [''], which is a empty string
 					postData(this.state.data)
 					setTimeout(getPDF, 30000)
 				} else {
