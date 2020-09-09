@@ -42,13 +42,17 @@ const Auth = ({ props }) => {
 				res.json()
 					.then((result) => {
 						console.log('result', result)
-						setResponse(result.status)
-						console.log('state.response: ', response)
-						localStorage.setItem('login', JSON.stringify({
-							login: true,
-							token: result.token,
-						}))
-						props()
+						if (result.success === true) {
+							setResponse(result.status)
+							console.log('state.response: ', response)
+							localStorage.setItem('login', JSON.stringify({
+								login: true,
+								token: result.token,
+							}))
+							props()
+						} else {
+							alert(result.err.message)
+						}
 					})
 			})
 	}
