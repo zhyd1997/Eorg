@@ -160,8 +160,8 @@ class RichTextEditor extends React.Component {
 				 */
 
 				if (this.state.data[0].length !== 0) { // its initial value is [''], which is a empty string
-					postData(this.state.data)
-					setTimeout(getPDF, 30000)
+					postData(this.props.store, this.state.data)
+					setTimeout(() => getPDF(this.props.store), 30000)
 				} else {
 					console.log('Nothing you wrote')
 				}
@@ -182,6 +182,7 @@ class RichTextEditor extends React.Component {
 
 		return (
 			<div className="double-column">
+				<p>{this.state.response}</p>
 				<div className="RichEditor-root">
 					<div className="Menu">
 						<BlockStyleControls

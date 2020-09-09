@@ -1,10 +1,12 @@
 import baseUrl from '../baseUrl/baseUrl'
 
-export function postData(opts) {
+export const postData = (store, opts) => {
+	const token = `Bearer ${store.token}`
 	fetch(`${baseUrl}draftJS`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
+			Authorization: token,
 		},
 		body: JSON.stringify(opts),
 	})
@@ -12,11 +14,13 @@ export function postData(opts) {
 		.then((data) => console.log('posted data:', data))
 }
 
-export const getPDF = () => {
+export const getPDF = (store) => {
+	const token = `Bearer ${store.token}`
 	fetch(`${baseUrl}draftJS`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/pdf',
+			Authorization: token,
 		},
 	})
 		.then((res) => {
