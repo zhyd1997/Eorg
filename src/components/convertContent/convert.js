@@ -8,11 +8,9 @@ const convertToTeX = (contentState) => {
 	allTeX.length = 0
 	let offset = 0
 	let length = 0
-	const
-		someTeX = editorContentRaw.blocks
+	const someTeX = editorContentRaw.blocks
 	const Math = []
-	const
-		someMath = editorContentRaw.entityMap
+	const someMath = editorContentRaw.entityMap
 
 	// Blocks Processing
 	if (Object.keys(someMath).length) {
