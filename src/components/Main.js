@@ -1,8 +1,6 @@
 import React from 'react'
-import Auth from './Auth'
 import RichTextEditor from './RichTextEditor'
 import Header from './Header'
-import baseUrl from './baseUrl/baseUrl'
 
 const Main = () => {
 	const [login, setLogin] = React.useState(false)
@@ -25,29 +23,11 @@ const Main = () => {
 		}
 	}
 
-	function logOut() {
-		fetch(`${baseUrl}users/logout`, {
-			method: 'GET',
-		})
-			.then(() => {
-				localStorage.removeItem('login')
-				storeCollector()
-			})
-	}
-
-	const Editor = () => (
-		<div>
-			<Header logOut={logOut} />
-			<RichTextEditor store={store} />
-		</div>
-	)
-
 	return (
-		<div>
-			{
-				!login ? <Auth props={storeCollector} /> : <Editor />
-			}
-		</div>
+		<>
+			<Header storeCollector={storeCollector} isLogIn={login} />
+			<RichTextEditor login={login} store={store} />
+		</>
 	)
 }
 

@@ -168,6 +168,14 @@ class RichTextEditor extends React.Component {
 			})
 		}
 
+		const preview = () => {
+			if (this.props.login) {
+				loadPDF()
+			} else {
+				alert('You need to login first!')
+			}
+		}
+
 		if (isMobile) {
 			return (
 				<p>
@@ -206,7 +214,7 @@ class RichTextEditor extends React.Component {
 								buttonLabel="Table"
 							/>
 							<button
-								onClick={loadPDF}
+								onClick={preview}
 								className="save"
 								type="button"
 							>
