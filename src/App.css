@@ -40,5 +40,22 @@
 }
 
 .Header {
+  display: flex;
   padding: 0 15px 15px;
+}
+
+.tips {
+  padding-top: 8px;
+}
+
+.success {
+  background: #c3e6cb;
+}
+
+.error {
+  background: #f8d7da;
+}
+
+.fade {
+  display: none;
 }

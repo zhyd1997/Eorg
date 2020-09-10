@@ -15,7 +15,6 @@ import convertToTeX, { allTeX } from './convertContent/convert'
 import { postData, getPDF } from './previewPDF/preview'
 import './TeX/TeXEditor.css'
 import './Table/Table.css'
-import 'bootstrap/dist/css/bootstrap.min.css'
 
 /**
  * Editor Template and KaTeX support are all referenced to Draft.js official example.
@@ -28,6 +27,7 @@ class RichTextEditor extends React.Component {
 			editorState: EditorState.createEmpty(),
 			liveCustomBlockEdits: Map(),
 			data: {},
+			message: '',
 		}
 
 		this.editorRef = React.createRef()
@@ -163,7 +163,9 @@ class RichTextEditor extends React.Component {
 					postData(this.props.store, this.state.data)
 					setTimeout(() => getPDF(this.props.store), 30000)
 				} else {
-					console.log('Nothing you wrote')
+					this.setState({ message: 'Nothing you wrote' }, () => {
+						alert(this.state.message)
+					})
 				}
 			})
 		}
@@ -172,7 +174,12 @@ class RichTextEditor extends React.Component {
 			if (this.props.login) {
 				loadPDF()
 			} else {
-				alert('You need to login first!')
+				this.setState(
+					{ message: 'You need to login first!' },
+					() => {
+						alert(this.state.message)
+					},
+				)
 			}
 		}
 
@@ -190,7 +197,6 @@ class RichTextEditor extends React.Component {
 
 		return (
 			<div className="double-column">
-				<p>{this.state.response}</p>
 				<div className="RichEditor-root">
 					<div className="Menu">
 						<BlockStyleControls

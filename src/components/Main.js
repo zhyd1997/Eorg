@@ -8,7 +8,6 @@ const Main = () => {
 
 	React.useEffect(() => {
 		storeCollector()
-		console.log('login', login)
 	}, [login])
 
 	function storeCollector() {

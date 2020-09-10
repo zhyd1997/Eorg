@@ -4,11 +4,13 @@ import {
 	Modal, ModalHeader, ModalBody,
 } from 'reactstrap'
 import baseUrl from './baseUrl/baseUrl'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 const Header = ({ storeCollector, isLogIn }) => {
 	const [username, setUsername] = React.useState('')
 	const [password, setPassword] = React.useState('')
-	const [response, setResponse] = React.useState(false)
+	const [response, setResponse] = React.useState('')
+	const [tips, setTips] = React.useState('tips')
 	const [signUpModal, setSignUpModal] = React.useState(false)
 	const [logInModal, setLogInModal] = React.useState(false)
 
@@ -34,9 +36,15 @@ const Header = ({ storeCollector, isLogIn }) => {
 			.then((res) => {
 				res.json()
 					.then((result) => {
-						console.log('result', result)
-						setResponse(result.status)
-						console.log('state.response: ', response)
+						if (result.success === true) {
+							setResponse(result.status)
+							setTips('tips success')
+							setTimeout(() => setTips('fade'), 3000)
+						} else {
+							setResponse(result.err.message)
+							setTips('tips error')
+							setTimeout(() => setTips('fade'), 3000)
+						}
 					})
 			})
 	}
@@ -55,17 +63,19 @@ const Header = ({ storeCollector, isLogIn }) => {
 			.then((res) => {
 				res.json()
 					.then((result) => {
-						console.log('result', result)
 						if (result.success === true) {
 							setResponse(result.status)
-							console.log('state.response: ', response)
+							setTips('tips success')
+							setTimeout(() => setTips('fade'), 3000)
 							localStorage.setItem('login', JSON.stringify({
 								login: true,
 								token: result.token,
 							}))
 							storeCollector()
 						} else {
-							alert(result.err.message)
+							setResponse(result.err.message)
+							setTips('tips error')
+							setTimeout(() => setTips('fade'), 3000)
 						}
 					})
 			})
@@ -78,6 +88,9 @@ const Header = ({ storeCollector, isLogIn }) => {
 			.then(() => {
 				localStorage.removeItem('login')
 				storeCollector()
+				setResponse('Logout Successful!')
+				setTips('tips success')
+				setTimeout(() => setTips('fade'), 3000)
 			})
 	}
 
@@ -95,6 +108,7 @@ const Header = ({ storeCollector, isLogIn }) => {
 
 	return (
 		<div className="Header">
+			<span className={tips}>{response}</span>
 			<Nav className="ml-auto" navbar>
 				<NavItem>
 					{ !isLogIn

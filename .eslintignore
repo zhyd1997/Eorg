@@ -1,6 +1,6 @@
 .eslintrc.js
 
-docs
+build
 node_modules
 
 src/App.test.js
