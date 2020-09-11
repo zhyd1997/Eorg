@@ -1,8 +1,8 @@
 import React from 'react'
-import baseUrl from './baseUrl/baseUrl'
+import baseUrl from '../baseUrl/baseUrl'
 
 const Download = ({ store }) => {
-	const download = (auth, contentType, fileExtension = '') => {
+	const download = (auth, contentType, fileExtension) => {
 		const token = `Bearer ${auth.token}`
 		fetch(`${baseUrl}draftJS/${fileExtension}`, {
 			method: 'GET',
@@ -33,7 +33,7 @@ const Download = ({ store }) => {
 	}
 
 	function handlePDFDownload() {
-		download(store, 'application/pdf')
+		download(store, 'application/pdf', 'pdf')
 	}
 
 	return (

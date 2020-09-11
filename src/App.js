@@ -2,6 +2,7 @@ import React from 'react'
 import './App.css'
 import { isMobile } from 'react-device-detect'
 import Main from './components/Main'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 function App() {
 	if (isMobile) {

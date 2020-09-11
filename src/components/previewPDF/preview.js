@@ -16,7 +16,7 @@ export const postData = (store, opts) => {
 
 export const previewPDF = (store) => {
 	const token = `Bearer ${store.token}`
-	fetch(`${baseUrl}draftJS`, {
+	fetch(`${baseUrl}draftJS/pdf`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/pdf',

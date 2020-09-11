@@ -12,7 +12,7 @@ import createTable from './Table/modifiers/createTable'
 import ModalTable from './Table/ModalTable'
 import convertToTeX, { allTeX } from './convertContent/convert'
 import { postData, previewPDF } from './previewPDF/preview'
-import Download from './Download'
+import Download from './DownloadFile/Download'
 import './TeX/TeXEditor.css'
 import './Table/Table.css'
 

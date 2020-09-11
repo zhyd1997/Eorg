@@ -4,7 +4,6 @@ import {
 	Modal, ModalHeader, ModalBody,
 } from 'reactstrap'
 import baseUrl from './baseUrl/baseUrl'
-import 'bootstrap/dist/css/bootstrap.min.css'
 
 const Header = ({ storeCollector, isLogIn }) => {
 	const [username, setUsername] = React.useState('')
