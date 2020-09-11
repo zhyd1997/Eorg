@@ -14,7 +14,7 @@ export const postData = (store, opts) => {
 		.then((data) => console.log('posted data:', data))
 }
 
-export const getPDF = (store) => {
+export const previewPDF = (store) => {
 	const token = `Bearer ${store.token}`
 	fetch(`${baseUrl}draftJS`, {
 		method: 'GET',

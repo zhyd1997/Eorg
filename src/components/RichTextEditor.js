@@ -11,7 +11,8 @@ import insertTeXBlock from './TeX/modifiers/insertTeXBlock'
 import createTable from './Table/modifiers/createTable'
 import ModalTable from './Table/ModalTable'
 import convertToTeX, { allTeX } from './convertContent/convert'
-import { postData, getPDF } from './previewPDF/preview'
+import { postData, previewPDF } from './previewPDF/preview'
+import Download from './Download'
 import './TeX/TeXEditor.css'
 import './Table/Table.css'
 
@@ -160,7 +161,7 @@ class RichTextEditor extends React.Component {
 
 				if (this.state.data[0].length !== 0) { // its initial value is [''], which is a empty string
 					postData(this.props.store, this.state.data)
-					setTimeout(() => getPDF(this.props.store), 30000)
+					setTimeout(() => previewPDF(this.props.store), 30000)
 				} else {
 					this.setState({ message: 'Nothing you wrote' }, () => {
 						alert(this.state.message)
@@ -233,12 +234,15 @@ class RichTextEditor extends React.Component {
 						/>
 					</div>
 				</div>
-				<iframe
-					id="pdf"
-					title="hello"
-					width="47%"
-					height="300px"
-				/>
+				<div className="preview">
+					{
+						this.props.login ? <Download store={this.props.store} /> : ''
+					}
+					<iframe
+						id="pdf"
+						title="hello"
+					/>
+				</div>
 			</div>
 		)
 	}

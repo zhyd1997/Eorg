@@ -59,3 +59,21 @@
 .fade {
   display: none;
 }
+
+.preview {
+  position: relative;
+  width: 47%;
+}
+
+.download {
+  position: absolute;
+  padding: 18px 10px;
+  width: 100%;
+  height: 59px;
+  background-color: #6c757d;;
+}
+
+#pdf {
+  width: 100%;
+  height: 300px;
+}
