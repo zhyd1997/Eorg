@@ -40,11 +40,11 @@ const Download = ({ store }) => {
 		<div className="download">
 			<span>Download</span>
 			&nbsp;&nbsp;
-			<button type="button" onClick={handleLaTeXDownload}>
+			<button id="tex-btn" type="button" onClick={handleLaTeXDownload}>
 				LaTeX
 			</button>
 			&nbsp;&nbsp;
-			<button type="button" onClick={handlePDFDownload}>
+			<button id="pdf-btn" type="button" onClick={handlePDFDownload}>
 				PDF
 			</button>
 			&nbsp;&nbsp;

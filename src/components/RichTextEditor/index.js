@@ -13,6 +13,7 @@ import ModalTable from '../BlockComponent/Table/ModalTable'
 import convertToTeX, { allTeX } from '../convertContent/convert'
 import { postData, previewPDF } from '../previewPDF/preview'
 import Download from '../DownloadFile/Download'
+import LoadingSpinner from '../Loading'
 import '../BlockComponent/TeX/TeXEditor.css'
 import '../BlockComponent/Table/Table.css'
 
@@ -28,6 +29,8 @@ class RichTextEditor extends React.Component {
 			liveCustomBlockEdits: Map(),
 			data: {},
 			message: '',
+			isLoading: false,
+			previewStyle: 'preview',
 		}
 
 		this.editorRef = React.createRef()
@@ -160,8 +163,28 @@ class RichTextEditor extends React.Component {
 				 */
 
 				if (this.state.data[0].length !== 0) { // its initial value is [''], which is a empty string
-					postData(this.props.store, this.state.data)
-					setTimeout(() => previewPDF(this.props.store), 30000)
+					this.setState({
+						isLoading: true,
+						previewStyle: 'preview loading',
+					}, () => {
+						document.getElementById('tex-btn')
+							.setAttribute('disabled', '')
+						document.getElementById('pdf-btn')
+							.setAttribute('disabled', '')
+						postData(this.props.store, this.state.data)
+						setTimeout(() => {
+							previewPDF(this.props.store)
+							this.setState({
+								isLoading: false,
+								previewStyle: 'preview',
+							}, () => {
+								document.getElementById('tex-btn')
+									.removeAttribute('disabled')
+								document.getElementById('pdf-btn')
+									.removeAttribute('disabled')
+							})
+						}, 30000)
+					})
 				} else {
 					this.setState({ message: 'Nothing you wrote' }, () => {
 						alert(this.state.message)
@@ -181,6 +204,13 @@ class RichTextEditor extends React.Component {
 					},
 				)
 			}
+		}
+
+		const Loading = () => {
+			if (this.state.isLoading) {
+				return <LoadingSpinner />
+			}
+			return ''
 		}
 
 		return (
@@ -234,7 +264,7 @@ class RichTextEditor extends React.Component {
 						/>
 					</div>
 				</div>
-				<div className="preview">
+				<div className={this.state.previewStyle}>
 					{
 						this.props.login ? <Download store={this.props.store} /> : ''
 					}
@@ -242,6 +272,7 @@ class RichTextEditor extends React.Component {
 						id="pdf"
 						title="hello"
 					/>
+					<Loading />
 				</div>
 			</div>
 		)
