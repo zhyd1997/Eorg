@@ -163,7 +163,7 @@ class RichTextEditor extends React.Component {
 				 *      - [ ] and not equal to prevState.data
 				 */
 
-				if (this.state.data[0].length !== 0) { // its initial value is [''], which is a empty string
+				if (contentState.hasText()) {
 					this.setState({
 						isLoading: true,
 						previewStyle: 'preview loading',
