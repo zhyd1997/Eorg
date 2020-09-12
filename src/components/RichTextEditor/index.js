@@ -29,6 +29,7 @@ class RichTextEditor extends React.Component {
 			liveCustomBlockEdits: Map(),
 			data: {},
 			message: '',
+			messageContent: '',
 			isLoading: false,
 			previewStyle: 'preview',
 			messageStyle: '',
@@ -151,6 +152,19 @@ class RichTextEditor extends React.Component {
 			}
 		}
 
+		const displayError = (content) => {
+			this.setState({
+				message: content,
+				messageStyle: 'error-message',
+			})
+			setTimeout(
+				() => {
+					this.setState({ messageStyle: 'fade' })
+				},
+				3000,
+			)
+		}
+
 		const loadPDF = () => {
 			convertToTeX(contentState)
 			this.setState({
@@ -188,15 +202,10 @@ class RichTextEditor extends React.Component {
 					})
 				} else {
 					this.setState({
-						message: 'Nothing you wrote',
-						messageStyle: 'error-message',
+						messageContent: 'Nothing you wrote',
+					}, () => {
+						displayError(this.state.messageContent)
 					})
-					setTimeout(
-						() => {
-							this.setState({ messageStyle: 'fade' })
-						},
-						3000,
-					)
 				}
 			})
 		}
@@ -206,15 +215,10 @@ class RichTextEditor extends React.Component {
 				loadPDF()
 			} else {
 				this.setState({
-					message: 'You need to login first!',
-					messageStyle: 'error-message',
+					messageContent: 'You need to login first!',
+				}, () => {
+					displayError(this.state.messageContent)
 				})
-				setTimeout(
-					() => {
-						this.setState({ messageStyle: 'fade' })
-					},
-					3000,
-				)
 			}
 		}
 
