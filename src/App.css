@@ -92,3 +92,15 @@
   width: 3rem;
   height: 3rem;
 }
+
+.error-message {
+  position: absolute;
+  margin: auto;
+  top: 54px;
+  right: 0;
+  left: 0;
+  width: 180px;
+  height: 24px;
+  background: #f8d7da;
+  text-align: center;
+}

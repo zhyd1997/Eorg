@@ -31,6 +31,7 @@ class RichTextEditor extends React.Component {
 			message: '',
 			isLoading: false,
 			previewStyle: 'preview',
+			messageStyle: '',
 		}
 
 		this.editorRef = React.createRef()
@@ -186,9 +187,16 @@ class RichTextEditor extends React.Component {
 						}, 30000)
 					})
 				} else {
-					this.setState({ message: 'Nothing you wrote' }, () => {
-						alert(this.state.message)
+					this.setState({
+						message: 'Nothing you wrote',
+						messageStyle: 'error-message',
 					})
+					setTimeout(
+						() => {
+							this.setState({ messageStyle: 'fade' })
+						},
+						3000,
+					)
 				}
 			})
 		}
@@ -197,14 +205,20 @@ class RichTextEditor extends React.Component {
 			if (this.props.login) {
 				loadPDF()
 			} else {
-				this.setState(
-					{ message: 'You need to login first!' },
+				this.setState({
+					message: 'You need to login first!',
+					messageStyle: 'error-message',
+				})
+				setTimeout(
 					() => {
-						alert(this.state.message)
+						this.setState({ messageStyle: 'fade' })
 					},
+					3000,
 				)
 			}
 		}
+
+		const ErrorMessage = () => <p className={this.state.messageStyle}>{this.state.message}</p>
 
 		const Loading = () => {
 			if (this.state.isLoading) {
@@ -214,67 +228,70 @@ class RichTextEditor extends React.Component {
 		}
 
 		return (
-			<div className="double-column">
-				<div className="RichEditor-root">
-					<div className="Menu">
-						<BlockStyleControls
-							editorState={editorState}
-							onToggle={this.toggleBlockType}
-						/>
-						<InlineStyleControls
-							editorState={editorState}
-							onToggle={this.toggleInlineStyle}
-						/>
-						<div className="RichEditor-controls TeXEditor-insert">
-							<button
-								onClick={this.insertTeX}
-								className="math RichEditor-styleButton"
-								type="button"
-							>
-								Math
-							</button>
-							<ModalTable
-								onClick={this.createTable}
-								buttonLabel="Table"
+			<>
+				<ErrorMessage />
+				<div className="double-column">
+					<div className="RichEditor-root">
+						<div className="Menu">
+							<BlockStyleControls
+								editorState={editorState}
+								onToggle={this.toggleBlockType}
 							/>
-							<button
-								onClick={preview}
-								className="save"
-								type="button"
-							>
-								preview
-							</button>
+							<InlineStyleControls
+								editorState={editorState}
+								onToggle={this.toggleInlineStyle}
+							/>
+							<div className="RichEditor-controls TeXEditor-insert">
+								<button
+									onClick={this.insertTeX}
+									className="math RichEditor-styleButton"
+									type="button"
+								>
+									Math
+								</button>
+								<ModalTable
+									onClick={this.createTable}
+									buttonLabel="Table"
+								/>
+								<button
+									onClick={preview}
+									className="save"
+									type="button"
+								>
+									preview
+								</button>
+							</div>
+						</div>
+						{/* eslint-disable-next-line max-len */}
+						{/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
+						<div className={className} onClick={this.focus}>
+							<Editor
+								blockRendererFn={this.blockRenderer}
+								blockStyleFn={getBlockStyle}
+								customStyleMap={styleMap}
+								editorState={editorState}
+								handleKeyCommand={this.handleKeyCommand}
+								keyBindingFn={this.mapKeyToEditorCommand}
+								onChange={this.onChange}
+								placeholder="Tell a story..."
+								readOnly={this.state.liveCustomBlockEdits.count()}
+								ref={this.editorRef}
+								spellCheck
+							/>
 						</div>
 					</div>
-					{/* eslint-disable-next-line max-len */}
-					{/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
-					<div className={className} onClick={this.focus}>
-						<Editor
-							blockRendererFn={this.blockRenderer}
-							blockStyleFn={getBlockStyle}
-							customStyleMap={styleMap}
-							editorState={editorState}
-							handleKeyCommand={this.handleKeyCommand}
-							keyBindingFn={this.mapKeyToEditorCommand}
-							onChange={this.onChange}
-							placeholder="Tell a story..."
-							readOnly={this.state.liveCustomBlockEdits.count()}
-							ref={this.editorRef}
-							spellCheck
+					<div className={this.state.previewStyle}>
+						{
+							this.props.login ? <Download store={this.props.store} /> : ''
+						}
+						<iframe
+							id="pdf"
+							title="hello"
 						/>
+						<Loading />
 					</div>
 				</div>
-				<div className={this.state.previewStyle}>
-					{
-						this.props.login ? <Download store={this.props.store} /> : ''
-					}
-					<iframe
-						id="pdf"
-						title="hello"
-					/>
-					<Loading />
-				</div>
-			</div>
+			</>
 		)
 	}
 }
