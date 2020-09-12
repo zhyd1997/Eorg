@@ -11,9 +11,8 @@ import insertTeXBlock from '../BlockComponent/TeX/modifiers/insertTeXBlock'
 import createTable from '../BlockComponent/Table/modifiers/createTable'
 import ModalTable from '../BlockComponent/Table/ModalTable'
 import convertToTeX, { allTeX } from '../convertContent/convert'
-import { postData, previewPDF } from '../previewPDF/preview'
-import Download from '../DownloadFile/Download'
-import LoadingSpinner from '../Loading'
+import { postData, previewPDF } from '../Preview/preview'
+import Preview from '../Preview'
 import '../BlockComponent/TeX/TeXEditor.css'
 import '../BlockComponent/Table/Table.css'
 
@@ -230,13 +229,6 @@ class RichTextEditor extends React.Component {
 
 		const ErrorMessage = () => <p className={this.state.messageStyle}>{this.state.message}</p>
 
-		const Loading = () => {
-			if (this.state.isLoading) {
-				return <LoadingSpinner />
-			}
-			return ''
-		}
-
 		return (
 			<>
 				<ErrorMessage />
@@ -290,16 +282,12 @@ class RichTextEditor extends React.Component {
 							/>
 						</div>
 					</div>
-					<div className={this.state.previewStyle}>
-						{
-							this.props.login ? <Download store={this.props.store} /> : ''
-						}
-						<iframe
-							id="pdf"
-							title="hello"
-						/>
-						<Loading />
-					</div>
+					<Preview
+						login={this.props.login}
+						store={this.props.store}
+						previewStyle={this.state.previewStyle}
+						isLoading={this.state.isLoading}
+					/>
 				</div>
 			</>
 		)
