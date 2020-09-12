@@ -7,6 +7,4 @@ src/App.test.js
 src/serviceWorker.js
 src/setupTests.js
 
-src/components/TeX/TeXBlock.js
-
-src/components/Table/modifiers/editTable.js
+src/components/BlockComponent/TeX/TeXBlock.js
