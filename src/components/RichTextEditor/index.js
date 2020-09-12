@@ -181,25 +181,31 @@ class RichTextEditor extends React.Component {
 					this.setState({
 						isLoading: true,
 						previewStyle: 'preview loading',
-					}, () => {
-						document.getElementById('tex-btn')
-							.setAttribute('disabled', '')
-						document.getElementById('pdf-btn')
-							.setAttribute('disabled', '')
-						postData(this.props.store, this.state.data)
-						setTimeout(() => {
-							previewPDF(this.props.store)
-							this.setState({
-								isLoading: false,
-								previewStyle: 'preview',
-							}, () => {
-								document.getElementById('tex-btn')
-									.removeAttribute('disabled')
-								document.getElementById('pdf-btn')
-									.removeAttribute('disabled')
-							})
-						}, 30000)
 					})
+					// added download link
+					document
+						.getElementById('tex-btn')
+						.setAttribute('disabled', '')
+					document
+						.getElementById('pdf-btn')
+						.setAttribute('disabled', '')
+
+					postData(this.props.store, this.state.data)
+
+					setTimeout(() => {
+						previewPDF(this.props.store)
+						this.setState({
+							isLoading: false,
+							previewStyle: 'preview',
+						})
+						// removed download link
+						document
+							.getElementById('tex-btn')
+							.removeAttribute('disabled')
+						document
+							.getElementById('pdf-btn')
+							.removeAttribute('disabled')
+					}, 30000)
 				} else {
 					this.setState({
 						messageContent: 'Nothing you wrote',
