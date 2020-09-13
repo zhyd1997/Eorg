@@ -1,15 +1,8 @@
 import React from 'react'
 import Download from '../DownloadFile/Download'
-import LoadingSpinner from '../Loading'
+import Loading from '../Loading'
 import baseUrl from '../baseUrl/baseUrl'
 import convertToTeX, { allTeX } from '../convertContent/convert'
-
-const Loading = ({ isLoading }) => {
-	if (isLoading) {
-		return <LoadingSpinner />
-	}
-	return ''
-}
 
 class Preview extends React.Component {
 	constructor(props) {
