@@ -31,20 +31,6 @@ class Preview extends React.Component {
 		)
 	}
 
-	disabledButtons = () => {
-		const elementsId = ['preview-btn', 'tex-btn', 'pdf-btn']
-		elementsId.forEach((id) => {
-			document.getElementById(id).setAttribute('disabled', '')
-		})
-	}
-
-	enabledButtons = () => {
-		const elementsId = ['preview-btn', 'tex-btn', 'pdf-btn']
-		elementsId.forEach((id) => {
-			document.getElementById(id).removeAttribute('disabled')
-		})
-	}
-
 	postData = (store, content) => {
 		this.setState({
 			isLoading: true,
@@ -134,7 +120,12 @@ class Preview extends React.Component {
 		return (
 			<div className={this.state.previewStyle}>
 				<ErrorMessage />
-				<Toolbar login={this.props.login} store={this.props.store} disabled={this.state.disabled} onClick={this.preview} />
+				<Toolbar
+					login={this.props.login}
+					store={this.props.store}
+					disabled={this.state.disabled}
+					onClick={this.preview}
+				/>
 				<iframe
 					id="pdf"
 					title="hello"

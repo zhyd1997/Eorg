@@ -1,7 +1,11 @@
 import React from 'react'
 import baseUrl from '../baseUrl/baseUrl'
 
-const Toolbar = ({ login, store, disabled, onClick }) => {
+const Toolbar = (props) => {
+	const {
+		login, store, disabled, onClick,
+	} = props
+
 	const download = (auth, contentType, fileExtension) => {
 		const token = `Bearer ${auth.token}`
 		fetch(`${baseUrl}draftJS/${fileExtension}`, {
