@@ -181,7 +181,7 @@ class RichTextEditor extends React.Component {
 						isLoading: true,
 						previewStyle: 'preview loading',
 					})
-					// added download link
+					// enabled Download buttons
 					document
 						.getElementById('tex-btn')
 						.setAttribute('disabled', '')
@@ -197,7 +197,7 @@ class RichTextEditor extends React.Component {
 							isLoading: false,
 							previewStyle: 'preview',
 						})
-						// removed download link
+						// disabled Download buttons
 						document
 							.getElementById('tex-btn')
 							.removeAttribute('disabled')
