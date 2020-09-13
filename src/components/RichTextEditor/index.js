@@ -180,7 +180,7 @@ class RichTextEditor extends React.Component {
 							handleKeyCommand={this.handleKeyCommand}
 							keyBindingFn={this.mapKeyToEditorCommand}
 							onChange={this.onChange}
-							placeholder="Tell a story..."
+							placeholder="Content only supports a single style..."
 							readOnly={this.state.liveCustomBlockEdits.count()}
 							ref={this.editorRef}
 							spellCheck
