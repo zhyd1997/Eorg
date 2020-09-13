@@ -26,4 +26,4 @@ yarn start # it should run on another port other than 3000.
 ```
 
 # User Tips
-Text only supports a single style
+Content only supports a single style
