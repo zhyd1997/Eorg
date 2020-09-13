@@ -14,6 +14,7 @@ class Preview extends React.Component {
 			isLoading: false,
 			previewStyle: 'preview',
 			messageStyle: 'error-message',
+			disabled: false,
 		}
 	}
 
@@ -48,9 +49,8 @@ class Preview extends React.Component {
 		this.setState({
 			isLoading: true,
 			previewStyle: 'preview loading',
+			disabled: true,
 		})
-		// disabled buttons
-		this.disabledButtons()
 
 		const TOKEN = `Bearer ${store.token}`
 		fetch(`${baseUrl}draftJS`, {
@@ -68,9 +68,8 @@ class Preview extends React.Component {
 				this.setState({
 					isLoading: false,
 					previewStyle: 'preview',
+					disabled: false,
 				})
-				// enabled buttons
-				this.enabledButtons()
 			})
 	}
 
@@ -135,7 +134,7 @@ class Preview extends React.Component {
 		return (
 			<div className={this.state.previewStyle}>
 				<ErrorMessage />
-				<Toolbar login={this.props.login} store={this.props.store} onClick={this.preview} />
+				<Toolbar login={this.props.login} store={this.props.store} disabled={this.state.disabled} onClick={this.preview} />
 				<iframe
 					id="pdf"
 					title="hello"

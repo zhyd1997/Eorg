@@ -1,7 +1,7 @@
 import React from 'react'
 import baseUrl from '../baseUrl/baseUrl'
 
-const Toolbar = ({ login, store, onClick }) => {
+const Toolbar = ({ login, store, disabled, onClick }) => {
 	const download = (auth, contentType, fileExtension) => {
 		const token = `Bearer ${auth.token}`
 		fetch(`${baseUrl}draftJS/${fileExtension}`, {
@@ -36,16 +36,16 @@ const Toolbar = ({ login, store, onClick }) => {
 		download(store, 'application/pdf', 'pdf')
 	}
 
-	const preview = <button id="preview-btn" className="save" type="button" onClick={onClick}>preview</button>
+	const preview = <button disabled={disabled} className="save" type="button" onClick={onClick}>preview</button>
 	const downloadButtons = (
 		<>
 			<span>Download</span>
 			&nbsp;&nbsp;
-			<button id="tex-btn" type="button" onClick={handleLaTeXDownload}>
+			<button disabled={disabled} type="button" onClick={handleLaTeXDownload}>
 				LaTeX
 			</button>
 			&nbsp;&nbsp;
-			<button id="pdf-btn" type="button" onClick={handlePDFDownload}>
+			<button disabled={disabled} type="button" onClick={handlePDFDownload}>
 				PDF
 			</button>
 			&nbsp;&nbsp;
