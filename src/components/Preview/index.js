@@ -37,21 +37,27 @@ class Preview extends React.Component {
 		)
 	}
 
+	disabledButtons = () => {
+		const elementsId = ['preview-btn', 'tex-btn', 'pdf-btn']
+		elementsId.forEach((id) => {
+			document.getElementById(id).setAttribute('disabled', '')
+		})
+	}
+
+	enabledButtons = () => {
+		const elementsId = ['preview-btn', 'tex-btn', 'pdf-btn']
+		elementsId.forEach((id) => {
+			document.getElementById(id).removeAttribute('disabled')
+		})
+	}
+
 	postData = (store, content) => {
 		this.setState({
 			isLoading: true,
 			previewStyle: 'preview loading',
 		})
 		// disabled buttons
-		document
-			.getElementById('preview-btn')
-			.setAttribute('disabled', '')
-		document
-			.getElementById('tex-btn')
-			.setAttribute('disabled', '')
-		document
-			.getElementById('pdf-btn')
-			.setAttribute('disabled', '')
+		this.disabledButtons()
 
 		const TOKEN = `Bearer ${store.token}`
 		fetch(`${baseUrl}draftJS`, {
@@ -71,15 +77,7 @@ class Preview extends React.Component {
 					previewStyle: 'preview',
 				})
 				// enabled buttons
-				document
-					.getElementById('preview-btn')
-					.removeAttribute('disabled')
-				document
-					.getElementById('tex-btn')
-					.removeAttribute('disabled')
-				document
-					.getElementById('pdf-btn')
-					.removeAttribute('disabled')
+				this.enabledButtons()
 			})
 	}
 
