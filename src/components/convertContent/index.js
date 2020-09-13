@@ -61,13 +61,17 @@ const convertToTeX = (contentState) => {
 		 */
 
 		if (someTeXInline.length === 0) {
-			if (someTeX[k].type === 'unstyled') {
+			switch (someTeX[k].type) {
+			case 'unstyled':
 				TeX += someTeX[k].text
-			} else if (someTeX[k].type === 'atomic') {
+				break
+			case 'atomic':
 				someTeX[k].text = Math[count]
 				TeX += someTeX[k].text
 				count += 1
-			} else {
+
+				break
+			default:
 				TeX += `${texMap[someTeX[k].type]}{${someTeX[k].text}}`
 			}
 		} else {

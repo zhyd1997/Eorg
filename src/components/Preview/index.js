@@ -2,7 +2,7 @@ import React from 'react'
 import Toolbar from './Toolbar'
 import Loading from '../Loading'
 import baseUrl from '../baseUrl/baseUrl'
-import convertToTeX, { allTeX } from '../convertContent/convert'
+import convertToTeX, { allTeX } from '../convertContent'
 
 class Preview extends React.Component {
 	constructor(props) {
