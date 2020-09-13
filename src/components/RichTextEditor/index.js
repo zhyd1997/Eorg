@@ -10,8 +10,6 @@ import removeTeXBlock from '../BlockComponent/TeX/modifiers/removeTeXBlock'
 import insertTeXBlock from '../BlockComponent/TeX/modifiers/insertTeXBlock'
 import createTable from '../BlockComponent/Table/modifiers/createTable'
 import ModalTable from '../BlockComponent/Table/ModalTable'
-import convertToTeX, { allTeX } from '../convertContent/convert'
-import { postData, previewPDF } from '../Preview/preview'
 import Preview from '../Preview'
 import '../BlockComponent/TeX/TeXEditor.css'
 import '../BlockComponent/Table/Table.css'
@@ -26,12 +24,6 @@ class RichTextEditor extends React.Component {
 		this.state = {
 			editorState: EditorState.createEmpty(),
 			liveCustomBlockEdits: Map(),
-			data: {},
-			message: '',
-			messageContent: '',
-			isLoading: false,
-			previewStyle: 'preview',
-			messageStyle: '',
 		}
 
 		this.editorRef = React.createRef()
@@ -151,145 +143,56 @@ class RichTextEditor extends React.Component {
 			}
 		}
 
-		const displayError = (content) => {
-			this.setState({
-				message: content,
-				messageStyle: 'error-message',
-			})
-			setTimeout(
-				() => {
-					this.setState({ messageStyle: 'fade' })
-				},
-				3000,
-			)
-		}
-
-		const loadPDF = () => {
-			convertToTeX(contentState)
-			this.setState({
-				data: allTeX,
-			}, () => {
-				/**
-				 * TODO load pdf
-				 *  if and only if
-				 *      - [x] this.state.data is not empty
-				 *      - [ ] and not equal to prevState.data
-				 */
-
-				if (contentState.hasText()) {
-					this.setState({
-						isLoading: true,
-						previewStyle: 'preview loading',
-					})
-					// enabled Download buttons
-					document
-						.getElementById('tex-btn')
-						.setAttribute('disabled', '')
-					document
-						.getElementById('pdf-btn')
-						.setAttribute('disabled', '')
-
-					postData(this.props.store, this.state.data)
-
-					setTimeout(() => {
-						previewPDF(this.props.store)
-						this.setState({
-							isLoading: false,
-							previewStyle: 'preview',
-						})
-						// disabled Download buttons
-						document
-							.getElementById('tex-btn')
-							.removeAttribute('disabled')
-						document
-							.getElementById('pdf-btn')
-							.removeAttribute('disabled')
-					}, 30000)
-				} else {
-					this.setState({
-						messageContent: 'Nothing you wrote',
-					}, () => {
-						displayError(this.state.messageContent)
-					})
-				}
-			})
-		}
-
-		const preview = () => {
-			if (this.props.login) {
-				loadPDF()
-			} else {
-				this.setState({
-					messageContent: 'You need to login first!',
-				}, () => {
-					displayError(this.state.messageContent)
-				})
-			}
-		}
-
-		const ErrorMessage = () => <p className={this.state.messageStyle}>{this.state.message}</p>
-
 		return (
-			<>
-				<ErrorMessage />
-				<div className="double-column">
-					<div className="RichEditor-root">
-						<div className="Menu">
-							<BlockStyleControls
-								editorState={editorState}
-								onToggle={this.toggleBlockType}
-							/>
-							<InlineStyleControls
-								editorState={editorState}
-								onToggle={this.toggleInlineStyle}
-							/>
-							<div className="RichEditor-controls TeXEditor-insert">
-								<button
-									onClick={this.insertTeX}
-									className="math RichEditor-styleButton"
-									type="button"
-								>
-									Math
-								</button>
-								<ModalTable
-									onClick={this.createTable}
-									buttonLabel="Table"
-								/>
-								<button
-									onClick={preview}
-									className="save"
-									type="button"
-								>
-									preview
-								</button>
-							</div>
-						</div>
-						{/* eslint-disable-next-line max-len */}
-						{/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
-						<div className={className} onClick={this.focus}>
-							<Editor
-								blockRendererFn={this.blockRenderer}
-								blockStyleFn={getBlockStyle}
-								customStyleMap={styleMap}
-								editorState={editorState}
-								handleKeyCommand={this.handleKeyCommand}
-								keyBindingFn={this.mapKeyToEditorCommand}
-								onChange={this.onChange}
-								placeholder="Tell a story..."
-								readOnly={this.state.liveCustomBlockEdits.count()}
-								ref={this.editorRef}
-								spellCheck
+			<div className="double-column">
+				<div className="RichEditor-root">
+					<div className="Menu">
+						<BlockStyleControls
+							editorState={editorState}
+							onToggle={this.toggleBlockType}
+						/>
+						<InlineStyleControls
+							editorState={editorState}
+							onToggle={this.toggleInlineStyle}
+						/>
+						<div className="RichEditor-controls TeXEditor-insert">
+							<button
+								onClick={this.insertTeX}
+								className="math RichEditor-styleButton"
+								type="button"
+							>
+								Math
+							</button>
+							<ModalTable
+								onClick={this.createTable}
+								buttonLabel="Table"
 							/>
 						</div>
 					</div>
-					<Preview
-						login={this.props.login}
-						store={this.props.store}
-						previewStyle={this.state.previewStyle}
-						isLoading={this.state.isLoading}
-					/>
+					{/* eslint-disable-next-line max-len */}
+					{/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
+					<div className={className} onClick={this.focus}>
+						<Editor
+							blockRendererFn={this.blockRenderer}
+							blockStyleFn={getBlockStyle}
+							customStyleMap={styleMap}
+							editorState={editorState}
+							handleKeyCommand={this.handleKeyCommand}
+							keyBindingFn={this.mapKeyToEditorCommand}
+							onChange={this.onChange}
+							placeholder="Tell a story..."
+							readOnly={this.state.liveCustomBlockEdits.count()}
+							ref={this.editorRef}
+							spellCheck
+						/>
+					</div>
 				</div>
-			</>
+				<Preview
+					login={this.props.login}
+					store={this.props.store}
+					contentState={contentState}
+				/>
+			</div>
 		)
 	}
 }

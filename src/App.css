@@ -101,6 +101,9 @@
   left: 0;
   width: 180px;
   height: 24px;
-  background: #f8d7da;
   text-align: center;
+}
+
+.error-message-active {
+  background: #f8d7da;
 }
