@@ -42,7 +42,10 @@ class Preview extends React.Component {
 			isLoading: true,
 			previewStyle: 'preview loading',
 		})
-		// enabled Download buttons
+		// enabled buttons
+		document
+			.getElementById('preview-btn')
+			.setAttribute('disabled', '')
 		document
 			.getElementById('tex-btn')
 			.setAttribute('disabled', '')
@@ -67,7 +70,10 @@ class Preview extends React.Component {
 					isLoading: false,
 					previewStyle: 'preview',
 				})
-				// disabled Download buttons
+				// disabled buttons
+				document
+					.getElementById('preview-btn')
+					.removeAttribute('disabled')
 				document
 					.getElementById('tex-btn')
 					.removeAttribute('disabled')

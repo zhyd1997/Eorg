@@ -21,23 +21,15 @@
 }
 
 .save {
-  font-family: 'Helvetica', sans-serif;
-  color: whitesmoke;
-  text-align: center;
-  background-color: #6c757d;
-  border: 1px solid #6c757d;
-  border-radius: 3px;
   margin-right: 16px;
-  padding: 3px;
-  display: inline-block;
 }
 
-.save:hover {
-  background-color: #5a6268;
-  border: 1px solid #5a6268;
-  box-shadow: 0 0 0 1px gray;
-  cursor: pointer;
-}
+/*.save:hover {*/
+/*  background-color: #5a6268;*/
+/*  border: 1px solid #5a6268;*/
+/*  box-shadow: 0 0 0 1px gray;*/
+/*  cursor: pointer;*/
+/*}*/
 
 .Header {
   display: flex;

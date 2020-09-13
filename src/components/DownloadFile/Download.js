@@ -36,7 +36,7 @@ const Download = ({ login, store, onClick }) => {
 		download(store, 'application/pdf', 'pdf')
 	}
 
-	const preview = <button onClick={onClick} className="save" type="button">preview</button>
+	const preview = <button id="preview-btn" className="save" type="button" onClick={onClick}>preview</button>
 	const downloadButtons = (
 		<>
 			<span>Download</span>
