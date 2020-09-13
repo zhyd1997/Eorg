@@ -1,5 +1,5 @@
 import React from 'react'
-import Download from '../DownloadFile/Download'
+import Toolbar from './Toolbar'
 import Loading from '../Loading'
 import baseUrl from '../baseUrl/baseUrl'
 import convertToTeX, { allTeX } from '../convertContent/convert'
@@ -135,7 +135,7 @@ class Preview extends React.Component {
 		return (
 			<div className={this.state.previewStyle}>
 				<ErrorMessage />
-				<Download login={this.props.login} store={this.props.store} onClick={this.preview} />
+				<Toolbar login={this.props.login} store={this.props.store} onClick={this.preview} />
 				<iframe
 					id="pdf"
 					title="hello"

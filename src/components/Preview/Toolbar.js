@@ -1,7 +1,7 @@
 import React from 'react'
 import baseUrl from '../baseUrl/baseUrl'
 
-const Download = ({ login, store, onClick }) => {
+const Toolbar = ({ login, store, onClick }) => {
 	const download = (auth, contentType, fileExtension) => {
 		const token = `Bearer ${auth.token}`
 		fetch(`${baseUrl}draftJS/${fileExtension}`, {
@@ -62,4 +62,4 @@ const Download = ({ login, store, onClick }) => {
 	)
 }
 
-export default Download
+export default Toolbar
