@@ -36,8 +36,7 @@ const convertToTeX = (contentState) => {
 	for (let k = 0; k < someTeX.length; k += 1) { // Iterating <blocks> ...
 		let TeX = ''
 		const styledStartOffset = []
-		const
-			someTeXInlineStyleSort = []
+		const someTeXInlineStyleSort = []
 		const someTeXInline = someTeX[k].inlineStyleRanges
 
 		for (let i = 0; i < someTeXInline.length; i += 1) {
