@@ -2,6 +2,16 @@
 
 Migrated to [blog](https://zhangyadong.me/)
 
+# Plan *New~*
+
+I am trying to transfer the framework of rich-text-editor from draft-js to quill-js.
+
+- draft-js API is too hard.
+- implement citation after content is impossible.
+- modify the block elements style like markdown or org-mode is impossible.
+
+These situations above only suit me.
+
 # Features
 
 Migrated to [project management](https://github.com/zhyd1997/Eorg/projects)
