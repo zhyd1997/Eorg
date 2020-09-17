@@ -25,7 +25,7 @@ class Preview extends React.Component {
 		})
 		setTimeout(
 			() => {
-				this.setState({ messageStyle: 'fade' })
+				this.setState({ messageStyle: 'tips-fade' })
 			},
 			3000,
 		)

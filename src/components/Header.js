@@ -38,11 +38,11 @@ const Header = ({ storeCollector, isLogIn }) => {
 						if (result.success === true) {
 							setResponse(result.status)
 							setTips('tips success')
-							setTimeout(() => setTips('fade'), 3000)
+							setTimeout(() => setTips('tips-fade'), 3000)
 						} else {
 							setResponse(result.err.message)
 							setTips('tips error')
-							setTimeout(() => setTips('fade'), 3000)
+							setTimeout(() => setTips('tips-fade'), 3000)
 						}
 					})
 			})
@@ -65,7 +65,7 @@ const Header = ({ storeCollector, isLogIn }) => {
 						if (result.success === true) {
 							setResponse(result.status)
 							setTips('tips success')
-							setTimeout(() => setTips('fade'), 3000)
+							setTimeout(() => setTips('tips-fade'), 3000)
 							localStorage.setItem('login', JSON.stringify({
 								login: true,
 								token: result.token,
@@ -74,7 +74,7 @@ const Header = ({ storeCollector, isLogIn }) => {
 						} else {
 							setResponse(result.err.message)
 							setTips('tips error')
-							setTimeout(() => setTips('fade'), 3000)
+							setTimeout(() => setTips('tips-fade'), 3000)
 						}
 					})
 			})
@@ -89,7 +89,7 @@ const Header = ({ storeCollector, isLogIn }) => {
 				storeCollector()
 				setResponse('Logout Successful!')
 				setTips('tips success')
-				setTimeout(() => setTips('fade'), 3000)
+				setTimeout(() => setTips('tips-fade'), 3000)
 			})
 	}
 
