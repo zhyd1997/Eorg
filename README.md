@@ -1,4 +1,5 @@
 # README
+![GitHub](https://img.shields.io/github/license/zhyd1997/Eorg)
 
 Migrated to [blog](https://zhangyadong.me/)
 
