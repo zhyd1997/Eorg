@@ -113,12 +113,17 @@ class RichTextEditor extends React.Component {
 	}
 
 	toggleBlockType(blockType) {
+		if (blockType === 'math') {
+			return this.insertTeX()
+		}
+
 		this.onChange(
 			RichUtils.toggleBlockType(
 				this.state.editorState,
 				blockType,
 			),
 		)
+		return null
 	}
 
 	toggleInlineStyle(inlineStyle) {
@@ -156,13 +161,6 @@ class RichTextEditor extends React.Component {
 							onToggle={this.toggleInlineStyle}
 						/>
 						<div className="RichEditor-controls TeXEditor-insert">
-							<button
-								onClick={this.insertTeX}
-								className="math RichEditor-styleButton"
-								type="button"
-							>
-								Math
-							</button>
 							<ModalTable
 								onClick={this.createTable}
 								buttonLabel="Table"
@@ -238,6 +236,7 @@ const BLOCK_TYPES = [
 	{ label: 'H1', style: 'header-one' },
 	{ label: 'H2', style: 'header-two' },
 	{ label: 'H3', style: 'header-three' },
+	{ label: 'Math', style: 'math' },
 	// {label: 'H4', style: 'header-four'},
 	// {label: 'H5', style: 'header-five'},
 	// {label: 'H6', style: 'header-six'},
