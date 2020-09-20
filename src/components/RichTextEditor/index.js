@@ -345,7 +345,7 @@ class RichTextEditor extends React.Component {
 							editorState={editorState}
 							onToggle={this.toggleInlineStyle}
 						/>
-						<div className="RichEditor-controls TeXEditor-insert">
+						<div className="RichEditor-controls">
 							<ModalTable
 								onClick={this.createTable}
 								buttonLabel="Table"
@@ -354,7 +354,7 @@ class RichTextEditor extends React.Component {
 								cite={this.logState}
 								fetchZ={this.fetchZ}
 								fetchText={this.state.fetchText}
-								buttonLabel="Insert reference"
+								buttonLabel="Cite"
 								handleClickT={this.handleClick}
 								isLoading={this.state.isLoading}
 								isClicked={this.state.isClick}

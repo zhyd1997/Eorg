@@ -32,7 +32,7 @@ const ModalExample = (props) => {
 	}
 
 	return (
-		<div>
+		<>
 			<button type="button" onClick={anotherClick} className="math RichEditor-styleButton">{buttonLabel}</button>
 			<Modal isOpen={modal} toggle={toggle} className={className}>
 				<ModalHeader toggle={toggle}>Modal title</ModalHeader>
@@ -49,7 +49,7 @@ const ModalExample = (props) => {
 					<Button color="secondary" onClick={toggle}>Cancel</Button>
 				</ModalFooter>
 			</Modal>
-		</div>
+		</>
 	)
 }
 
