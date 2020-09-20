@@ -118,8 +118,6 @@ class RichTextEditor extends React.Component {
 			this.setState({
 				targetValue: value,
 				isClick: true,
-			}, () => {
-				console.log(this.state.fetchText, this.state.targetValue)
 			})
 		}
 		return null
@@ -222,7 +220,6 @@ class RichTextEditor extends React.Component {
 		const { entityMap } = editorContentRaw
 
 		if (Object.keys(entityMap).length === 0 && entityMap.constructor === Object) {
-			console.log('no entityMap')
 			this.setState({
 				biblatex: [],
 				bib: {},
@@ -236,7 +233,6 @@ class RichTextEditor extends React.Component {
 			for (let i = 0; i < Object.keys(entityMap).length; i += 1) {
 				if (entityMap[i].type === 'CITATION') {
 					const { key } = entityMap[i].data
-					console.log(key)
 					fetch(`https://api.zotero.org/users/6882019/items/${key}/?format=biblatex`, {
 						method: 'GET',
 						headers: {
@@ -246,7 +242,6 @@ class RichTextEditor extends React.Component {
 					}).then((res) => {
 						res.text()
 							.then((data) => {
-								console.log('tempArray: ', tempArray)
 								const searchTerm = '{'
 								const searchTerm2 = ','
 								const indexOfFirst = data.indexOf(searchTerm)
@@ -255,25 +250,19 @@ class RichTextEditor extends React.Component {
 								const value = data.substr(indexOfFirst + 1, indexOfFirst2 - indexOfFirst - 1)
 
 								temp[key] = value
-								console.log(tempArray.findIndex((item) => item[key] === value))
 
 								if (tempArray.findIndex((item) => item[key] === value) === -1) {
 									tempArray.push(temp)
-								} else {
-									console.log('the item has existed in biblatex')
 								}
 								tempBib[key] = data
 								if (i === Object.keys(entityMap).length - 1) {
 									if (tempArray.length !== 0) {
-										console.log('done')
-										console.log(tempArray)
 										this.setState({
 											biblatex: tempArray,
 											bib: tempBib,
+										}, () => {
+											callback()
 										})
-										console.log('biblatex: ', this.state.biblatex)
-										console.log('bib: ', this.state.bib)
-										callback()
 									}
 								}
 							})

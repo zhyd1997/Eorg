@@ -11,7 +11,7 @@ const convertToTeX = (contentState, biblatex) => {
 	const someTeX = editorContentRaw.blocks
 	const Math = []
 	const someMath = editorContentRaw.entityMap
-	console.log(someTeX)
+
 	// Blocks Processing
 	if (Object.keys(someMath).length) {
 		for (let i = 0; i < Object.keys(someMath).length; i += 1) { // Iterating <entityMap> ...
@@ -71,35 +71,31 @@ const convertToTeX = (contentState, biblatex) => {
 		 */
 
 		if (someTeXInline.length === 0) {
-			console.log('TeX')
 			switch (someTeX[k].type) {
 			case 'unstyled':
-				console.log(someTeXEntity, biblatex.length)
-				if (someTeXEntity !== 0 && biblatex.length !== 0) {
-					console.log('Entity: ', someTeXEntity)
-					console.log(someTeXInline.length, someTeX[k].type, biblatex.length)
-					console.log('Math: ', Math)
-					let s = someTeX[k].text
+				if (someTeXEntity.length !== 0 && biblatex.length !== 0) {
 					for (let i = 0; i < someTeXEntity.length; i += 1) {
-						console.log('---------------------- look here ----------------------')
-						console.log(Math[i], someTeXEntity[i].offset, someTeXEntity[i].length)
-						console.log(someTeX[k].text)
-						const t = Math[i]
-						const offsetS = someTeXEntity[i].offset
-						const lengthS = someTeXEntity[i].length
-						const part1 = s.slice(0, offsetS)
-						const part2 = s.slice(offsetS + lengthS)
-						TeX += ''.concat(part1, t)
-						console.log(''.concat(part1, t))
-						console.log(offsetS, part2)
-						s = part2
-						if (i === someTeXEntity.length - 1 && s.length !== 0) {
-							TeX += s
+						for (let j = 0; j < someTeXEntity[i].length; j += 1) {
+							const startOffset = someTeXEntity[i].offset
+							const citeLength = someTeXEntity[i].length
+							const t = Math[i]
+
+							if (i === 0) {
+								const part1 = someTeX[k].text.slice(0, startOffset)
+								TeX += ''.concat(part1, t)
+							} else {
+								const part1 = someTeX[k].text.slice(offset + length, startOffset)
+								TeX += ''.concat(part1, t)
+							}
+
+							if (i === someTeXEntity.length - 1) {
+								TeX += `${someTeX[k].text.slice(startOffset)}`
+							}
+							offset = startOffset
+							length = citeLength
 						}
-						console.log('---------------------- done ---------------------------')
 					}
 				} else {
-					console.log('hello, I jump over')
 					TeX += someTeX[k].text
 				}
 				break

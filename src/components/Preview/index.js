@@ -48,8 +48,7 @@ class Preview extends React.Component {
 			body: JSON.stringify(content),
 		})
 			.then((res) => res.json())
-			.then((data) => {
-				console.log('posted data:', data)
+			.then(() => {
 				this.previewPDF(store)
 				this.setState({
 					isLoading: false,
@@ -70,9 +69,6 @@ class Preview extends React.Component {
 			body: JSON.stringify(bib),
 		})
 			.then((res) => res.json())
-			.then((data) => {
-				console.log('posted bib:', data)
-			})
 	}
 
 	previewPDF = (store) => {
@@ -96,9 +92,7 @@ class Preview extends React.Component {
 	}
 
 	loadPDF = () => {
-		console.log('test-1')
 		const convertAndPost = () => {
-			console.log('test-2')
 			convertToTeX(this.props.contentState, this.props.biblatex)
 			this.setState({
 				content: allTeX,
@@ -115,7 +109,6 @@ class Preview extends React.Component {
 						this.postBib(this.props.store, this.props.bib)
 							.then(() => {
 								this.postData(this.props.store, this.state.content)
-								console.log('post bib success: ', this.props.bib)
 							})
 					} else {
 						this.postData(this.props.store, this.state.content)
