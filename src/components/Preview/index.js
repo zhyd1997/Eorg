@@ -32,12 +32,6 @@ class Preview extends React.Component {
 	}
 
 	postData = (store, content) => {
-		this.setState({
-			isLoading: true,
-			previewStyle: 'preview loading',
-			disabled: true,
-		})
-
 		const TOKEN = `Bearer ${store.token}`
 		fetch(`${baseUrl}draftJS`, {
 			method: 'POST',
@@ -122,7 +116,13 @@ class Preview extends React.Component {
 				}
 			})
 		}
-		this.props.storeCitations(convertAndPost)
+		this.setState({
+			isLoading: true,
+			previewStyle: 'preview loading',
+			disabled: true,
+		}, () => {
+			this.props.storeCitations(convertAndPost)
+		})
 	}
 
 	preview = () => {
