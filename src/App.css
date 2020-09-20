@@ -99,3 +99,17 @@
 .error-message-active {
   background: #f8d7da;
 }
+
+body {
+  counter-reset: section;
+}
+
+cite::before {
+  counter-increment: section;
+  content: '[' counter(section) ']';
+}
+
+.cite-modal-table tbody tr:hover {
+  background: #5a6268;
+  cursor: pointer;
+}

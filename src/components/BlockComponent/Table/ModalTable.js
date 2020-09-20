@@ -33,7 +33,7 @@ const ModalTable = (props) => {
 
 	return (
 		<>
-			<button color="danger" onClick={toggle} type="button" className="math RichEditor-styleButton">{buttonLabel}</button>
+			<button onClick={toggle} type="button" className="math RichEditor-styleButton">{buttonLabel}</button>
 			<Modal isOpen={modal} toggle={toggle} className={className}>
 				<ModalHeader toggle={toggle}>
 					Tips: &nbsp;the table feature has not finished yet.

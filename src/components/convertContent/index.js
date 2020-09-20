@@ -2,7 +2,7 @@ import { convertToRaw } from 'draft-js'
 
 export const allTeX = []
 
-const convertToTeX = (contentState) => {
+const convertToTeX = (contentState, biblatex) => {
 	const editorContentRaw = convertToRaw(contentState)
 
 	allTeX.length = 0
@@ -11,7 +11,7 @@ const convertToTeX = (contentState) => {
 	const someTeX = editorContentRaw.blocks
 	const Math = []
 	const someMath = editorContentRaw.entityMap
-
+	console.log(someTeX)
 	// Blocks Processing
 	if (Object.keys(someMath).length) {
 		for (let i = 0; i < Object.keys(someMath).length; i += 1) { // Iterating <entityMap> ...
@@ -21,6 +21,16 @@ const convertToTeX = (contentState) => {
 				// TODO table
 
 				Math.push('sorry, but the table feature has not finished !!!')
+			} else if (someMath[i].type === 'CITATION') {
+				const { key } = someMath[i].data
+
+				biblatex.filter((item) => {
+					const title = item[key]
+					if (title !== undefined) {
+						Math.push(`\\cite{${title}}`)
+					}
+					return null
+				})
 			}
 		}
 	}
@@ -38,6 +48,7 @@ const convertToTeX = (contentState) => {
 		const styledStartOffset = []
 		const someTeXInlineStyleSort = []
 		const someTeXInline = someTeX[k].inlineStyleRanges
+		const someTeXEntity = someTeX[k].entityRanges
 
 		for (let i = 0; i < someTeXInline.length; i += 1) {
 			const o = someTeXInline[i].offset
@@ -60,9 +71,37 @@ const convertToTeX = (contentState) => {
 		 */
 
 		if (someTeXInline.length === 0) {
+			console.log('TeX')
 			switch (someTeX[k].type) {
 			case 'unstyled':
-				TeX += someTeX[k].text
+				console.log(someTeXEntity, biblatex.length)
+				if (someTeXEntity !== 0 && biblatex.length !== 0) {
+					console.log('Entity: ', someTeXEntity)
+					console.log(someTeXInline.length, someTeX[k].type, biblatex.length)
+					console.log('Math: ', Math)
+					let s = someTeX[k].text
+					for (let i = 0; i < someTeXEntity.length; i += 1) {
+						console.log('---------------------- look here ----------------------')
+						console.log(Math[i], someTeXEntity[i].offset, someTeXEntity[i].length)
+						console.log(someTeX[k].text)
+						const t = Math[i]
+						const offsetS = someTeXEntity[i].offset
+						const lengthS = someTeXEntity[i].length
+						const part1 = s.slice(0, offsetS)
+						const part2 = s.slice(offsetS + lengthS)
+						TeX += ''.concat(part1, t)
+						console.log(''.concat(part1, t))
+						console.log(offsetS, part2)
+						s = part2
+						if (i === someTeXEntity.length - 1 && s.length !== 0) {
+							TeX += s
+						}
+						console.log('---------------------- done ---------------------------')
+					}
+				} else {
+					console.log('hello, I jump over')
+					TeX += someTeX[k].text
+				}
 				break
 			case 'atomic':
 				someTeX[k].text = Math[count]

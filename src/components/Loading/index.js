@@ -5,7 +5,7 @@ const Loading = ({ isLoading }) => {
 	if (isLoading) {
 		return <Spinner className="spinner" type="grow" />
 	}
-	return ''
+	return null
 }
 
 export default Loading

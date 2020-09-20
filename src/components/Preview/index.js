@@ -59,6 +59,22 @@ class Preview extends React.Component {
 			})
 	}
 
+	postBib = (store, bib) => {
+		const TOKEN = `Bearer ${store.token}`
+		return fetch(`${baseUrl}draftJS/tex`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: TOKEN,
+			},
+			body: JSON.stringify(bib),
+		})
+			.then((res) => res.json())
+			.then((data) => {
+				console.log('posted bib:', data)
+			})
+	}
+
 	previewPDF = (store) => {
 		const token = `Bearer ${store.token}`
 		fetch(`${baseUrl}draftJS/pdf`, {
@@ -80,27 +96,40 @@ class Preview extends React.Component {
 	}
 
 	loadPDF = () => {
-		convertToTeX(this.props.contentState)
-		this.setState({
-			content: allTeX,
-		}, () => {
-			/**
-			 * TODO load pdf
-			 *  if and only if
-			 *      - [x] this.state.data is not empty
-			 *      - [ ] and not equal to prevState.data
-			 */
+		console.log('test-1')
+		const convertAndPost = () => {
+			console.log('test-2')
+			convertToTeX(this.props.contentState, this.props.biblatex)
+			this.setState({
+				content: allTeX,
+			}, () => {
+				/**
+				 * TODO load pdf
+				 *  if and only if
+				 *      - [x] this.state.data is not empty
+				 *      - [ ] and not equal to prevState.data
+				 */
 
-			if (this.props.contentState.hasText()) {
-				this.postData(this.props.store, this.state.content)
-			} else {
-				this.setState({
-					messageContent: 'Nothing you wrote',
-				}, () => {
-					this.displayError(this.state.messageContent)
-				})
-			}
-		})
+				if (this.props.contentState.hasText()) {
+					if (Object.keys(this.props.bib).length !== 0 && this.props.bib.constructor === Object) {
+						this.postBib(this.props.store, this.props.bib)
+							.then(() => {
+								this.postData(this.props.store, this.state.content)
+								console.log('post bib success: ', this.props.bib)
+							})
+					} else {
+						this.postData(this.props.store, this.state.content)
+					}
+				} else {
+					this.setState({
+						messageContent: 'Nothing you wrote',
+					}, () => {
+						this.displayError(this.state.messageContent)
+					})
+				}
+			})
+		}
+		this.props.storeCitations(convertAndPost)
 	}
 
 	preview = () => {

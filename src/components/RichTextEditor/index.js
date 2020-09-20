@@ -1,6 +1,7 @@
 import React from 'react'
 import {
 	Editor, EditorState, getDefaultKeyBinding, RichUtils,
+	CompositeDecorator, Modifier, convertToRaw,
 } from 'draft-js'
 import './index.css'
 import 'draft-js/dist/Draft.css'
@@ -11,19 +12,43 @@ import insertTeXBlock from '../BlockComponent/TeX/modifiers/insertTeXBlock'
 import createTable from '../BlockComponent/Table/modifiers/createTable'
 import ModalTable from '../BlockComponent/Table/ModalTable'
 import Preview from '../Preview'
+import { getEntityStrategy, TokenSpan } from '../Zotero'
+import ModalExample from '../Zotero/ModalExample'
 import '../BlockComponent/TeX/TeXEditor.css'
 import '../BlockComponent/Table/Table.css'
 
 /**
  * Editor Template and KaTeX support are all referenced to Draft.js official example.
+ *
+ * https://github.com/facebook/draft-js/issues/852#issuecomment-383858848
+ *
+ * Change citations data text:
+ * [x] 1. Number will be incremented by click.
+ * [x] 2. it will be decremented when deleted.
+ * [x] 3. tooltip will be display corresponded to different entityKey.
+ *
  */
 
 class RichTextEditor extends React.Component {
 	constructor(props) {
 		super(props)
+
+		const decorator = new CompositeDecorator([
+			{
+				strategy: getEntityStrategy('IMMUTABLE'),
+				component: TokenSpan,
+			},
+		])
+
 		this.state = {
-			editorState: EditorState.createEmpty(),
+			editorState: EditorState.createEmpty(decorator),
 			liveCustomBlockEdits: Map(),
+			fetchText: [],
+			targetValue: 0,
+			isLoading: false,
+			isClick: false,
+			biblatex: [],
+			bib: {},
 		}
 
 		this.editorRef = React.createRef()
@@ -85,6 +110,177 @@ class RichTextEditor extends React.Component {
 		this.setState((prevState) => ({
 			editorState: createTable(prevState.editorState),
 		}))
+	}
+
+	handleClick = (evt) => {
+		if (evt.target.tagName === 'TD') {
+			const value = evt.target.getAttribute('data-cite')
+			this.setState({
+				targetValue: value,
+				isClick: true,
+			}, () => {
+				console.log(this.state.fetchText, this.state.targetValue)
+			})
+		}
+		return null
+	}
+
+	fetchZ = () => {
+		this.setState({
+			isLoading: true,
+		})
+		fetch('https://api.zotero.org/users/6882019/items', {
+			method: 'GET',
+			headers: {
+				'Zotero-API-Version': '3',
+				'Zotero-API-Key': 'UpZgNhfbGzWgHmeWPMg6y10r',
+			},
+		})
+			.then((res) => {
+				res.json()
+					.then((data) => {
+						/**
+						 * [
+						 *      {
+						 *          key: KEY-1,
+						 *          parsedDate: DATE-1,
+						 *          title: TITLE-1
+						 *      },
+						 *      {
+						 *          key: KEY-2,
+						 *          parsedDate: DATE-2,
+						 *          title: TITLE-2
+						 *      },
+						 *      {
+						 *          key: KEY-3,
+						 *          parsedDate: DATE-3,
+						 *          title: TITLE-3
+						 *      },
+						 * ]
+						 *
+						 */
+						const metadata = []
+
+						data.map((i) => {
+							const tempObj = Object.create({})
+
+							tempObj.key = i.key
+							tempObj.creatorSummary = i.meta.creatorSummary
+							tempObj.parsedDate = i.meta.parsedDate
+							tempObj.title = i.data.title
+
+							metadata.push(tempObj)
+
+							return metadata
+						})
+
+						this.setState({
+							fetchText: metadata,
+							isLoading: false,
+						})
+					})
+			})
+	}
+
+	logState = () => {
+		this.insertCite(this.state.editorState)
+		this.setState({
+			isClick: false,
+		})
+	}
+
+	insertCite = (editorState) => {
+		const currentContent = editorState.getCurrentContent()
+		const selection = editorState.getSelection()
+		const entityKey = currentContent
+			.createEntity(
+				'CITATION',
+				'IMMUTABLE',
+				{
+					key: `${this.state.fetchText[this.state.targetValue - 1].key}`,
+					value: `${this.state.fetchText[this.state.targetValue - 1].title}`,
+				},
+			)
+			.getLastCreatedEntityKey()
+
+		const textWithEntity = Modifier.insertText(
+			currentContent,
+			selection,
+			' ',
+			null,
+			entityKey,
+		)
+
+		this.setState({
+			editorState: EditorState.push(editorState, textWithEntity, 'insert-characters'),
+		})
+	}
+
+	storeCitations = (callback) => {
+		const currentContent = this.state.editorState.getCurrentContent()
+		const editorContentRaw = convertToRaw(currentContent)
+		const { entityMap } = editorContentRaw
+
+		if (Object.keys(entityMap).length === 0 && entityMap.constructor === Object) {
+			console.log('no entityMap')
+			this.setState({
+				biblatex: [],
+				bib: {},
+			}, () => {
+				callback()
+			})
+		} else {
+			const tempArray = []
+			const tempBib = Object.create({})
+
+			for (let i = 0; i < Object.keys(entityMap).length; i += 1) {
+				if (entityMap[i].type === 'CITATION') {
+					const { key } = entityMap[i].data
+					console.log(key)
+					fetch(`https://api.zotero.org/users/6882019/items/${key}/?format=biblatex`, {
+						method: 'GET',
+						headers: {
+							'Zotero-API-Version': '3',
+							'Zotero-API-Key': 'UpZgNhfbGzWgHmeWPMg6y10r',
+						},
+					}).then((res) => {
+						res.text()
+							.then((data) => {
+								console.log('tempArray: ', tempArray)
+								const searchTerm = '{'
+								const searchTerm2 = ','
+								const indexOfFirst = data.indexOf(searchTerm)
+								const indexOfFirst2 = data.indexOf(searchTerm2)
+								const temp = Object.create({})
+								const value = data.substr(indexOfFirst + 1, indexOfFirst2 - indexOfFirst - 1)
+
+								temp[key] = value
+								console.log(tempArray.findIndex((item) => item[key] === value))
+
+								if (tempArray.findIndex((item) => item[key] === value) === -1) {
+									tempArray.push(temp)
+								} else {
+									console.log('the item has existed in biblatex')
+								}
+								tempBib[key] = data
+								if (i === Object.keys(entityMap).length - 1) {
+									if (tempArray.length !== 0) {
+										console.log('done')
+										console.log(tempArray)
+										this.setState({
+											biblatex: tempArray,
+											bib: tempBib,
+										})
+										console.log('biblatex: ', this.state.biblatex)
+										console.log('bib: ', this.state.bib)
+										callback()
+									}
+								}
+							})
+					})
+				}
+			}
+		}
 	}
 
 	handleKeyCommand(command, editorState) {
@@ -165,6 +361,15 @@ class RichTextEditor extends React.Component {
 								onClick={this.createTable}
 								buttonLabel="Table"
 							/>
+							<ModalExample
+								cite={this.logState}
+								fetchZ={this.fetchZ}
+								fetchText={this.state.fetchText}
+								buttonLabel="Insert reference"
+								handleClickT={this.handleClick}
+								isLoading={this.state.isLoading}
+								isClicked={this.state.isClick}
+							/>
 						</div>
 					</div>
 					{/* eslint-disable-next-line max-len */}
@@ -188,6 +393,9 @@ class RichTextEditor extends React.Component {
 				<Preview
 					login={this.props.login}
 					store={this.props.store}
+					bib={this.state.bib}
+					biblatex={this.state.biblatex}
+					storeCitations={this.storeCitations}
 					contentState={contentState}
 				/>
 			</div>
