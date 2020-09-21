@@ -267,6 +267,8 @@ class RichTextEditor extends React.Component {
 								}
 							})
 					})
+				} else {
+					callback()
 				}
 			}
 		}
