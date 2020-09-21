@@ -6,22 +6,21 @@ const convertToTeX = (contentState, biblatex) => {
 	const editorContentRaw = convertToRaw(contentState)
 
 	allTeX.length = 0
-	const someTeX = editorContentRaw.blocks
+	const { blocks, entityMap } = editorContentRaw
 	const Math = []
 	const citations = []
-	const someMath = editorContentRaw.entityMap
 
 	// Blocks Processing
-	if (Object.keys(someMath).length) {
-		for (let i = 0; i < Object.keys(someMath).length; i += 1) { // Iterating <entityMap> ...
-			if (someMath[i].type === 'TOKEN') {
-				Math.push(Object.values(someMath)[i].data.content)
-			} else if (someMath[i].type === 'TABLE') {
+	if (Object.keys(entityMap).length) {
+		for (let i = 0; i < Object.keys(entityMap).length; i += 1) { // Iterating <entityMap> ...
+			if (entityMap[i].type === 'TOKEN') {
+				Math.push(Object.values(entityMap)[i].data.content)
+			} else if (entityMap[i].type === 'TABLE') {
 				// TODO table
 
 				Math.push('sorry, but the table feature has not finished !!!')
-			} else if (someMath[i].type === 'CITATION') {
-				const { key } = someMath[i].data
+			} else if (entityMap[i].type === 'CITATION') {
+				const { key } = entityMap[i].data
 
 				biblatex.filter((item) => {
 					const title = item[key]
@@ -42,17 +41,16 @@ const convertToTeX = (contentState, biblatex) => {
 	 *  O(n^2) algorithm
 	 */
 
-	for (let k = 0; k < someTeX.length; k += 1) { // Iterating <blocks> ...
+	for (let k = 0; k < blocks.length; k += 1) { // Iterating <blocks> ...
 		let TeX = ''
-		const someTeXInline = someTeX[k].inlineStyleRanges
-		const someTeXEntity = someTeX[k].entityRanges
+		const { inlineStyleRanges, entityRanges } = blocks[k]
 
 		const ranges = []
 
-		someTeXInline.forEach((item) => {
+		inlineStyleRanges.forEach((item) => {
 			ranges.push(item)
 		})
-		someTeXEntity.forEach((item) => {
+		entityRanges.forEach((item) => {
 			ranges.push(item)
 		})
 
@@ -64,41 +62,44 @@ const convertToTeX = (contentState, biblatex) => {
 		 */
 
 		let position = 0
-		let index = 0 // Math[Index]
+		let index = 0 // citations[Index]
+		let { text } = blocks[k]
+		const { type } = blocks[k]
 
-		switch (someTeX[k].type) {
+		switch (type) {
 		case 'unstyled':
 			for (let i = 0; i < ranges.length; i += 1) {
 				// 1. find the offset and length of styled text.
 				const { offset, length, style } = ranges[i]
 				// 2. slice and concat.
-				const plaintext = someTeX[k].text.slice(position, offset)
+				const plaintext = text.slice(position, offset)
 				let styledText = ''
 
 				if (style === undefined) {
+					// cite item
 					styledText = citations[index]
 					index += 1
 				} else {
 					// inline style
-					styledText = `${texMap[style]}{${someTeX[k].text.slice(offset, offset + length)}}`
+					styledText = `${texMap[style]}{${text.slice(offset, offset + length)}}`
 				}
 				const finalText = plaintext.concat(styledText)
 				// 3. append to TeX.
 				TeX += finalText
 				position = offset + length
 				if (i === ranges.length - 1) {
-					TeX += someTeX[k].text.slice(position)
+					TeX += text.slice(position)
 				}
 			}
 			break
 		case 'atomic':
-			someTeX[k].text = Math[count]
-			TeX += someTeX[k].text
+			text = Math[count]
+			TeX += text
 			count += 1
 
 			break
 		default:
-			TeX += `${texMap[someTeX[k].type]}{${someTeX[k].text}}`
+			TeX += `${texMap[type]}{${text}}`
 		}
 
 		allTeX.push(TeX)
