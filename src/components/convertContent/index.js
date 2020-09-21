@@ -63,43 +63,47 @@ const convertToTeX = (contentState, biblatex) => {
 
 		let position = 0
 		let index = 0 // citations[Index]
-		let { text } = blocks[k]
+		// let { text } = blocks[k]
 		const { type } = blocks[k]
 
 		switch (type) {
 		case 'unstyled':
-			for (let i = 0; i < ranges.length; i += 1) {
-				// 1. find the offset and length of styled text.
-				const { offset, length, style } = ranges[i]
-				// 2. slice and concat.
-				const plaintext = text.slice(position, offset)
-				let styledText = ''
+			if (ranges.length !== 0) {
+				for (let i = 0; i < ranges.length; i += 1) {
+					// 1. find the offset and length of styled text.
+					const { offset, length, style } = ranges[i]
+					// 2. slice and concat.
+					const plaintext = blocks[k].text.slice(position, offset)
+					let styledText = ''
 
-				if (style === undefined) {
-					// cite item
-					styledText = citations[index]
-					index += 1
-				} else {
-					// inline style
-					styledText = `${texMap[style]}{${text.slice(offset, offset + length)}}`
+					if (style === undefined) {
+						// cite item
+						styledText = citations[index]
+						index += 1
+					} else {
+						// inline style
+						styledText = `${texMap[style]}{${blocks[k].text.slice(offset, offset + length)}}`
+					}
+					const finalText = plaintext.concat(styledText)
+					// 3. append to TeX.
+					TeX += finalText
+					position = offset + length
+					if (i === ranges.length - 1) {
+						TeX += blocks[k].text.slice(position)
+					}
 				}
-				const finalText = plaintext.concat(styledText)
-				// 3. append to TeX.
-				TeX += finalText
-				position = offset + length
-				if (i === ranges.length - 1) {
-					TeX += text.slice(position)
-				}
+			} else {
+				TeX += blocks[k].text
 			}
 			break
 		case 'atomic':
-			text = Math[count]
-			TeX += text
+			blocks[k].text = Math[count]
+			TeX += blocks[k].text
 			count += 1
 
 			break
 		default:
-			TeX += `${texMap[type]}{${text}}`
+			TeX += `${texMap[type]}{${blocks[k].text}}`
 		}
 
 		allTeX.push(TeX)
