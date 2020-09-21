@@ -8,6 +8,7 @@ const convertToTeX = (contentState, biblatex) => {
 	allTeX.length = 0
 	const someTeX = editorContentRaw.blocks
 	const Math = []
+	const citations = []
 	const someMath = editorContentRaw.entityMap
 
 	// Blocks Processing
@@ -25,7 +26,7 @@ const convertToTeX = (contentState, biblatex) => {
 				biblatex.filter((item) => {
 					const title = item[key]
 					if (title !== undefined) {
-						Math.push(`\\cite{${title}}`)
+						citations.push(`\\cite{${title}}`)
 					}
 					return null
 				})
@@ -67,7 +68,6 @@ const convertToTeX = (contentState, biblatex) => {
 
 		switch (someTeX[k].type) {
 		case 'unstyled':
-			console.log(Math)
 			for (let i = 0; i < ranges.length; i += 1) {
 				// 1. find the offset and length of styled text.
 				const { offset, length, style } = ranges[i]
@@ -76,8 +76,7 @@ const convertToTeX = (contentState, biblatex) => {
 				let styledText = ''
 
 				if (style === undefined) {
-					// cite item
-					styledText = Math[index]
+					styledText = citations[index]
 					index += 1
 				} else {
 					// inline style
