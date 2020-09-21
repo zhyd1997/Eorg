@@ -76,11 +76,11 @@ const convertToTeX = (contentState, biblatex) => {
 				let styledText = ''
 
 				if (style === undefined) {
-					// inline-style
+					// cite item
 					styledText = Math[index]
 					index += 1
 				} else {
-					// cite item
+					// inline style
 					styledText = `${texMap[style]}{${someTeX[k].text.slice(offset, offset + length)}}`
 				}
 				const finalText = plaintext.concat(styledText)
