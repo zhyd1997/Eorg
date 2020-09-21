@@ -6,8 +6,6 @@ const convertToTeX = (contentState, biblatex) => {
 	const editorContentRaw = convertToRaw(contentState)
 
 	allTeX.length = 0
-	let offset = 0
-	let length = 0
 	const someTeX = editorContentRaw.blocks
 	const Math = []
 	const someMath = editorContentRaw.entityMap
@@ -40,93 +38,68 @@ const convertToTeX = (contentState, biblatex) => {
 	/**
 	 * TODO optimization
 	 *  -- Oops!!!
-	 *  O(n^3) algorithm
+	 *  O(n^2) algorithm
 	 */
 
 	for (let k = 0; k < someTeX.length; k += 1) { // Iterating <blocks> ...
 		let TeX = ''
-		const styledStartOffset = []
-		const someTeXInlineStyleSort = []
 		const someTeXInline = someTeX[k].inlineStyleRanges
 		const someTeXEntity = someTeX[k].entityRanges
 
-		for (let i = 0; i < someTeXInline.length; i += 1) {
-			const o = someTeXInline[i].offset
-			styledStartOffset.push(o)
-		}
+		const ranges = []
 
-		styledStartOffset.sort((a, b) => a - b)
+		someTeXInline.forEach((item) => {
+			ranges.push(item)
+		})
+		someTeXEntity.forEach((item) => {
+			ranges.push(item)
+		})
 
-		for (let i = 0; i < styledStartOffset.length; i += 1) {
-			for (let j = 0; j < Object.values(someTeXInline).length; j += 1) {
-				if (Object.values(someTeXInline)[j].offset === styledStartOffset[i]) {
-					someTeXInlineStyleSort.push(Object.values(someTeXInline)[j])
-				}
-			}
-		}
+		ranges.sort((a, b) => a.offset - b.offset)
 
 		/**
 		 * ** text split algorithm **
 		 * split with inlineStyledText offset and its length
 		 */
 
-		if (someTeXInline.length === 0) {
-			switch (someTeX[k].type) {
-			case 'unstyled':
-				if (someTeXEntity.length !== 0 && biblatex.length !== 0) {
-					for (let i = 0; i < someTeXEntity.length; i += 1) {
-						for (let j = 0; j < someTeXEntity[i].length; j += 1) {
-							const startOffset = someTeXEntity[i].offset
-							const citeLength = someTeXEntity[i].length
-							const t = Math[i]
+		let position = 0
+		let index = 0 // Math[Index]
 
-							if (i === 0) {
-								const part1 = someTeX[k].text.slice(0, startOffset)
-								TeX += ''.concat(part1, t)
-							} else {
-								const part1 = someTeX[k].text.slice(offset + length, startOffset)
-								TeX += ''.concat(part1, t)
-							}
+		switch (someTeX[k].type) {
+		case 'unstyled':
+			console.log(Math)
+			for (let i = 0; i < ranges.length; i += 1) {
+				// 1. find the offset and length of styled text.
+				const { offset, length, style } = ranges[i]
+				// 2. slice and concat.
+				const plaintext = someTeX[k].text.slice(position, offset)
+				let styledText = ''
 
-							if (i === someTeXEntity.length - 1) {
-								TeX += `${someTeX[k].text.slice(startOffset)}`
-							}
-							offset = startOffset
-							length = citeLength
-						}
-					}
+				if (style === undefined) {
+					// inline-style
+					styledText = Math[index]
+					index += 1
 				} else {
-					TeX += someTeX[k].text
+					// cite item
+					styledText = `${texMap[style]}{${someTeX[k].text.slice(offset, offset + length)}}`
 				}
-				break
-			case 'atomic':
-				someTeX[k].text = Math[count]
-				TeX += someTeX[k].text
-				count += 1
-
-				break
-			default:
-				TeX += `${texMap[someTeX[k].type]}{${someTeX[k].text}}`
+				const finalText = plaintext.concat(styledText)
+				// 3. append to TeX.
+				TeX += finalText
+				position = offset + length
+				if (i === ranges.length - 1) {
+					TeX += someTeX[k].text.slice(position)
+				}
 			}
-		} else {
-			for (let i = 0; i < someTeXInlineStyleSort.length; i += 1) {
-				const startOffset = styledStartOffset[i]
-				const styledTextLength = someTeXInlineStyleSort[i].length
-				const textStyle = someTeXInlineStyleSort[i].style
+			break
+		case 'atomic':
+			someTeX[k].text = Math[count]
+			TeX += someTeX[k].text
+			count += 1
 
-				if (i === 0) {
-					TeX += someTeX[k].text.slice(0, startOffset)
-				} else {
-					TeX += someTeX[k].text.slice(offset + length, startOffset)
-				}
-				TeX += `${texMap[textStyle]}{${someTeX[k].text.slice(startOffset, startOffset + styledTextLength)}}`
-
-				if (i === someTeXInlineStyleSort.length - 1) {
-					TeX += `${someTeX[k].text.slice(startOffset + styledTextLength)}`
-				}
-				offset = startOffset
-				length = styledTextLength
-			}
+			break
+		default:
+			TeX += `${texMap[someTeX[k].type]}{${someTeX[k].text}}`
 		}
 
 		allTeX.push(TeX)
