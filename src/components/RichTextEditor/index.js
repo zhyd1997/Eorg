@@ -85,8 +85,6 @@ class RichTextEditor extends React.Component {
 		return null
 	};
 
-	onChange = (editorState) => this.setState({ editorState });
-
 	removeTeX = (blockKey) => {
 		const { editorState, liveCustomBlockEdits } = this.state
 		this.setState({
