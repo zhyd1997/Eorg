@@ -3,7 +3,7 @@ import {
 	Nav, NavItem, Button,
 	Modal, ModalHeader, ModalBody,
 } from 'reactstrap'
-import baseUrl from './baseUrl/baseUrl'
+import baseUrl from './baseUrl'
 
 const Header = ({ storeCollector, isLogIn }) => {
 	const [username, setUsername] = React.useState('')

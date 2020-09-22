@@ -9,7 +9,6 @@ const ModalExample = (props) => {
 	const {
 		buttonLabel,
 		className,
-		editorState,
 		insertCite,
 	} = props
 
@@ -94,7 +93,7 @@ const ModalExample = (props) => {
 	}
 
 	const cite = () => {
-		insertCite(editorState, fetchText, targetValue)
+		insertCite(fetchText, targetValue)
 		setIsClick(false)
 	}
 

@@ -104,7 +104,8 @@ class RichTextEditor extends React.Component {
 		}))
 	}
 
-	insertCite = (editorState, fetchText, targetValue) => {
+	insertCite = (fetchText, targetValue) => {
+		const { editorState } = this.state
 		const currentContent = editorState.getCurrentContent()
 		const selection = editorState.getSelection()
 		const entityKey = currentContent
@@ -210,7 +211,6 @@ class RichTextEditor extends React.Component {
 								buttonLabel="Table"
 							/>
 							<ModalExample
-								editorState={this.state.editorState}
 								insertCite={this.insertCite}
 								buttonLabel="Cite"
 							/>

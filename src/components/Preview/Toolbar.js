@@ -1,5 +1,5 @@
 import React from 'react'
-import baseUrl from '../baseUrl/baseUrl'
+import baseUrl from '../baseUrl'
 
 const Toolbar = (props) => {
 	const {

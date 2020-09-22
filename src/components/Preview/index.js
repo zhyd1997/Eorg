@@ -2,7 +2,7 @@ import React from 'react'
 import { convertToRaw } from 'draft-js'
 import Toolbar from './Toolbar'
 import Loading from '../Loading'
-import baseUrl from '../baseUrl/baseUrl'
+import baseUrl from '../baseUrl'
 
 const allTeX = []
 
@@ -281,6 +281,9 @@ class Preview extends React.Component {
 					}
 				} else {
 					this.setState({
+						isLoading: false,
+						previewStyle: 'preview',
+						disabled: false,
 						messageContent: 'Nothing you wrote',
 					}, () => {
 						this.displayError(this.state.messageContent)
