@@ -1,26 +1,30 @@
 import React from 'react'
+import { convertToRaw } from 'draft-js'
 import Toolbar from './Toolbar'
 import Loading from '../Loading'
 import baseUrl from '../baseUrl/baseUrl'
-import convertToTeX, { allTeX } from '../convertContent'
+
+const allTeX = []
 
 class Preview extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			content: {},
+			content: [],
 			message: '',
 			messageContent: '',
 			isLoading: false,
 			previewStyle: 'preview',
 			messageStyle: 'error-message',
 			disabled: false,
+			biblatex: [],
+			bib: {},
 		}
 	}
 
-	displayError = (content) => {
+	displayError = (messageContent) => {
 		this.setState({
-			message: content,
+			message: messageContent,
 			messageStyle: 'error-message error-message-active',
 		})
 		setTimeout(
@@ -31,19 +35,187 @@ class Preview extends React.Component {
 		)
 	}
 
-	postData = (store, content) => {
-		const TOKEN = `Bearer ${store.token}`
+	convertToTeX = () => {
+		const editorContentRaw = convertToRaw(this.props.contentState)
+		allTeX.length = 0
+
+		const { blocks, entityMap } = editorContentRaw
+		const Math = []
+		const citations = []
+
+		// Blocks Processing
+		if (Object.keys(entityMap).length) {
+			for (let i = 0; i < Object.keys(entityMap).length; i += 1) { // Iterating <entityMap> ...
+				if (entityMap[i].type === 'TOKEN') {
+					Math.push(Object.values(entityMap)[i].data.content)
+				} else if (entityMap[i].type === 'TABLE') {
+					// TODO table
+
+					Math.push('sorry, but the table feature has not finished !!!')
+				} else if (entityMap[i].type === 'CITATION') {
+					const { key } = entityMap[i].data
+
+					this.state.biblatex.filter((item) => {
+						const title = item[key]
+						if (title !== undefined) {
+							citations.push(`\\cite{${title}}`)
+						}
+						return null
+					})
+				}
+			}
+		}
+
+		let count = 0
+
+		/**
+		 * TODO optimization
+		 *  -- Oops!!!
+		 *  O(n^2) algorithm
+		 */
+
+		for (let k = 0; k < blocks.length; k += 1) { // Iterating <blocks> ...
+			let TeX = ''
+			const { inlineStyleRanges, entityRanges } = blocks[k]
+
+			const ranges = []
+
+			inlineStyleRanges.forEach((item) => {
+				ranges.push(item)
+			})
+			entityRanges.forEach((item) => {
+				ranges.push(item)
+			})
+
+			ranges.sort((a, b) => a.offset - b.offset)
+
+			/**
+			 * ** text split algorithm **
+			 * split with inlineStyledText offset and its length
+			 */
+
+			let position = 0
+			let index = 0 // citations[Index]
+			// let { text } = blocks[k]
+			const { type } = blocks[k]
+
+			switch (type) {
+			case 'unstyled':
+				if (ranges.length !== 0) {
+					for (let i = 0; i < ranges.length; i += 1) {
+						// 1. find the offset and length of styled text.
+						const { offset, length, style } = ranges[i]
+						// 2. slice and concat.
+						const plaintext = blocks[k].text.slice(position, offset)
+						let styledText = ''
+
+						if (style === undefined) {
+							// cite item
+							styledText = citations[index]
+							index += 1
+						} else {
+							// inline style
+							styledText = `${texMap[style]}{${blocks[k].text.slice(offset, offset + length)}}`
+						}
+						const finalText = plaintext.concat(styledText)
+						// 3. append to TeX.
+						TeX += finalText
+						position = offset + length
+						if (i === ranges.length - 1) {
+							TeX += blocks[k].text.slice(position)
+						}
+					}
+				} else {
+					TeX += blocks[k].text
+				}
+				break
+			case 'atomic':
+				blocks[k].text = Math[count]
+				TeX += blocks[k].text
+				count += 1
+
+				break
+			default:
+				TeX += `${texMap[type]}{${blocks[k].text}}`
+			}
+
+			allTeX.push(TeX)
+		}
+	}
+
+	storeCitations = (callback) => {
+		// const currentContent = this.state.editorState.getCurrentContent()
+		const editorContentRaw = convertToRaw(this.props.contentState)
+		const { entityMap } = editorContentRaw
+
+		if (Object.keys(entityMap).length === 0 && entityMap.constructor === Object) {
+			this.setState({
+				biblatex: [],
+				bib: {},
+			}, () => {
+				callback()
+			})
+		} else {
+			const tempArray = []
+			const tempBib = Object.create({})
+
+			for (let i = 0; i < Object.keys(entityMap).length; i += 1) {
+				if (entityMap[i].type === 'CITATION') {
+					const { key } = entityMap[i].data
+					fetch(`https://api.zotero.org/users/6882019/items/${key}/?format=biblatex`, {
+						method: 'GET',
+						headers: {
+							'Zotero-API-Version': '3',
+							'Zotero-API-Key': 'UpZgNhfbGzWgHmeWPMg6y10r',
+						},
+					}).then((res) => {
+						res.text()
+							.then((data) => {
+								const searchTerm = '{'
+								const searchTerm2 = ','
+								const indexOfFirst = data.indexOf(searchTerm)
+								const indexOfFirst2 = data.indexOf(searchTerm2)
+								const temp = Object.create({})
+								const value = data.substr(indexOfFirst + 1, indexOfFirst2 - indexOfFirst - 1)
+
+								temp[key] = value
+
+								if (tempArray.findIndex((item) => item[key] === value) === -1) {
+									tempArray.push(temp)
+								}
+								tempBib[key] = data
+								if (i === Object.keys(entityMap).length - 1) {
+									if (tempArray.length !== 0) {
+										this.setState({
+											biblatex: tempArray,
+											bib: tempBib,
+										}, () => {
+											callback()
+										})
+									}
+								}
+							})
+					})
+				} else {
+					callback()
+				}
+			}
+		}
+	}
+
+	postData = () => {
+		const TOKEN = `Bearer ${this.props.store.token}`
 		fetch(`${baseUrl}draftJS`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 				Authorization: TOKEN,
 			},
-			body: JSON.stringify(content),
+			body: JSON.stringify(this.state.content),
 		})
 			.then((res) => res.json())
 			.then(() => {
-				this.previewPDF(store)
+				this.previewPDF(this.props.store)
 				this.setState({
 					isLoading: false,
 					previewStyle: 'preview',
@@ -52,21 +224,21 @@ class Preview extends React.Component {
 			})
 	}
 
-	postBib = (store, bib) => {
-		const TOKEN = `Bearer ${store.token}`
+	postBib = () => {
+		const TOKEN = `Bearer ${this.props.store.token}`
 		return fetch(`${baseUrl}draftJS/tex`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 				Authorization: TOKEN,
 			},
-			body: JSON.stringify(bib),
+			body: JSON.stringify(this.state.bib),
 		})
 			.then((res) => res.json())
 	}
 
-	previewPDF = (store) => {
-		const token = `Bearer ${store.token}`
+	previewPDF = () => {
+		const token = `Bearer ${this.props.store.token}`
 		fetch(`${baseUrl}draftJS/pdf`, {
 			method: 'GET',
 			headers: {
@@ -87,7 +259,7 @@ class Preview extends React.Component {
 
 	loadPDF = () => {
 		const convertAndPost = () => {
-			convertToTeX(this.props.contentState, this.props.biblatex)
+			this.convertToTeX()
 			this.setState({
 				content: allTeX,
 			}, () => {
@@ -99,8 +271,8 @@ class Preview extends React.Component {
 				 */
 
 				if (this.props.contentState.hasText()) {
-					if (Object.keys(this.props.bib).length !== 0 && this.props.bib.constructor === Object) {
-						this.postBib(this.props.store, this.props.bib)
+					if (Object.keys(this.state.bib).length !== 0 && this.state.bib.constructor === Object) {
+						this.postBib(this.props.store, this.state.bib)
 							.then(() => {
 								this.postData(this.props.store, this.state.content)
 							})
@@ -121,7 +293,7 @@ class Preview extends React.Component {
 			previewStyle: 'preview loading',
 			disabled: true,
 		}, () => {
-			this.props.storeCitations(convertAndPost)
+			this.storeCitations(convertAndPost)
 		})
 	}
 
@@ -156,6 +328,16 @@ class Preview extends React.Component {
 			</div>
 		)
 	}
+}
+
+const texMap = {
+	'header-one': '\\section',
+	'header-two': '\\subsection',
+	'header-three': '\\subsubsection',
+	BOLD: '\\textbf',
+	ITALIC: '\\textit',
+	UNDERLINE: '\\underline',
+	CODE: '\\texttt',
 }
 
 export default Preview

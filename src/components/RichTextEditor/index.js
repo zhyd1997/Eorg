@@ -1,7 +1,7 @@
 import React from 'react'
 import {
 	Editor, EditorState, getDefaultKeyBinding, RichUtils,
-	CompositeDecorator, Modifier, convertToRaw,
+	CompositeDecorator, Modifier,
 } from 'draft-js'
 import './index.css'
 import 'draft-js/dist/Draft.css'
@@ -43,8 +43,6 @@ class RichTextEditor extends React.Component {
 		this.state = {
 			editorState: EditorState.createEmpty(decorator),
 			liveCustomBlockEdits: Map(),
-			biblatex: [],
-			bib: {},
 		}
 
 		this.editorRef = React.createRef()
@@ -131,66 +129,6 @@ class RichTextEditor extends React.Component {
 		this.setState({
 			editorState: EditorState.push(editorState, textWithEntity, 'insert-characters'),
 		})
-	}
-
-	storeCitations = (callback) => {
-		const currentContent = this.state.editorState.getCurrentContent()
-		const editorContentRaw = convertToRaw(currentContent)
-		const { entityMap } = editorContentRaw
-
-		if (Object.keys(entityMap).length === 0 && entityMap.constructor === Object) {
-			this.setState({
-				biblatex: [],
-				bib: {},
-			}, () => {
-				callback()
-			})
-		} else {
-			const tempArray = []
-			const tempBib = Object.create({})
-
-			for (let i = 0; i < Object.keys(entityMap).length; i += 1) {
-				if (entityMap[i].type === 'CITATION') {
-					const { key } = entityMap[i].data
-					fetch(`https://api.zotero.org/users/6882019/items/${key}/?format=biblatex`, {
-						method: 'GET',
-						headers: {
-							'Zotero-API-Version': '3',
-							'Zotero-API-Key': 'UpZgNhfbGzWgHmeWPMg6y10r',
-						},
-					}).then((res) => {
-						res.text()
-							.then((data) => {
-								const searchTerm = '{'
-								const searchTerm2 = ','
-								const indexOfFirst = data.indexOf(searchTerm)
-								const indexOfFirst2 = data.indexOf(searchTerm2)
-								const temp = Object.create({})
-								const value = data.substr(indexOfFirst + 1, indexOfFirst2 - indexOfFirst - 1)
-
-								temp[key] = value
-
-								if (tempArray.findIndex((item) => item[key] === value) === -1) {
-									tempArray.push(temp)
-								}
-								tempBib[key] = data
-								if (i === Object.keys(entityMap).length - 1) {
-									if (tempArray.length !== 0) {
-										this.setState({
-											biblatex: tempArray,
-											bib: tempBib,
-										}, () => {
-											callback()
-										})
-									}
-								}
-							})
-					})
-				} else {
-					callback()
-				}
-			}
-		}
 	}
 
 	handleKeyCommand(command, editorState) {
@@ -299,9 +237,6 @@ class RichTextEditor extends React.Component {
 				<Preview
 					login={this.props.login}
 					store={this.props.store}
-					bib={this.state.bib}
-					biblatex={this.state.biblatex}
-					storeCitations={this.storeCitations}
 					contentState={contentState}
 				/>
 			</div>
