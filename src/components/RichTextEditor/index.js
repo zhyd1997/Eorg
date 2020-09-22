@@ -43,10 +43,6 @@ class RichTextEditor extends React.Component {
 		this.state = {
 			editorState: EditorState.createEmpty(decorator),
 			liveCustomBlockEdits: Map(),
-			fetchText: [],
-			targetValue: 0,
-			isLoading: false,
-			isClick: false,
 			biblatex: [],
 			bib: {},
 		}
@@ -112,82 +108,7 @@ class RichTextEditor extends React.Component {
 		}))
 	}
 
-	handleClick = (evt) => {
-		if (evt.target.tagName === 'TD') {
-			const value = evt.target.getAttribute('data-cite')
-			this.setState({
-				targetValue: value,
-				isClick: true,
-			})
-		}
-		return null
-	}
-
-	fetchZ = () => {
-		this.setState({
-			isLoading: true,
-		})
-		fetch('https://api.zotero.org/users/6882019/items', {
-			method: 'GET',
-			headers: {
-				'Zotero-API-Version': '3',
-				'Zotero-API-Key': 'UpZgNhfbGzWgHmeWPMg6y10r',
-			},
-		})
-			.then((res) => {
-				res.json()
-					.then((data) => {
-						/**
-						 * [
-						 *      {
-						 *          key: KEY-1,
-						 *          parsedDate: DATE-1,
-						 *          title: TITLE-1
-						 *      },
-						 *      {
-						 *          key: KEY-2,
-						 *          parsedDate: DATE-2,
-						 *          title: TITLE-2
-						 *      },
-						 *      {
-						 *          key: KEY-3,
-						 *          parsedDate: DATE-3,
-						 *          title: TITLE-3
-						 *      },
-						 * ]
-						 *
-						 */
-						const metadata = []
-
-						data.map((i) => {
-							const tempObj = Object.create({})
-
-							tempObj.key = i.key
-							tempObj.creatorSummary = i.meta.creatorSummary
-							tempObj.parsedDate = i.meta.parsedDate
-							tempObj.title = i.data.title
-
-							metadata.push(tempObj)
-
-							return metadata
-						})
-
-						this.setState({
-							fetchText: metadata,
-							isLoading: false,
-						})
-					})
-			})
-	}
-
-	logState = () => {
-		this.insertCite(this.state.editorState)
-		this.setState({
-			isClick: false,
-		})
-	}
-
-	insertCite = (editorState) => {
+	insertCite = (editorState, fetchText, targetValue) => {
 		const currentContent = editorState.getCurrentContent()
 		const selection = editorState.getSelection()
 		const entityKey = currentContent
@@ -195,8 +116,8 @@ class RichTextEditor extends React.Component {
 				'CITATION',
 				'IMMUTABLE',
 				{
-					key: `${this.state.fetchText[this.state.targetValue - 1].key}`,
-					value: `${this.state.fetchText[this.state.targetValue - 1].title}`,
+					key: `${fetchText[targetValue - 1].key}`,
+					value: `${fetchText[targetValue - 1].title}`,
 				},
 			)
 			.getLastCreatedEntityKey()
@@ -353,13 +274,9 @@ class RichTextEditor extends React.Component {
 								buttonLabel="Table"
 							/>
 							<ModalExample
-								cite={this.logState}
-								fetchZ={this.fetchZ}
-								fetchText={this.state.fetchText}
+								editorState={this.state.editorState}
+								insertCite={this.insertCite}
 								buttonLabel="Cite"
-								handleClickT={this.handleClick}
-								isLoading={this.state.isLoading}
-								isClicked={this.state.isClick}
 							/>
 						</div>
 					</div>

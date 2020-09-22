@@ -9,26 +9,93 @@ const ModalExample = (props) => {
 	const {
 		buttonLabel,
 		className,
-		cite,
-		fetchText,
-		fetchZ,
-		handleClickT,
-		isLoading,
-		isClicked,
+		editorState,
+		insertCite,
 	} = props
 
 	const [modal, setModal] = useState(false)
+	const [targetValue, setTargetValue] = useState(0)
+	const [isClick, setIsClick] = useState(false)
+	const [isLoading, setIsLoading] = useState(false)
+	const [fetchText, setFetchText] = useState([])
 
 	const toggle = () => setModal(!modal)
 
 	const handleClick = () => {
 		toggle()
-		cite()
+		logState()
 	}
 
 	const anotherClick = () => {
 		toggle()
 		fetchZ()
+	}
+
+	const handleClickT = (evt) => {
+		if (evt.target.tagName === 'TD') {
+			const value = evt.target.getAttribute('data-cite')
+			setTargetValue(value)
+			setIsClick(true)
+		}
+		return null
+	}
+
+	const fetchZ = () => {
+		setIsLoading(true)
+		fetch('https://api.zotero.org/users/6882019/items', {
+			method: 'GET',
+			headers: {
+				'Zotero-API-Version': '3',
+				'Zotero-API-Key': 'UpZgNhfbGzWgHmeWPMg6y10r',
+			},
+		})
+			.then((res) => {
+				res.json()
+					.then((data) => {
+						/**
+						 * [
+						 *      {
+						 *          key: KEY-1,
+						 *          parsedDate: DATE-1,
+						 *          title: TITLE-1
+						 *      },
+						 *      {
+						 *          key: KEY-2,
+						 *          parsedDate: DATE-2,
+						 *          title: TITLE-2
+						 *      },
+						 *      {
+						 *          key: KEY-3,
+						 *          parsedDate: DATE-3,
+						 *          title: TITLE-3
+						 *      },
+						 * ]
+						 *
+						 */
+						const metadata = []
+
+						data.map((i) => {
+							const tempObj = Object.create({})
+
+							tempObj.key = i.key
+							tempObj.creatorSummary = i.meta.creatorSummary
+							tempObj.parsedDate = i.meta.parsedDate
+							tempObj.title = i.data.title
+
+							metadata.push(tempObj)
+
+							return metadata
+						})
+
+						setFetchText(metadata)
+						setIsLoading(false)
+					})
+			})
+	}
+
+	const logState = () => {
+		insertCite(editorState, fetchText, targetValue)
+		setIsClick(false)
 	}
 
 	return (
@@ -44,7 +111,7 @@ const ModalExample = (props) => {
 					}
 				</ModalBody>
 				<ModalFooter>
-					<Button color="primary" disabled={!isClicked} onClick={handleClick}>Do Something</Button>
+					<Button color="primary" disabled={!isClick} onClick={handleClick}>Do Something</Button>
 					{' '}
 					<Button color="secondary" onClick={toggle}>Cancel</Button>
 				</ModalFooter>
