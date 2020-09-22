@@ -1,7 +1,7 @@
 import React from 'react'
 
 export default function TableExample(props) {
-	const { fetchText, handleClickT } = props
+	const { fetchText, handleClick } = props
 	let i = 0
 
 	return (
@@ -15,7 +15,7 @@ export default function TableExample(props) {
 			</thead>
 			{/* eslint-disable-next-line max-len */}
 			{/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-noninteractive-element-interactions */}
-			<tbody onClick={handleClickT}>
+			<tbody onClick={handleClick}>
 				{/* eslint-disable-next-line no-return-assign */}
 				{fetchText.map((data) => (
 					<tr data-cite={i += 1} key={data.key}>

@@ -23,15 +23,15 @@ const ModalExample = (props) => {
 
 	const handleClick = () => {
 		toggle()
-		logState()
+		cite()
 	}
 
-	const anotherClick = () => {
+	const createCitations = () => {
 		toggle()
-		fetchZ()
+		fetchItems()
 	}
 
-	const handleClickT = (evt) => {
+	const selectItem = (evt) => {
 		if (evt.target.tagName === 'TD') {
 			const value = evt.target.getAttribute('data-cite')
 			setTargetValue(value)
@@ -40,7 +40,7 @@ const ModalExample = (props) => {
 		return null
 	}
 
-	const fetchZ = () => {
+	const fetchItems = () => {
 		setIsLoading(true)
 		fetch('https://api.zotero.org/users/6882019/items', {
 			method: 'GET',
@@ -93,21 +93,21 @@ const ModalExample = (props) => {
 			})
 	}
 
-	const logState = () => {
+	const cite = () => {
 		insertCite(editorState, fetchText, targetValue)
 		setIsClick(false)
 	}
 
 	return (
 		<>
-			<button type="button" onClick={anotherClick} className="math RichEditor-styleButton">{buttonLabel}</button>
+			<button type="button" onClick={createCitations} className="math RichEditor-styleButton">{buttonLabel}</button>
 			<Modal isOpen={modal} toggle={toggle} className={className}>
 				<ModalHeader toggle={toggle}>Modal title</ModalHeader>
 				<ModalBody style={{ height: '200px', overflow: 'auto' }}>
 					{
 						isLoading
 							? <Loading isLoading={isLoading} />
-							: <TableExample handleClickT={handleClickT} fetchText={fetchText} />
+							: <TableExample handleClick={selectItem} fetchText={fetchText} />
 					}
 				</ModalBody>
 				<ModalFooter>
