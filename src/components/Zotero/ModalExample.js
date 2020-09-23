@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import {
 	Button, Modal, ModalHeader, ModalBody, ModalFooter,
-	Form, FormGroup, Label, Input, FormFeedback, FormText,
+	Form, FormGroup, Input, FormFeedback, FormText,
 } from 'reactstrap'
 import Loading from '../Loading'
 import TableExample from './TableExample'
@@ -200,11 +200,11 @@ const ModalExample = (props) => {
 					}
 					<Form>
 						<FormGroup>
-							<Label for="userID">userID</Label>
 							<Input
 								type="text"
 								name="userID"
 								id="userID"
+								placeholder="userID"
 								onChange={handleChange}
 								innerRef={auth.userID}
 								invalid={!feedback.isValid}
@@ -222,11 +222,11 @@ const ModalExample = (props) => {
 							}
 						</FormGroup>
 						<FormGroup>
-							<Label for="APIkey">API key</Label>
 							<Input
 								type="text"
 								name="APIkey"
 								id="APIkey"
+								placeholder="API key"
 								onChange={handleChange}
 								innerRef={auth.APIkey}
 								invalid={!feedback.isValid}
