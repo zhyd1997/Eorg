@@ -2,7 +2,7 @@ import React from 'react'
 import { convertToRaw } from 'draft-js'
 import Toolbar from './Toolbar'
 import Loading from '../Loading'
-import baseUrl from '../baseUrl'
+import { baseUrl, zoteroUrl } from '../baseUrl'
 
 const allTeX = []
 
@@ -162,11 +162,12 @@ class Preview extends React.Component {
 			for (let i = 0; i < Object.keys(entityMap).length; i += 1) {
 				if (entityMap[i].type === 'CITATION') {
 					const { key } = entityMap[i].data
-					fetch(`https://api.zotero.org/users/6882019/items/${key}/?format=biblatex`, {
+					const { userID, APIkey } = JSON.parse(localStorage.getItem('zotero-Auth'))
+					fetch(`${zoteroUrl}users/${userID}/items/${key}/?format=biblatex`, {
 						method: 'GET',
 						headers: {
 							'Zotero-API-Version': '3',
-							'Zotero-API-Key': 'UpZgNhfbGzWgHmeWPMg6y10r',
+							'Zotero-API-Key': APIkey,
 						},
 					}).then((res) => {
 						res.text()
