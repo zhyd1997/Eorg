@@ -43,6 +43,67 @@ class Preview extends React.Component {
 		const Math = []
 		const citations = []
 
+		const ul = []
+		const ulStart = []
+		const ulEnd = []
+		const ulIndex = []
+		const ulDepth = []
+		const ulJumpIndex = []
+		const ulJumpDepth = []
+
+		// find ul index
+
+		for (let i = 0; i < blocks.length; i += 1) {
+			if (blocks[i].type === 'unordered-list-item') {
+				const tempO = Object.create({})
+
+				tempO.index = i
+				tempO.depth = blocks[i].depth
+
+				ul.push(tempO)
+			}
+		}
+
+		for (let i = 0; i < ul.length - 1; i += 1) {
+			if (i === 0) {
+				ulStart.push(ul[0])
+			}
+			if (ul[i + 1].index - ul[i].index === 1) {
+				if (ul[i + 1].depth > ul[i].depth) {
+					ulStart.push(ul[i + 1])
+				} else if (ul[i + 1].depth < ul[i].depth) {
+					ulEnd.push(ul[i])
+				}
+			}
+			if (i + 1 === ul.length - 1) {
+				ulEnd.push(ul[i + 1])
+			}
+			if (ul[i + 1].index - ul[i].index !== 1) { // look here
+				ulEnd.push(ul[i])
+				ulStart.push(ul[i + 1])
+			}
+		}
+
+		ul.forEach((item) => {
+			ulIndex.push(item.index)
+		})
+
+		ul.forEach((item) => {
+			ulDepth.push(item.depth)
+		})
+
+		for (let i = 1; i < ulIndex.length; i += 1) {
+			if (ulIndex[i] - ulIndex[i - 1] !== 1) {
+				ulJumpIndex.push(ulIndex[i - 1])
+			}
+		}
+
+		for (let i = 1; i < ulDepth.length; i += 1) {
+			if (ulDepth[i] - ulDepth[i - 1] !== 1) {
+				ulJumpDepth.push(ulDepth[i - 1])
+			}
+		}
+
 		// Blocks Processing
 		if (Object.keys(entityMap).length) {
 			for (let i = 0; i < Object.keys(entityMap).length; i += 1) { // Iterating <entityMap> ...
@@ -96,7 +157,6 @@ class Preview extends React.Component {
 
 			let position = 0
 			let index = 0 // citations[Index]
-			// let { text } = blocks[k]
 			const { type } = blocks[k]
 
 			switch (type) {
@@ -135,6 +195,32 @@ class Preview extends React.Component {
 				count += 1
 
 				break
+			case 'unordered-list-item': // TODO added indentation (depth)
+				ulStart.filter((item) => {
+					if (item.index === k) {
+						TeX += '\\begin{itemize}'
+					}
+					return null
+				})
+				TeX += `${texMap[type]} ${blocks[k].text}` // has a space between them.
+				if (ulJumpIndex.indexOf(k) !== -1) {
+					for (let i = 0; i < blocks[k].depth - 1; i += 1) {
+						TeX += '\\end{itemize}'
+					}
+				}
+				if (ulJumpDepth.indexOf(k) !== -1) {
+					for (let i = 0; i < blocks[k].depth - 1; i += 1) {
+						TeX += '\\end{itemize}'
+					}
+				}
+				ulEnd.filter((item) => {
+					if (item.index === k) {
+						TeX += '\\end{itemize}'
+					}
+					return null
+				})
+
+				break
 			default:
 				TeX += `${texMap[type]}{${blocks[k].text}}`
 			}
@@ -144,7 +230,6 @@ class Preview extends React.Component {
 	}
 
 	storeCitations = (callback) => {
-		// const currentContent = this.state.editorState.getCurrentContent()
 		const editorContentRaw = convertToRaw(this.props.contentState)
 		const { entityMap } = editorContentRaw
 
@@ -338,6 +423,7 @@ const texMap = {
 	'header-one': '\\section',
 	'header-two': '\\subsection',
 	'header-three': '\\subsubsection',
+	'unordered-list-item': '\\item',
 	BOLD: '\\textbf',
 	ITALIC: '\\textit',
 	UNDERLINE: '\\underline',
