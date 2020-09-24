@@ -42,18 +42,27 @@ const Toolbar = (props) => {
 
 	const preview = <button disabled={disabled} className="save" type="button" onClick={onClick}>preview</button>
 	const downloadButtons = (
-		<>
-			<span>Download</span>
-			&nbsp;&nbsp;
-			<button disabled={disabled} type="button" onClick={handleLaTeXDownload}>
-				LaTeX
-			</button>
-			&nbsp;&nbsp;
-			<button disabled={disabled} type="button" onClick={handlePDFDownload}>
-				PDF
-			</button>
-			&nbsp;&nbsp;
-		</>
+		<span style={{ position: 'absolute', margin: 0, left: '100px' }}>
+			<i
+				className="far fa-file-archive fa-2x"
+				onClick={handleLaTeXDownload}
+				role="button"
+				aria-label="source-code"
+				aria-hidden="true"
+				aria-disabled={disabled}
+				tabIndex="0"
+			/>
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			<i
+				className="far fa-file-pdf fa-2x"
+				onClick={handlePDFDownload}
+				role="button"
+				aria-label="pdf"
+				aria-hidden="true"
+				aria-disabled={disabled}
+				tabIndex="-1"
+			/>
+		</span>
 	)
 
 	return (
