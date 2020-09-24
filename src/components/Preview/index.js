@@ -191,7 +191,9 @@ class Preview extends React.Component {
 				break
 			case 'atomic':
 				blocks[k].text = Math[count]
+				TeX += '\\begin{equation}'
 				TeX += blocks[k].text
+				TeX += '\\end{equation}'
 				count += 1
 
 				break
