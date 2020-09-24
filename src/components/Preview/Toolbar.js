@@ -32,8 +32,8 @@ const Toolbar = (props) => {
 			})
 	}
 
-	function handleLaTeXDownload() {
-		download(store, 'application/x-tex', 'tex')
+	function handleZipDownload() {
+		download(store, 'application/zip', 'zip')
 	}
 
 	function handlePDFDownload() {
@@ -45,9 +45,9 @@ const Toolbar = (props) => {
 		<span style={{ position: 'absolute', margin: 0, left: '100px' }}>
 			<i
 				className="far fa-file-archive fa-2x"
-				onClick={handleLaTeXDownload}
+				onClick={handleZipDownload}
 				role="button"
-				aria-label="source-code"
+				aria-label="archive-file"
 				aria-hidden="true"
 				aria-disabled={disabled}
 				tabIndex="0"
