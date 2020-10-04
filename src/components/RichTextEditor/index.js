@@ -29,83 +29,67 @@ import '../BlockComponent/Table/Table.css'
  *
  */
 
-class RichTextEditor extends React.Component {
-	constructor(props) {
-		super(props)
+function RichTextEditor({ login, store }) {
+	const decorator = new CompositeDecorator([
+		{
+			strategy: getEntityStrategy('IMMUTABLE'),
+			component: TokenSpan,
+		},
+	])
 
-		const decorator = new CompositeDecorator([
-			{
-				strategy: getEntityStrategy('IMMUTABLE'),
-				component: TokenSpan,
-			},
-		])
+	const [editorState, setEditorState] = React.useState(EditorState.createEmpty(decorator))
+	const [liveCustomBlockEdits, setLiveCustomBlockEdits] = React.useState(Map())
 
-		this.state = {
-			editorState: EditorState.createEmpty(decorator),
-			liveCustomBlockEdits: Map(),
-		}
+	const editorRef = React.useRef(null)
 
-		this.editorRef = React.createRef()
-		this.focus = () => this.editorRef.current.focus()
-		this.onChange = (editorState) => this.setState({ editorState })
-
-		this.handleKeyCommand = this.handleKeyCommand.bind(this)
-		this.mapKeyToEditorCommand = this.mapKeyToEditorCommand.bind(this)
-		this.toggleBlockType = this.toggleBlockType.bind(this)
-		this.toggleInlineStyle = this.toggleInlineStyle.bind(this)
+	const focusEditor = () => {
+		editorRef.current.focus()
 	}
 
-	blockRenderer = (block) => {
+	React.useEffect(() => {
+		focusEditor()
+	}, [])
+
+	const onChange = (editorStateChanged) => setEditorState(editorStateChanged)
+
+	const blockRenderer = (block) => {
 		if (block.getType() === 'atomic') {
 			return {
 				component: BlockComponent,
 				editable: false,
 				props: {
 					onStartEdit: (blockKey) => {
-						const { liveCustomBlockEdits } = this.state
-						this.setState({ liveCustomBlockEdits: liveCustomBlockEdits.set(blockKey, true) })
+						setLiveCustomBlockEdits(liveCustomBlockEdits.set(blockKey, true))
 					},
 					onFinishTeXEdit: (blockKey, newContentState) => {
-						const { liveCustomBlockEdits } = this.state
-						this.setState({
-							liveCustomBlockEdits: liveCustomBlockEdits.remove(blockKey),
-							editorState: EditorState.createWithContent(newContentState),
-						})
+						setLiveCustomBlockEdits(liveCustomBlockEdits.remove(blockKey))
+						setEditorState(EditorState.createWithContent(newContentState))
 					},
 					onFinishTableEdit: (blockKey) => {
-						const { liveCustomBlockEdits } = this.state
-						this.setState({ liveCustomBlockEdits: liveCustomBlockEdits.remove(blockKey) })
+						setLiveCustomBlockEdits(liveCustomBlockEdits.remove(blockKey))
 					},
-					onRemove: (blockKey) => this.removeTeX(blockKey),
+					onRemove: (blockKey) => removeTeX(blockKey),
 				},
 			}
 		}
 		return null
-	};
-
-	removeTeX = (blockKey) => {
-		const { editorState, liveCustomBlockEdits } = this.state
-		this.setState({
-			liveCustomBlockEdits: liveCustomBlockEdits.remove(blockKey),
-			editorState: removeTeXBlock(editorState, blockKey),
-		})
-	};
-
-	insertTeX = () => {
-		this.setState((prevState) => ({
-			liveCustomBlockEdits: Map(),
-			editorState: insertTeXBlock(prevState.editorState),
-		}))
-	};
-
-	createTable = () => {
-		this.setState((prevState) => ({
-			editorState: createTable(prevState.editorState),
-		}))
 	}
 
-	insertCite = (fetchText, targetValue) => {
-		const { editorState } = this.state
+	const removeTeX = (blockKey) => {
+		setLiveCustomBlockEdits(liveCustomBlockEdits.remove(blockKey))
+		setEditorState(removeTeXBlock(editorState, blockKey))
+	}
+
+	const insertTeX = () => {
+		setLiveCustomBlockEdits(Map())
+		setEditorState(insertTeXBlock(editorState))
+	}
+
+	const insertTable = () => {
+		setEditorState(createTable(editorState))
+	}
+
+	const insertCite = (fetchText, targetValue) => {
 		const currentContent = editorState.getCurrentContent()
 		const selection = editorState.getSelection()
 		const entityKey = currentContent
@@ -127,29 +111,27 @@ class RichTextEditor extends React.Component {
 			entityKey,
 		)
 
-		this.setState({
-			editorState: EditorState.push(editorState, textWithEntity, 'insert-characters'),
-		})
+		setEditorState(EditorState.push(editorState, textWithEntity, 'insert-characters'))
 	}
 
-	handleKeyCommand(command, editorState) {
-		const newState = RichUtils.handleKeyCommand(editorState, command)
+	const handleKeyCommand = (command, editorStateChanged) => {
+		const newState = RichUtils.handleKeyCommand(editorStateChanged, command)
 		if (newState) {
-			this.onChange(newState)
+			onChange(newState)
 			return true
 		}
 		return false
 	}
 
-	mapKeyToEditorCommand(e) {
+	const mapKeyToEditorCommand = (e) => {
 		if (e.keyCode === 9 /* TAB */) {
 			const newEditorState = RichUtils.onTab(
 				e,
-				this.state.editorState,
+				editorState,
 				4, /* maxDepth */
 			)
-			if (newEditorState !== this.state.editorState) {
-				this.onChange(newEditorState)
+			if (newEditorState !== editorState) {
+				onChange(newEditorState)
 			}
 			return
 		}
@@ -157,91 +139,87 @@ class RichTextEditor extends React.Component {
 		return getDefaultKeyBinding(e)
 	}
 
-	toggleBlockType(blockType) {
+	const toggleBlockType = (blockType) => {
 		if (blockType === 'math') {
-			return this.insertTeX()
+			return insertTeX()
 		}
 
-		this.onChange(
+		onChange(
 			RichUtils.toggleBlockType(
-				this.state.editorState,
+				editorState,
 				blockType,
 			),
 		)
 		return null
 	}
 
-	toggleInlineStyle(inlineStyle) {
-		this.onChange(
+	const toggleInlineStyle = (inlineStyle) => {
+		onChange(
 			RichUtils.toggleInlineStyle(
-				this.state.editorState,
+				editorState,
 				inlineStyle,
 			),
 		)
 	}
 
-	render() {
-		const { editorState } = this.state
-
-		// If the user changes block type before entering any text, we can
-		// either style the placeholder or hide it. Let's just hide it now.
-		let className = 'RichEditor-editor'
-		const contentState = editorState.getCurrentContent()
-		if (!contentState.hasText()) {
-			if (contentState.getBlockMap().first().getType() !== 'unstyled') {
-				className += ' RichEditor-hidePlaceholder'
-			}
+	// If the user changes block type before entering any text, we can
+	// either style the placeholder or hide it. Let's just hide it now.
+	let className = 'RichEditor-editor'
+	const contentState = editorState.getCurrentContent()
+	if (!contentState.hasText()) {
+		if (contentState.getBlockMap().first().getType() !== 'unstyled') {
+			className += ' RichEditor-hidePlaceholder'
 		}
+	}
 
-		return (
-			<div className="double-column">
-				<div className="RichEditor-root">
-					<div className="Menu">
-						<BlockStyleControls
-							editorState={editorState}
-							onToggle={this.toggleBlockType}
+	return (
+		<div className="double-column">
+			<div className="RichEditor-root">
+				<div className="Menu">
+					<BlockStyleControls
+						editorState={editorState}
+						onToggle={toggleBlockType}
+					/>
+					<InlineStyleControls
+						editorState={editorState}
+						onToggle={toggleInlineStyle}
+					/>
+					<div className="RichEditor-controls">
+						<ModalTable
+							onClick={insertTable}
+							buttonLabel="Table"
 						/>
-						<InlineStyleControls
-							editorState={editorState}
-							onToggle={this.toggleInlineStyle}
-						/>
-						<div className="RichEditor-controls">
-							<ModalTable
-								onClick={this.createTable}
-								buttonLabel="Table"
-							/>
-							<ModalExample
-								insertCite={this.insertCite}
-								buttonLabel="Cite"
-							/>
-						</div>
-					</div>
-					{/* eslint-disable-next-line max-len */}
-					{/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
-					<div className={className} onClick={this.focus}>
-						<Editor
-							blockRendererFn={this.blockRenderer}
-							blockStyleFn={getBlockStyle}
-							customStyleMap={styleMap}
-							editorState={editorState}
-							handleKeyCommand={this.handleKeyCommand}
-							keyBindingFn={this.mapKeyToEditorCommand}
-							onChange={this.onChange}
-							placeholder="Content only supports a single style..."
-							readOnly={this.state.liveCustomBlockEdits.count()}
-							ref={this.editorRef}
-							spellCheck
+						<ModalExample
+							insertCite={insertCite}
+							buttonLabel="Cite"
 						/>
 					</div>
 				</div>
-				<Preview
-					login={this.props.login}
-					store={this.props.store}
-					contentState={contentState}
-				/>
+				{/* eslint-disable-next-line max-len */}
+				{/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
+				<div className={className} onClick={focusEditor}>
+					<Editor
+						blockRendererFn={blockRenderer}
+						blockStyleFn={getBlockStyle}
+						customStyleMap={styleMap}
+						editorState={editorState}
+						handleKeyCommand={handleKeyCommand}
+						keyBindingFn={mapKeyToEditorCommand}
+						onChange={onChange}
+						placeholder="Content only supports a single style..."
+						readOnly={liveCustomBlockEdits.count()}
+						ref={editorRef}
+						spellCheck
+					/>
+				</div>
 			</div>
-		)
-	}
+			<Preview
+				login={login}
+				store={store}
+				contentState={contentState}
+			/>
+		</div>
+	)
 }
 
 // Custom overrides for "code" style.
