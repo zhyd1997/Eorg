@@ -29,8 +29,24 @@ import '../BlockComponent/Table/Table.css'
  *
  */
 
-// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'props' implicitly has an 'any' type.
-const StyleButton = (props) => {
+type StyleButtonTypes = {
+	onToggle: any,
+	style: string,
+	active: boolean,
+	label: string,
+}
+
+type StyleControlsTypes = {
+	editorState: any,
+	onToggle: any,
+}
+
+type RichTextEditorTypes = {
+	login: boolean,
+	store: object,
+}
+
+const StyleButton = (props: StyleButtonTypes) => {
 // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
 	const onToggle = (e) => {
 		e.preventDefault()
@@ -56,8 +72,7 @@ const INLINE_STYLES = [
 	{ label: 'Monospace', style: 'CODE' },
 ]
 
-// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'props' implicitly has an 'any' type.
-const InlineStyleControls = (props) => {
+const InlineStyleControls = (props: StyleControlsTypes) => {
 	const currentStyle = props.editorState.getCurrentInlineStyle()
 
 	return (
@@ -89,8 +104,7 @@ const BLOCK_TYPES = [
 	// {label: 'Code Block', style: 'code-block'},
 ]
 
-// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'props' implicitly has an 'any' type.
-const BlockStyleControls = (props) => {
+const BlockStyleControls = (props: StyleControlsTypes) => {
 	const { editorState } = props
 	const selection = editorState.getSelection()
 	const blockType = editorState
@@ -133,10 +147,7 @@ function getBlockStyle(block) {
 	}
 }
 
-// @ts-expect-error ts-migrate(7031)
-// FIXME: Binding element 'login' implicitly has an 'any' ty...
-//  Remove this comment to see the full error message
-function RichTextEditor({ login, store }) {
+function RichTextEditor({ login, store }: RichTextEditorTypes) {
 	const decorator = new CompositeDecorator([
 		{
 			strategy: getEntityStrategy('IMMUTABLE'),
@@ -147,10 +158,9 @@ function RichTextEditor({ login, store }) {
 	const [editorState, setEditorState] = React.useState(EditorState.createEmpty(decorator))
 	const [liveCustomBlockEdits, setLiveCustomBlockEdits] = React.useState(Map())
 
-	const editorRef = React.useRef(null)
+	const editorRef = React.useRef<HTMLElement>(null!)
 
 	const focusEditor = () => {
-		// @ts-expect-error ts-migrate(2531) FIXME: Object is possibly 'null'.
 		editorRef.current.focus()
 	}
 
@@ -158,13 +168,9 @@ function RichTextEditor({ login, store }) {
 		focusEditor()
 	}, [])
 
-	// @ts-expect-error ts-migrate(7006)
-	// FIXME: Parameter 'editorStateChanged' implicitly has an '...
-	//  Remove this comment to see the full error message
-	const onChange = (editorStateChanged) => setEditorState(editorStateChanged)
+	const onChange = (editorStateChanged: any) => setEditorState(editorStateChanged)
 
-	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'blockKey' implicitly has an 'any' type.
-	const removeTeX = (blockKey) => {
+	const removeTeX = (blockKey: string) => {
 		setLiveCustomBlockEdits(liveCustomBlockEdits.remove(blockKey))
 		setEditorState(removeTeXBlock(editorState, blockKey))
 	}
@@ -213,25 +219,19 @@ function RichTextEditor({ login, store }) {
 				component: BlockComponent,
 				editable: false,
 				props: {
-					// @ts-expect-error ts-migrate(7006)
-					// FIXME: Parameter 'blockKey' implicitly has an 'any' type.
-					onStartEdit: (blockKey) => {
+					onStartEdit: (blockKey: string) => {
 						setLiveCustomBlockEdits(liveCustomBlockEdits.set(blockKey, true))
 					},
 					// @ts-expect-error ts-migrate(7006)
 					// FIXME: Parameter 'blockKey' implicitly has an 'any' type.
-					onFinishTeXEdit: (blockKey, newContentState) => {
+					onFinishTeXEdit: (blockKey: string, newContentState) => {
 						setLiveCustomBlockEdits(liveCustomBlockEdits.remove(blockKey))
 						setEditorState(EditorState.createWithContent(newContentState))
 					},
-					// @ts-expect-error ts-migrate(7006)
-					// FIXME: Parameter 'blockKey' implicitly has an 'any' type.
-					onFinishTableEdit: (blockKey) => {
+					onFinishTableEdit: (blockKey: string) => {
 						setLiveCustomBlockEdits(liveCustomBlockEdits.remove(blockKey))
 					},
-					// @ts-expect-error ts-migrate(7006)
-					// FIXME: Parameter 'blockKey' implicitly has an 'any' type.
-					onRemove: (blockKey) => removeTeX(blockKey),
+					onRemove: (blockKey: string) => removeTeX(blockKey),
 				},
 			}
 		}
@@ -265,10 +265,7 @@ function RichTextEditor({ login, store }) {
 		return getDefaultKeyBinding(e)
 	}
 
-	// @ts-expect-error ts-migrate(7006)
-	// FIXME: Parameter 'blockType' implicitly has an 'any' type...
-	//  Remove this comment to see the full error message
-	const toggleBlockType = (blockType) => {
+	const toggleBlockType = (blockType: string) => {
 		if (blockType === 'math') {
 			return insertTeX()
 		}
