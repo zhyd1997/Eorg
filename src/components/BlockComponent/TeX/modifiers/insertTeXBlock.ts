@@ -3,7 +3,7 @@ import {
 	EditorState,
 } from 'draft-js'
 
-const examples = '\\LaTeX'
+const examples = '\\sin{x^2} + \\cos{x^2} = 1'
 
 // @ts-expect-error ts-migrate(7006)
 // FIXME: Parameter 'editorState' implicitly has an 'any' ty...
