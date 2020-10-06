@@ -30,23 +30,27 @@ const ModalExample = (props) => {
 		text: '',
 	})
 
-	const toggle = () => setModal(!modal)
-	const toggleInput = () => setModalInput(!modalInput)
+	function toggle() {
+		setModal(!modal)
+	}
+	function toggleInput() {
+		setModalInput(!modalInput)
+	}
 
 	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-	const handleChange = (e) => {
+	function handleChange(e) {
 		setAuth({
 			...auth,
 			[e.target.name]: e.target.value,
 		})
 	}
 
-	const cite = () => {
+	function cite() {
 		insertCite(fetchText, targetValue)
 		setIsClick(false)
 	}
 
-	const fetchItems = () => {
+	function fetchItems() {
 		setIsLoading(true)
 		// @ts-expect-error ts-migrate(2345) FIXME: Type 'null' is not assignable to type 'string'.
 		const { userID, APIkey } = JSON.parse(localStorage.getItem('zotero-Auth'))
@@ -110,7 +114,7 @@ const ModalExample = (props) => {
 			})
 	}
 
-	const createCitations = () => {
+	function createCitations() {
 		// 2. close input modal
 		// and open cite modal, fetch citations.
 		toggleInput()
@@ -119,7 +123,7 @@ const ModalExample = (props) => {
 	}
 
 	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'loading' implicitly has an 'any' type.
-	const verifyState = (loading, valid, detail) => {
+	function verifyState(loading, valid, detail) {
 		setIsLoading(loading)
 		setFeedback({
 			isValid: valid,
@@ -127,7 +131,7 @@ const ModalExample = (props) => {
 		})
 	}
 
-	const verifyAuth = () => {
+	function verifyAuth() {
 		verifyState(true, true, '')
 		if (auth.userID === '' || auth.APIkey === '') {
 			verifyState(false, false, 'empty input')
@@ -178,19 +182,19 @@ const ModalExample = (props) => {
 		}
 	}
 
-	const handleNext = () => {
+	function handleNext() {
 		// 1. open input modal
 		toggleInput()
 	}
 
-	const handleClick = () => {
+	function handleClick() {
 		// 3. close cite modal
 		toggle()
 		cite()
 	}
 
 	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'evt' implicitly has an 'any' type.
-	const selectItem = (evt) => {
+	function selectItem(evt) {
 		if (evt.target.tagName === 'TD') {
 			const value = evt.target.getAttribute('data-cite')
 			setTargetValue(value)

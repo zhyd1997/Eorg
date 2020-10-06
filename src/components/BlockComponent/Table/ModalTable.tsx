@@ -19,7 +19,9 @@ const ModalTable = (props) => {
 	// const columnRef = React.useRef(null)
 	// const captionRef = React.useRef(null)
 
-	const toggle = () => setModal(!modal)
+	function toggle() {
+		setModal(!modal)
+	}
 
 	// const handleClick = () => {
 	// 	const tableData = {

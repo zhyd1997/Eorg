@@ -1,15 +1,12 @@
 import React from 'react'
 import { UncontrolledTooltip } from 'reactstrap'
 
-export default function Example({
-	target,
-	text,
-}: any) {
-	return (
-		<span>
-			<UncontrolledTooltip placement="right" target={target}>
-				{text}
-			</UncontrolledTooltip>
-		</span>
-	)
-}
+const Example = ({ target, text }: any) => (
+	<span>
+		<UncontrolledTooltip placement="right" target={target}>
+			{text}
+		</UncontrolledTooltip>
+	</span>
+)
+
+export default Example

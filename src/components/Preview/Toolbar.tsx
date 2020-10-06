@@ -7,7 +7,7 @@ const Toolbar = (props: any) => {
 	} = props
 
 	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'auth' implicitly has an 'any' type.
-	const download = (auth, contentType, fileExtension) => {
+	function download(auth, contentType, fileExtension) {
 		const token = `Bearer ${auth.token}`
 		fetch(`${baseUrl}draftJS/${fileExtension}`, {
 			method: 'GET',

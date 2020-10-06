@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function TableExample(props: any) {
+const TableExample = (props: any) => {
 	const { fetchText, handleClick } = props
 	let i = 0
 
@@ -31,3 +31,5 @@ export default function TableExample(props: any) {
 		</table>
 	)
 }
+
+export default TableExample

@@ -3,7 +3,12 @@ import './App.css'
 import { isMobile } from 'react-device-detect'
 import Main from './components/Main'
 
-function App() {
+/**
+ * use arrow functions for functional components and
+ * use normal functions for function defining.
+ */
+
+const App = () => {
 	if (isMobile) {
 		return (
 			<p>
