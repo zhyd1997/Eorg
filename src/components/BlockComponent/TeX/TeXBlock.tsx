@@ -5,7 +5,7 @@ const KaTexOutput = ({
 	content,
 	onClick,
 }: any) => {
-	const container = React.useRef(null)
+	const container = React.useRef<HTMLElement>(null!)
 	const prevProps = usePrevious(content)
 
 	React.useEffect(() => {
@@ -31,7 +31,7 @@ const KaTexOutput = ({
 		)
 	}
 
-	return <div ref={container} onClick={onClick} />
+	return <span ref={container} onClick={onClick} />
 }
 
 type TeXBlockState = any
@@ -63,6 +63,7 @@ class TeXBlock extends React.Component<{}, TeXBlockState> {
 			const { value } = evt.target
 			let invalid = false
 			try {
+				// @ts-ignore
 				katex.__parse(value)
 			} catch (e) {
 				invalid = true

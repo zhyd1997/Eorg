@@ -19,7 +19,8 @@ export default function TableExample(props: any) {
 				{/* eslint-disable-next-line no-return-assign */}
 				{/* @ts-expect-error ts-migrate(7006)
 				 FIXME: Parameter 'data' implicitly has an 'any' type. */}
-				{fetchText.map((data) => (
+				{/* eslint-disable-next-line no-return-assign */}
+				{fetchText.map((data: any) => (
 					<tr data-cite={i += 1} key={data.key}>
 						<td data-cite={i} key={`${data.key}author`}>{data.creatorSummary}</td>
 						<td data-cite={i} key={`${data.key}title`}>{data.title}</td>
