@@ -70,7 +70,8 @@ const ModalExample = (props) => {
 							 * if API-key changed, user maybe also changed.
 							 * and localStorage Item 'zotero-Auth' changed.
 							 */
-							// @ts-expect-error ts-migrate(2345) FIXME: Type 'null' is not assignable to type 'string'.
+							// @ts-expect-error ts-migrate(2345)
+							// FIXME: Type 'null' is not assignable to type 'string'.
 							const { APIkey } = JSON.parse(localStorage.getItem('zotero-Auth'))
 							if (auth.APIkey !== APIkey) {
 								localStorage.setItem('zotero-Auth', JSON.stringify({
@@ -163,7 +164,9 @@ const ModalExample = (props) => {
 						 * ]
 						 *
 						 */
-						// @ts-expect-error ts-migrate(7034) FIXME: Variable 'metadata' implicitly has type 'any[]' in... Remove this comment to see the full error message
+						// @ts-expect-error ts-migrate(7034)
+						// FIXME: Variable 'metadata' implicitly has type 'any[]' in...
+						//  Remove this comment to see the full error message
 						const metadata = []
 
 						// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'i' implicitly has an 'any' type.
@@ -177,11 +180,14 @@ const ModalExample = (props) => {
 
 							metadata.push(tempObj)
 
-							// @ts-expect-error ts-migrate(7005) FIXME: Variable 'metadata' implicitly has an 'any[]' type... Remove this comment to see the full error message
+							// @ts-expect-error ts-migrate(7005)
+							// FIXME: Variable 'metadata' implicitly has an 'any[]' type...
+							//  Remove this comment to see the full error message
 							return metadata
 						})
 
-						// @ts-expect-error ts-migrate(2345) FIXME: Type 'any' is not assignable to type 'never'.
+						// @ts-expect-error ts-migrate(2345)
+						// FIXME: Type 'any' is not assignable to type 'never'.
 						setFetchText(metadata)
 						setIsLoading(false)
 					})
@@ -216,7 +222,9 @@ const ModalExample = (props) => {
 								id="userID"
 								placeholder="userID"
 								onChange={handleChange}
-								// @ts-expect-error ts-migrate(2769) FIXME: Type 'string' is not assignable to type '((instanc... Remove this comment to see the full error message
+								// @ts-expect-error ts-migrate(2769)
+								// FIXME: Type 'string' is not assignable to type '((instanc...
+								//  Remove this comment to see the full error message
 								innerRef={auth.userID}
 								invalid={!feedback.isValid}
 							/>
@@ -239,7 +247,9 @@ const ModalExample = (props) => {
 								id="APIkey"
 								placeholder="API key"
 								onChange={handleChange}
-								// @ts-expect-error ts-migrate(2769) FIXME: Type 'string' is not assignable to type '((instanc... Remove this comment to see the full error message
+								// @ts-expect-error ts-migrate(2769)
+								// FIXME: Type 'string' is not assignable to type '((instanc...
+								//  Remove this comment to see the full error message
 								innerRef={auth.APIkey}
 								invalid={!feedback.isValid}
 							/>

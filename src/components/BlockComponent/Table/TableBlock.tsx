@@ -65,7 +65,8 @@ const TableOutput = (props: any) => {
 					// eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-noninteractive-element-interactions
 					<td
 						key={i + j} // TODO key-2
-						// @ts-expect-error ts-migrate(2322) FIXME: Type 'number' is not assignable to type 'never'.
+						// @ts-expect-error ts-migrate(2322)
+						// FIXME: Type 'number' is not assignable to type 'never'.
 						onClick={() => setCoordinate([i, j])}
 						id={`Tooltip-${i + j}`}
 					>

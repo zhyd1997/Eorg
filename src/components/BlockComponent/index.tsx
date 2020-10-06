@@ -12,7 +12,9 @@ const BlockComponent = (props: any) => {
 	if (type === 'TOKEN') {
 		media = (
 			<TeXBlock
-				// @ts-expect-error ts-migrate(2322) FIXME: Property 'blockProps' does not exist on type 'Intr... Remove this comment to see the full error message
+				// @ts-expect-error ts-migrate(2322)
+				// FIXME: Property 'blockProps' does not exist on type 'Intr...
+				//  Remove this comment to see the full error message
 				blockProps={props.blockProps}
 				block={props.block}
 				contentState={props.contentState}
