@@ -23,7 +23,7 @@
   "scripts": {
     "start": "webpack-dev-server -d --content-base ./public",
     "build": "webpack -p",
-    "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
+    "lint": "npx eslint . --ext .js,.jsx,.ts,.tsx",
     "commit": "npx git-cz"
   },
   "browserslist": {
