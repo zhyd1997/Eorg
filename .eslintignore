@@ -5,7 +5,6 @@ build
 node_modules
 
 src/App.test.js
-src/serviceWorker.js
 src/setupTests.js
 
 src/components/BlockComponent/TeX/TeXBlock.js
