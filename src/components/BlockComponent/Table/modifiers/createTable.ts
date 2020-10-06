@@ -1,10 +1,12 @@
 import {
 	AtomicBlockUtils,
 	EditorState,
+// @ts-expect-error ts-migrate(7016) FIXME: Try `npm install @types/draft-js` if it exists or ... Remove this comment to see the full error message
 } from 'draft-js'
 
 import { tableShape } from '../ModalTable'
 
+// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'editorState' implicitly has an 'any' ty... Remove this comment to see the full error message
 function createTable(editorState) {
 	const contentState = editorState.getCurrentContent()
 	const { row, column, caption } = tableShape[tableShape.length - 1]
@@ -16,6 +18,7 @@ function createTable(editorState) {
 	 *     n: ["cell-n,0", "cell-n,1", ..., "cell-n,m"],
 	 * }
 	 */
+	// @ts-expect-error ts-migrate(2339) FIXME: Property 'fromEntries' does not exist on type 'Obj... Remove this comment to see the full error message
 	const cell = Object.fromEntries(Array.from(
 		{ length: row },
 		// eslint-disable-next-line no-shadow

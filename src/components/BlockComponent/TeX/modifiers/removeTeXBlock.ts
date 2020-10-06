@@ -1,6 +1,7 @@
+// @ts-expect-error ts-migrate(7016) FIXME: Try `npm install @types/draft-js` if it exists or ... Remove this comment to see the full error message
 import { EditorState, Modifier, SelectionState } from 'draft-js'
 
-function removeTeXBlock(editorState, blockKey) {
+function removeTeXBlock(editorState: any, blockKey: any) {
 	const content = editorState.getCurrentContent()
 	const block = content.getBlockForKey(blockKey)
 

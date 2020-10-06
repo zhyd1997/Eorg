@@ -11,6 +11,7 @@ const Main = () => {
 	}, [login])
 
 	function storeCollector() {
+		// @ts-expect-error ts-migrate(2345) FIXME: Type 'null' is not assignable to type 'string'.
 		const localStore = JSON.parse(localStorage.getItem('login'))
 
 		if (localStore && localStore.login) {

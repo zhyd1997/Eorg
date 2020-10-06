@@ -1,11 +1,12 @@
 import React from 'react'
 import { baseUrl } from '../baseUrl'
 
-const Toolbar = (props) => {
+const Toolbar = (props: any) => {
 	const {
 		login, store, disabled, onClick,
 	} = props
 
+	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'auth' implicitly has an 'any' type.
 	const download = (auth, contentType, fileExtension) => {
 		const token = `Bearer ${auth.token}`
 		fetch(`${baseUrl}draftJS/${fileExtension}`, {
@@ -27,6 +28,7 @@ const Toolbar = (props) => {
 						// 4. Force download
 						link.click()
 						// 5. Clean up and remove the link
+						// @ts-expect-error ts-migrate(2531) FIXME: Object is possibly 'null'.
 						link.parentNode.removeChild(link)
 					})
 			})
@@ -50,6 +52,7 @@ const Toolbar = (props) => {
 				aria-label="archive-file"
 				aria-hidden="true"
 				aria-disabled={disabled}
+				// @ts-expect-error ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'number | ... Remove this comment to see the full error message
 				tabIndex="0"
 			/>
 			&nbsp;&nbsp;&nbsp;&nbsp;
@@ -60,6 +63,7 @@ const Toolbar = (props) => {
 				aria-label="pdf"
 				aria-hidden="true"
 				aria-disabled={disabled}
+				// @ts-expect-error ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'number | ... Remove this comment to see the full error message
 				tabIndex="-1"
 			/>
 		</span>

@@ -1,6 +1,6 @@
 import React from 'react'
 
-const TableOutput = (props) => {
+const TableOutput = (props: any) => {
 	const {
 		row, column, caption, cell, block, blockProps,
 	} = props
@@ -21,12 +21,14 @@ const TableOutput = (props) => {
 
 	const [coordinate, setCoordinate] = React.useState([])
 
+	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'evt' implicitly has an 'any' type.
 	function handleClick(evt) {
 		const trTarget = evt.target
 		blockProps.onStartEdit(block.getKey())
 		trTarget.contentEditable = true
 	}
 
+	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'evt' implicitly has an 'any' type.
 	function handleBlur(evt) {
 		const trTarget = evt.target
 		trTarget.contentEditable = false
@@ -63,6 +65,7 @@ const TableOutput = (props) => {
 					// eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-noninteractive-element-interactions
 					<td
 						key={i + j} // TODO key-2
+						// @ts-expect-error ts-migrate(2322) FIXME: Type 'number' is not assignable to type 'never'.
 						onClick={() => setCoordinate([i, j])}
 						id={`Tooltip-${i + j}`}
 					>
@@ -85,6 +88,7 @@ const TableOutput = (props) => {
 	)
 }
 
+// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'props' implicitly has an 'any' type.
 const TableBlock = (props) => {
 	const { contentState, block, blockProps } = props
 

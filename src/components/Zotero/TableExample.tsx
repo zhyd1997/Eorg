@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function TableExample(props) {
+export default function TableExample(props: any) {
 	const { fetchText, handleClick } = props
 	let i = 0
 
@@ -17,6 +17,7 @@ export default function TableExample(props) {
 			{/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-noninteractive-element-interactions */}
 			<tbody onClick={handleClick}>
 				{/* eslint-disable-next-line no-return-assign */}
+				{/* @ts-expect-error ts-migrate(7006) FIXME: Parameter 'data' implicitly has an 'any' type. */}
 				{fetchText.map((data) => (
 					<tr data-cite={i += 1} key={data.key}>
 						<td data-cite={i} key={`${data.key}author`}>{data.creatorSummary}</td>

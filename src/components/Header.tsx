@@ -5,6 +5,7 @@ import {
 } from 'reactstrap'
 import { baseUrl } from './baseUrl'
 
+// @ts-expect-error ts-migrate(7031) FIXME: Binding element 'storeCollector' implicitly has an... Remove this comment to see the full error message
 const Header = ({ storeCollector, isLogIn }) => {
 	const [username, setUsername] = React.useState('')
 	const [password, setPassword] = React.useState('')
@@ -93,12 +94,14 @@ const Header = ({ storeCollector, isLogIn }) => {
 			})
 	}
 
+	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'evt' implicitly has an 'any' type.
 	function handleSignUp(evt) {
 		signUp()
 		toggleSignUp()
 		evt.preventDefault()
 	}
 
+	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'evt' implicitly has an 'any' type.
 	function handleLogIn(evt) {
 		logIn()
 		toggleLogIn()

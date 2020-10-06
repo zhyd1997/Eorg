@@ -2,6 +2,7 @@ import React from 'react'
 import {
 	Editor, EditorState, getDefaultKeyBinding, RichUtils,
 	CompositeDecorator, Modifier,
+// @ts-expect-error ts-migrate(7016) FIXME: Try `npm install @types/draft-js` if it exists or ... Remove this comment to see the full error message
 } from 'draft-js'
 import './index.css'
 import 'draft-js/dist/Draft.css'
@@ -29,6 +30,7 @@ import '../BlockComponent/Table/Table.css'
  *
  */
 
+// @ts-expect-error ts-migrate(7031) FIXME: Binding element 'login' implicitly has an 'any' ty... Remove this comment to see the full error message
 function RichTextEditor({ login, store }) {
 	const decorator = new CompositeDecorator([
 		{
@@ -43,6 +45,7 @@ function RichTextEditor({ login, store }) {
 	const editorRef = React.useRef(null)
 
 	const focusEditor = () => {
+		// @ts-expect-error ts-migrate(2531) FIXME: Object is possibly 'null'.
 		editorRef.current.focus()
 	}
 
@@ -50,24 +53,30 @@ function RichTextEditor({ login, store }) {
 		focusEditor()
 	}, [])
 
+	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'editorStateChanged' implicitly has an '... Remove this comment to see the full error message
 	const onChange = (editorStateChanged) => setEditorState(editorStateChanged)
 
+	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'block' implicitly has an 'any' type.
 	const blockRenderer = (block) => {
 		if (block.getType() === 'atomic') {
 			return {
 				component: BlockComponent,
 				editable: false,
 				props: {
+					// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'blockKey' implicitly has an 'any' type.
 					onStartEdit: (blockKey) => {
 						setLiveCustomBlockEdits(liveCustomBlockEdits.set(blockKey, true))
 					},
+					// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'blockKey' implicitly has an 'any' type.
 					onFinishTeXEdit: (blockKey, newContentState) => {
 						setLiveCustomBlockEdits(liveCustomBlockEdits.remove(blockKey))
 						setEditorState(EditorState.createWithContent(newContentState))
 					},
+					// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'blockKey' implicitly has an 'any' type.
 					onFinishTableEdit: (blockKey) => {
 						setLiveCustomBlockEdits(liveCustomBlockEdits.remove(blockKey))
 					},
+					// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'blockKey' implicitly has an 'any' type.
 					onRemove: (blockKey) => removeTeX(blockKey),
 				},
 			}
@@ -75,6 +84,7 @@ function RichTextEditor({ login, store }) {
 		return null
 	}
 
+	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'blockKey' implicitly has an 'any' type.
 	const removeTeX = (blockKey) => {
 		setLiveCustomBlockEdits(liveCustomBlockEdits.remove(blockKey))
 		setEditorState(removeTeXBlock(editorState, blockKey))
@@ -89,6 +99,7 @@ function RichTextEditor({ login, store }) {
 		setEditorState(createTable(editorState))
 	}
 
+	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'fetchText' implicitly has an 'any' type... Remove this comment to see the full error message
 	const insertCite = (fetchText, targetValue) => {
 		const currentContent = editorState.getCurrentContent()
 		const selection = editorState.getSelection()
@@ -114,6 +125,7 @@ function RichTextEditor({ login, store }) {
 		setEditorState(EditorState.push(editorState, textWithEntity, 'insert-characters'))
 	}
 
+	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'command' implicitly has an 'any' type.
 	const handleKeyCommand = (command, editorStateChanged) => {
 		const newState = RichUtils.handleKeyCommand(editorStateChanged, command)
 		if (newState) {
@@ -123,6 +135,7 @@ function RichTextEditor({ login, store }) {
 		return false
 	}
 
+	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
 	const mapKeyToEditorCommand = (e) => {
 		if (e.keyCode === 9 /* TAB */) {
 			const newEditorState = RichUtils.onTab(
@@ -139,6 +152,7 @@ function RichTextEditor({ login, store }) {
 		return getDefaultKeyBinding(e)
 	}
 
+	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'blockType' implicitly has an 'any' type... Remove this comment to see the full error message
 	const toggleBlockType = (blockType) => {
 		if (blockType === 'math') {
 			return insertTeX()
@@ -153,6 +167,7 @@ function RichTextEditor({ login, store }) {
 		return null
 	}
 
+	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'inlineStyle' implicitly has an 'any' ty... Remove this comment to see the full error message
 	const toggleInlineStyle = (inlineStyle) => {
 		onChange(
 			RichUtils.toggleInlineStyle(
@@ -214,6 +229,7 @@ function RichTextEditor({ login, store }) {
 				</div>
 			</div>
 			<Preview
+				// @ts-expect-error ts-migrate(2322) FIXME: Property 'login' does not exist on type 'Intrinsic... Remove this comment to see the full error message
 				login={login}
 				store={store}
 				contentState={contentState}
@@ -232,16 +248,19 @@ const styleMap = {
 	},
 }
 
+// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'block' implicitly has an 'any' type.
 function getBlockStyle(block) {
 	switch (block.getType()) {
-	case 'blockquote':
-		return 'RichEditor-blockquote'
-	default:
-		return null
+		case 'blockquote':
+			return 'RichEditor-blockquote'
+		default:
+			return null
 	}
 }
 
+// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'props' implicitly has an 'any' type.
 const StyleButton = (props) => {
+// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
 	const onToggle = (e) => {
 		e.preventDefault()
 		props.onToggle(props.style)
@@ -273,6 +292,7 @@ const BLOCK_TYPES = [
 	// {label: 'Code Block', style: 'code-block'},
 ]
 
+// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'props' implicitly has an 'any' type.
 const BlockStyleControls = (props) => {
 	const { editorState } = props
 	const selection = editorState.getSelection()
@@ -303,6 +323,7 @@ const INLINE_STYLES = [
 	{ label: 'Monospace', style: 'CODE' },
 ]
 
+// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'props' implicitly has an 'any' type.
 const InlineStyleControls = (props) => {
 	const currentStyle = props.editorState.getCurrentInlineStyle()
 
