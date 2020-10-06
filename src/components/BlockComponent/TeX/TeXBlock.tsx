@@ -1,4 +1,3 @@
-// @ts-expect-error ts-migrate(7016) FIXME: Try `npm install @types/katex` if it exists or add... Remove this comment to see the full error message
 import katex from 'katex'
 import React from 'react'
 
