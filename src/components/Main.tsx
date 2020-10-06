@@ -6,13 +6,8 @@ const Main = () => {
 	const [login, setLogin] = React.useState(false)
 	const [store, setStore] = React.useState(null)
 
-	React.useEffect(() => {
-		storeCollector()
-	}, [login])
-
 	function storeCollector() {
-		// @ts-expect-error ts-migrate(2345) FIXME: Type 'null' is not assignable to type 'string'.
-		const localStore = JSON.parse(localStorage.getItem('login'))
+		const localStore = JSON.parse(localStorage.getItem('login')!)
 
 		if (localStore && localStore.login) {
 			setLogin(true)
@@ -22,6 +17,10 @@ const Main = () => {
 			setStore(null)
 		}
 	}
+
+	React.useEffect(() => {
+		storeCollector()
+	}, [login])
 
 	return (
 		<>
