@@ -48,5 +48,7 @@ module.exports = {
 		// quote
 		'quote': 'off',
 		'@typescript-eslint/quotes': ['error', 'single'],
+		// no-shadow
+		'no-shadow': 'off',
 	}
 }

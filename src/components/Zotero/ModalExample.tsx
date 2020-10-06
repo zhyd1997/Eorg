@@ -41,6 +41,83 @@ const ModalExample = (props) => {
 		})
 	}
 
+	const cite = () => {
+		insertCite(fetchText, targetValue)
+		setIsClick(false)
+	}
+
+	const fetchItems = () => {
+		setIsLoading(true)
+		// @ts-expect-error ts-migrate(2345) FIXME: Type 'null' is not assignable to type 'string'.
+		const { userID, APIkey } = JSON.parse(localStorage.getItem('zotero-Auth'))
+		fetch(`${zoteroUrl}users/${userID}/items`, {
+			method: 'GET',
+			headers: {
+				'Zotero-API-Version': '3',
+				'Zotero-API-Key': APIkey,
+			},
+		})
+			.then((res) => {
+				res.json()
+					.then((data) => {
+						/**
+						 * [
+						 *      {
+						 *          key: KEY-1,
+						 *          parsedDate: DATE-1,
+						 *          title: TITLE-1
+						 *      },
+						 *      {
+						 *          key: KEY-2,
+						 *          parsedDate: DATE-2,
+						 *          title: TITLE-2
+						 *      },
+						 *      {
+						 *          key: KEY-3,
+						 *          parsedDate: DATE-3,
+						 *          title: TITLE-3
+						 *      },
+						 * ]
+						 *
+						 */
+						// @ts-expect-error ts-migrate(7034)
+						// FIXME: Variable 'metadata' implicitly has type 'any[]' in...
+						//  Remove this comment to see the full error message
+						const metadata = []
+
+						// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'i' implicitly has an 'any' type.
+						data.map((i) => {
+							const tempObj = Object.create({})
+
+							tempObj.key = i.key
+							tempObj.creatorSummary = i.meta.creatorSummary
+							tempObj.parsedDate = i.meta.parsedDate
+							tempObj.title = i.data.title
+
+							metadata.push(tempObj)
+
+							// @ts-expect-error ts-migrate(7005)
+							// FIXME: Variable 'metadata' implicitly has an 'any[]' type...
+							//  Remove this comment to see the full error message
+							return metadata
+						})
+
+						// @ts-expect-error ts-migrate(2345)
+						// FIXME: Type 'any' is not assignable to type 'never'.
+						setFetchText(metadata)
+						setIsLoading(false)
+					})
+			})
+	}
+
+	const createCitations = () => {
+		// 2. close input modal
+		// and open cite modal, fetch citations.
+		toggleInput()
+		toggle()
+		fetchItems()
+	}
+
 	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'loading' implicitly has an 'any' type.
 	const verifyState = (loading, valid, detail) => {
 		setIsLoading(loading)
@@ -112,14 +189,6 @@ const ModalExample = (props) => {
 		cite()
 	}
 
-	const createCitations = () => {
-		// 2. close input modal
-		// and open cite modal, fetch citations.
-		toggleInput()
-		toggle()
-		fetchItems()
-	}
-
 	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'evt' implicitly has an 'any' type.
 	const selectItem = (evt) => {
 		if (evt.target.tagName === 'TD') {
@@ -128,75 +197,6 @@ const ModalExample = (props) => {
 			setIsClick(true)
 		}
 		return null
-	}
-
-	const fetchItems = () => {
-		setIsLoading(true)
-		// @ts-expect-error ts-migrate(2345) FIXME: Type 'null' is not assignable to type 'string'.
-		const { userID, APIkey } = JSON.parse(localStorage.getItem('zotero-Auth'))
-		fetch(`${zoteroUrl}users/${userID}/items`, {
-			method: 'GET',
-			headers: {
-				'Zotero-API-Version': '3',
-				'Zotero-API-Key': APIkey,
-			},
-		})
-			.then((res) => {
-				res.json()
-					.then((data) => {
-						/**
-						 * [
-						 *      {
-						 *          key: KEY-1,
-						 *          parsedDate: DATE-1,
-						 *          title: TITLE-1
-						 *      },
-						 *      {
-						 *          key: KEY-2,
-						 *          parsedDate: DATE-2,
-						 *          title: TITLE-2
-						 *      },
-						 *      {
-						 *          key: KEY-3,
-						 *          parsedDate: DATE-3,
-						 *          title: TITLE-3
-						 *      },
-						 * ]
-						 *
-						 */
-						// @ts-expect-error ts-migrate(7034)
-						// FIXME: Variable 'metadata' implicitly has type 'any[]' in...
-						//  Remove this comment to see the full error message
-						const metadata = []
-
-						// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'i' implicitly has an 'any' type.
-						data.map((i) => {
-							const tempObj = Object.create({})
-
-							tempObj.key = i.key
-							tempObj.creatorSummary = i.meta.creatorSummary
-							tempObj.parsedDate = i.meta.parsedDate
-							tempObj.title = i.data.title
-
-							metadata.push(tempObj)
-
-							// @ts-expect-error ts-migrate(7005)
-							// FIXME: Variable 'metadata' implicitly has an 'any[]' type...
-							//  Remove this comment to see the full error message
-							return metadata
-						})
-
-						// @ts-expect-error ts-migrate(2345)
-						// FIXME: Type 'any' is not assignable to type 'never'.
-						setFetchText(metadata)
-						setIsLoading(false)
-					})
-			})
-	}
-
-	const cite = () => {
-		insertCite(fetchText, targetValue)
-		setIsClick(false)
 	}
 
 	return (

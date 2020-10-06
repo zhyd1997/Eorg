@@ -24,7 +24,7 @@ function createTable(editorState) {
 	//  Remove this comment to see the full error message
 	const cell = Object.fromEntries(Array.from(
 		{ length: row },
-		// eslint-disable-next-line no-shadow
+		// eslint-disable-next-line @typescript-eslint/no-shadow
 		(_, i) => [i, Array.from({ length: column }, (_, j) => `cell-${i},${j}`)],
 	))
 
