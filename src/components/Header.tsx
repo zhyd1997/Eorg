@@ -5,8 +5,12 @@ import {
 } from 'reactstrap'
 import { baseUrl } from './baseUrl'
 
-// @ts-expect-error ts-migrate(7031) FIXME: Binding element 'storeCollector' implicitly has an... Remove this comment to see the full error message
-const Header = ({ storeCollector, isLogIn }) => {
+type HeaderProps = {
+	storeCollector: Function,
+	isLogIn: boolean,
+}
+
+const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
 	const [username, setUsername] = React.useState('')
 	const [password, setPassword] = React.useState('')
 	const [response, setResponse] = React.useState('')
