@@ -2,7 +2,6 @@ import React from 'react'
 import {
 	Editor, EditorState, getDefaultKeyBinding, RichUtils,
 	CompositeDecorator, Modifier,
-// @ts-expect-error ts-migrate(7016) FIXME: Try `npm install @types/draft-js` if it exists or ... Remove this comment to see the full error message
 } from 'draft-js'
 import './index.css'
 import 'draft-js/dist/Draft.css'
@@ -30,7 +29,113 @@ import '../BlockComponent/Table/Table.css'
  *
  */
 
-// @ts-expect-error ts-migrate(7031) FIXME: Binding element 'login' implicitly has an 'any' ty... Remove this comment to see the full error message
+// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'props' implicitly has an 'any' type.
+const StyleButton = (props) => {
+// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
+	const onToggle = (e) => {
+		e.preventDefault()
+		props.onToggle(props.style)
+	}
+	let className = 'RichEditor-styleButton'
+	if (props.active) {
+		className += ' RichEditor-activeButton'
+	}
+
+	return (
+		// eslint-disable-next-line jsx-a11y/no-static-element-interactions
+		<span className={className} onMouseDown={onToggle}>
+			{props.label}
+		</span>
+	)
+}
+
+const INLINE_STYLES = [
+	{ label: 'Bold', style: 'BOLD' },
+	{ label: 'Italic', style: 'ITALIC' },
+	{ label: 'Underline', style: 'UNDERLINE' },
+	{ label: 'Monospace', style: 'CODE' },
+]
+
+// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'props' implicitly has an 'any' type.
+const InlineStyleControls = (props) => {
+	const currentStyle = props.editorState.getCurrentInlineStyle()
+
+	return (
+		<div className="RichEditor-controls">
+			{INLINE_STYLES.map((type) => (
+				<StyleButton
+					key={type.label}
+					active={currentStyle.has(type.style)}
+					label={type.label}
+					onToggle={props.onToggle}
+					style={type.style}
+				/>
+			))}
+		</div>
+	)
+}
+
+const BLOCK_TYPES = [
+	{ label: 'H1', style: 'header-one' },
+	{ label: 'H2', style: 'header-two' },
+	{ label: 'H3', style: 'header-three' },
+	{ label: 'Math', style: 'math' },
+	// {label: 'H4', style: 'header-four'},
+	// {label: 'H5', style: 'header-five'},
+	// {label: 'H6', style: 'header-six'},
+	// {label: 'Blockquote', style: 'blockquote'},
+	{ label: 'UL', style: 'unordered-list-item' },
+	// {label: 'OL', style: 'ordered-list-item'},
+	// {label: 'Code Block', style: 'code-block'},
+]
+
+// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'props' implicitly has an 'any' type.
+const BlockStyleControls = (props) => {
+	const { editorState } = props
+	const selection = editorState.getSelection()
+	const blockType = editorState
+		.getCurrentContent()
+		.getBlockForKey(selection.getStartKey())
+		.getType()
+
+	return (
+		<div className="RichEditor-controls">
+			{BLOCK_TYPES.map((type) => (
+				<StyleButton
+					key={type.label}
+					active={type.style === blockType}
+					label={type.label}
+					onToggle={props.onToggle}
+					style={type.style}
+				/>
+			))}
+		</div>
+	)
+}
+
+// Custom overrides for "code" style.
+const styleMap = {
+	CODE: {
+		backgroundColor: 'rgba(0, 0, 0, 0.05)',
+		fontFamily: '"Inconsolata", "Menlo", "Consolas", monospace',
+		fontSize: 16,
+		padding: 2,
+	},
+}
+
+// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'block' implicitly has an 'any' type.
+function getBlockStyle(block) {
+	switch (block.getType()) {
+		case 'blockquote':
+			return 'RichEditor-blockquote'
+		default:
+			return null
+	}
+}
+
+// @ts-expect-error ts-migrate(7031)
+// FIXME: Binding element 'login' implicitly has an 'any' ty...
+//  Remove this comment to see the full error message
 function RichTextEditor({ login, store }) {
 	const decorator = new CompositeDecorator([
 		{
@@ -53,36 +158,10 @@ function RichTextEditor({ login, store }) {
 		focusEditor()
 	}, [])
 
-	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'editorStateChanged' implicitly has an '... Remove this comment to see the full error message
+	// @ts-expect-error ts-migrate(7006)
+	// FIXME: Parameter 'editorStateChanged' implicitly has an '...
+	//  Remove this comment to see the full error message
 	const onChange = (editorStateChanged) => setEditorState(editorStateChanged)
-
-	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'block' implicitly has an 'any' type.
-	const blockRenderer = (block) => {
-		if (block.getType() === 'atomic') {
-			return {
-				component: BlockComponent,
-				editable: false,
-				props: {
-					// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'blockKey' implicitly has an 'any' type.
-					onStartEdit: (blockKey) => {
-						setLiveCustomBlockEdits(liveCustomBlockEdits.set(blockKey, true))
-					},
-					// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'blockKey' implicitly has an 'any' type.
-					onFinishTeXEdit: (blockKey, newContentState) => {
-						setLiveCustomBlockEdits(liveCustomBlockEdits.remove(blockKey))
-						setEditorState(EditorState.createWithContent(newContentState))
-					},
-					// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'blockKey' implicitly has an 'any' type.
-					onFinishTableEdit: (blockKey) => {
-						setLiveCustomBlockEdits(liveCustomBlockEdits.remove(blockKey))
-					},
-					// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'blockKey' implicitly has an 'any' type.
-					onRemove: (blockKey) => removeTeX(blockKey),
-				},
-			}
-		}
-		return null
-	}
 
 	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'blockKey' implicitly has an 'any' type.
 	const removeTeX = (blockKey) => {
@@ -99,7 +178,9 @@ function RichTextEditor({ login, store }) {
 		setEditorState(createTable(editorState))
 	}
 
-	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'fetchText' implicitly has an 'any' type... Remove this comment to see the full error message
+	// @ts-expect-error ts-migrate(7006)
+	// FIXME: Parameter 'fetchText' implicitly has an 'any' type...
+	//  Remove this comment to see the full error message
 	const insertCite = (fetchText, targetValue) => {
 		const currentContent = editorState.getCurrentContent()
 		const selection = editorState.getSelection()
@@ -118,11 +199,43 @@ function RichTextEditor({ login, store }) {
 			currentContent,
 			selection,
 			' ',
-			null,
+			undefined,
 			entityKey,
 		)
 
 		setEditorState(EditorState.push(editorState, textWithEntity, 'insert-characters'))
+	}
+
+	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'block' implicitly has an 'any' type.
+	const blockRenderer = (block) => {
+		if (block.getType() === 'atomic') {
+			return {
+				component: BlockComponent,
+				editable: false,
+				props: {
+					// @ts-expect-error ts-migrate(7006)
+					// FIXME: Parameter 'blockKey' implicitly has an 'any' type.
+					onStartEdit: (blockKey) => {
+						setLiveCustomBlockEdits(liveCustomBlockEdits.set(blockKey, true))
+					},
+					// @ts-expect-error ts-migrate(7006)
+					// FIXME: Parameter 'blockKey' implicitly has an 'any' type.
+					onFinishTeXEdit: (blockKey, newContentState) => {
+						setLiveCustomBlockEdits(liveCustomBlockEdits.remove(blockKey))
+						setEditorState(EditorState.createWithContent(newContentState))
+					},
+					// @ts-expect-error ts-migrate(7006)
+					// FIXME: Parameter 'blockKey' implicitly has an 'any' type.
+					onFinishTableEdit: (blockKey) => {
+						setLiveCustomBlockEdits(liveCustomBlockEdits.remove(blockKey))
+					},
+					// @ts-expect-error ts-migrate(7006)
+					// FIXME: Parameter 'blockKey' implicitly has an 'any' type.
+					onRemove: (blockKey) => removeTeX(blockKey),
+				},
+			}
+		}
+		return null
 	}
 
 	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'command' implicitly has an 'any' type.
@@ -152,7 +265,9 @@ function RichTextEditor({ login, store }) {
 		return getDefaultKeyBinding(e)
 	}
 
-	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'blockType' implicitly has an 'any' type... Remove this comment to see the full error message
+	// @ts-expect-error ts-migrate(7006)
+	// FIXME: Parameter 'blockType' implicitly has an 'any' type...
+	//  Remove this comment to see the full error message
 	const toggleBlockType = (blockType) => {
 		if (blockType === 'math') {
 			return insertTeX()
@@ -167,7 +282,9 @@ function RichTextEditor({ login, store }) {
 		return null
 	}
 
-	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'inlineStyle' implicitly has an 'any' ty... Remove this comment to see the full error message
+	// @ts-expect-error ts-migrate(7006)
+	// FIXME: Parameter 'inlineStyle' implicitly has an 'any' ty...
+	//  Remove this comment to see the full error message
 	const toggleInlineStyle = (inlineStyle) => {
 		onChange(
 			RichUtils.toggleInlineStyle(
@@ -213,6 +330,7 @@ function RichTextEditor({ login, store }) {
 				{/* eslint-disable-next-line max-len */}
 				{/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
 				<div className={className} onClick={focusEditor}>
+					{ /* @ts-ignore */ }
 					<Editor
 						blockRendererFn={blockRenderer}
 						blockStyleFn={getBlockStyle}
@@ -229,115 +347,13 @@ function RichTextEditor({ login, store }) {
 				</div>
 			</div>
 			<Preview
-				// @ts-expect-error ts-migrate(2322) FIXME: Property 'login' does not exist on type 'Intrinsic... Remove this comment to see the full error message
+				// @ts-expect-error ts-migrate(2322)
+				// FIXME: Property 'login' does not exist on type 'Intrinsic...
+				//  Remove this comment to see the full error message
 				login={login}
 				store={store}
 				contentState={contentState}
 			/>
-		</div>
-	)
-}
-
-// Custom overrides for "code" style.
-const styleMap = {
-	CODE: {
-		backgroundColor: 'rgba(0, 0, 0, 0.05)',
-		fontFamily: '"Inconsolata", "Menlo", "Consolas", monospace',
-		fontSize: 16,
-		padding: 2,
-	},
-}
-
-// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'block' implicitly has an 'any' type.
-function getBlockStyle(block) {
-	switch (block.getType()) {
-		case 'blockquote':
-			return 'RichEditor-blockquote'
-		default:
-			return null
-	}
-}
-
-// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'props' implicitly has an 'any' type.
-const StyleButton = (props) => {
-// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-	const onToggle = (e) => {
-		e.preventDefault()
-		props.onToggle(props.style)
-	}
-	let className = 'RichEditor-styleButton'
-	if (props.active) {
-		className += ' RichEditor-activeButton'
-	}
-
-	return (
-		// eslint-disable-next-line jsx-a11y/no-static-element-interactions
-		<span className={className} onMouseDown={onToggle}>
-			{props.label}
-		</span>
-	)
-}
-
-const BLOCK_TYPES = [
-	{ label: 'H1', style: 'header-one' },
-	{ label: 'H2', style: 'header-two' },
-	{ label: 'H3', style: 'header-three' },
-	{ label: 'Math', style: 'math' },
-	// {label: 'H4', style: 'header-four'},
-	// {label: 'H5', style: 'header-five'},
-	// {label: 'H6', style: 'header-six'},
-	// {label: 'Blockquote', style: 'blockquote'},
-	{ label: 'UL', style: 'unordered-list-item' },
-	// {label: 'OL', style: 'ordered-list-item'},
-	// {label: 'Code Block', style: 'code-block'},
-]
-
-// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'props' implicitly has an 'any' type.
-const BlockStyleControls = (props) => {
-	const { editorState } = props
-	const selection = editorState.getSelection()
-	const blockType = editorState
-		.getCurrentContent()
-		.getBlockForKey(selection.getStartKey())
-		.getType()
-
-	return (
-		<div className="RichEditor-controls">
-			{BLOCK_TYPES.map((type) => (
-				<StyleButton
-					key={type.label}
-					active={type.style === blockType}
-					label={type.label}
-					onToggle={props.onToggle}
-					style={type.style}
-				/>
-			))}
-		</div>
-	)
-}
-
-const INLINE_STYLES = [
-	{ label: 'Bold', style: 'BOLD' },
-	{ label: 'Italic', style: 'ITALIC' },
-	{ label: 'Underline', style: 'UNDERLINE' },
-	{ label: 'Monospace', style: 'CODE' },
-]
-
-// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'props' implicitly has an 'any' type.
-const InlineStyleControls = (props) => {
-	const currentStyle = props.editorState.getCurrentInlineStyle()
-
-	return (
-		<div className="RichEditor-controls">
-			{INLINE_STYLES.map((type) => (
-				<StyleButton
-					key={type.label}
-					active={currentStyle.has(type.style)}
-					label={type.label}
-					onToggle={props.onToggle}
-					style={type.style}
-				/>
-			))}
 		</div>
 	)
 }

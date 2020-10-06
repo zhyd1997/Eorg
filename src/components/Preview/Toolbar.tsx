@@ -52,8 +52,7 @@ const Toolbar = (props: any) => {
 				aria-label="archive-file"
 				aria-hidden="true"
 				aria-disabled={disabled}
-				// @ts-expect-error ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'number | ... Remove this comment to see the full error message
-				tabIndex="0"
+				tabIndex={0}
 			/>
 			&nbsp;&nbsp;&nbsp;&nbsp;
 			<i
@@ -63,8 +62,7 @@ const Toolbar = (props: any) => {
 				aria-label="pdf"
 				aria-hidden="true"
 				aria-disabled={disabled}
-				// @ts-expect-error ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'number | ... Remove this comment to see the full error message
-				tabIndex="-1"
+				tabIndex={-1}
 			/>
 		</span>
 	)
