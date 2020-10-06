@@ -4,7 +4,7 @@ import Header from './Header'
 
 const Main = () => {
 	const [login, setLogin] = React.useState(false)
-	const [store, setStore] = React.useState(null)
+	const [store, setStore] = React.useState({})
 
 	function storeCollector() {
 		const localStore = JSON.parse(localStorage.getItem('login')!)
@@ -14,7 +14,7 @@ const Main = () => {
 			setStore(localStore)
 		} else {
 			setLogin(false)
-			setStore(null)
+			setStore({})
 		}
 	}
 
