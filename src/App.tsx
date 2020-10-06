@@ -5,7 +5,7 @@ import Main from './components/Main'
 
 /**
  * use arrow functions for functional components and
- * use normal functions for function defining.
+ * use normal functions for function definitions.
  */
 
 const App = () => {
