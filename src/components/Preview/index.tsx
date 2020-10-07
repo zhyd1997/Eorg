@@ -1,5 +1,5 @@
 import React from 'react'
-import { convertToRaw } from 'draft-js'
+import { convertToRaw, ContentState } from 'draft-js'
 import Toolbar from './Toolbar'
 import Loading from '../Loading'
 import { baseUrl, zoteroUrl } from '../baseUrl'
@@ -17,10 +17,28 @@ const texMap = {
 	CODE: '\\texttt',
 }
 
-type State = any
+type Props = {
+	contentState: ContentState,
+	store: {
+		token: string,
+	},
+	login: boolean,
+}
 
-class Preview extends React.Component<{}, State> {
-	constructor(props: {}) {
+type State = {
+	content: string [],
+	message: string,
+	messageContent: string,
+	isLoading: boolean,
+	previewStyle: string,
+	messageStyle: string,
+	disabled: boolean,
+	biblatex: any [],
+	bib: {},
+}
+
+class Preview extends React.Component<Props, State> {
+	constructor(props: Props) {
 		super(props)
 		this.state = {
 			content: [],
@@ -49,10 +67,9 @@ class Preview extends React.Component<{}, State> {
 	}
 
 	convertToTeX = (): void => {
-		// @ts-expect-error ts-migrate(2339)
-		// FIXME: Property 'contentState' does not exist on type 'Re...
-		//  Remove this comment to see the full error message
-		const editorContentRaw = convertToRaw(this.props.contentState)
+		const { contentState } = this.props
+		const { biblatex } = this.state
+		const editorContentRaw = convertToRaw(contentState)
 		allTeX.length = 0
 
 		const { blocks, entityMap } = editorContentRaw
@@ -132,8 +149,7 @@ class Preview extends React.Component<{}, State> {
 				} else if (entityMap[i].type === 'CITATION') {
 					const { key } = entityMap[i].data
 
-					// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'item' implicitly has an 'any' type.
-					this.state.biblatex.filter((item) => {
+					biblatex.filter((item) => {
 						const title = item[key]
 						if (title !== undefined) {
 							citations.push(`\\cite{${title}}`)
@@ -261,10 +277,8 @@ class Preview extends React.Component<{}, State> {
 	}
 
 	storeCitations = (callback: () => void): void => {
-		// @ts-expect-error ts-migrate(2339)
-		// FIXME: Property 'contentState' does not exist on type 'Re...
-		//  Remove this comment to see the full error message
-		const editorContentRaw = convertToRaw(this.props.contentState)
+		const { contentState } = this.props
+		const editorContentRaw = convertToRaw(contentState)
 		const { entityMap } = editorContentRaw
 
 		if (Object.keys(entityMap).length === 0 && entityMap.constructor === Object) {
@@ -333,17 +347,16 @@ class Preview extends React.Component<{}, State> {
 	}
 
 	postData = (): void => {
-		// @ts-expect-error ts-migrate(2339)
-		// FIXME: Property 'store' does not exist on type 'Readonly<...
-		//  Remove this comment to see the full error message
-		const TOKEN = `Bearer ${this.props.store.token}`
+		const { content } = this.state
+		const { store } = this.props
+		const TOKEN = `Bearer ${store.token}`
 		fetch(`${baseUrl}draftJS`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 				Authorization: TOKEN,
 			},
-			body: JSON.stringify(this.state.content),
+			body: JSON.stringify(content),
 		})
 			.then((res) => res.json())
 			.then(() => {
@@ -357,26 +370,23 @@ class Preview extends React.Component<{}, State> {
 	}
 
 	postBib = () => {
-		// @ts-expect-error ts-migrate(2339)
-		// FIXME: Property 'store' does not exist on type 'Readonly<...
-		//  Remove this comment to see the full error message
-		const TOKEN = `Bearer ${this.props.store.token}`
+		const { bib } = this.state
+		const { store } = this.props
+		const TOKEN = `Bearer ${store.token}`
 		return fetch(`${baseUrl}draftJS/tex`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 				Authorization: TOKEN,
 			},
-			body: JSON.stringify(this.state.bib),
+			body: JSON.stringify(bib),
 		})
 			.then((res) => res.json())
 	}
 
 	previewPDF = (): void => {
-		// @ts-expect-error ts-migrate(2339)
-		// FIXME: Property 'store' does not exist on type 'Readonly<...
-		//  Remove this comment to see the full error message
-		const token = `Bearer ${this.props.store.token}`
+		const { store } = this.props
+		const token = `Bearer ${store.token}`
 		fetch(`${baseUrl}draftJS/pdf`, {
 			method: 'GET',
 			headers: {
@@ -409,11 +419,10 @@ class Preview extends React.Component<{}, State> {
 				 *      - [ ] and not equal to prevState.data
 				 */
 
-				// @ts-expect-error ts-migrate(2339)
-				// FIXME: Property 'contentState' does not exist on type 'Re...
-				//  Remove this comment to see the full error message
-				if (this.props.contentState.hasText()) {
-					if (Object.keys(this.state.bib).length !== 0 && this.state.bib.constructor === Object) {
+				const { bib, messageContent } = this.state
+				const { contentState } = this.props
+				if (contentState.hasText()) {
+					if (Object.keys(bib).length !== 0 && bib.constructor === Object) {
 						this.postBib()
 							.then(() => {
 								this.postData()
@@ -428,7 +437,7 @@ class Preview extends React.Component<{}, State> {
 						disabled: false,
 						messageContent: 'Nothing you wrote',
 					}, () => {
-						this.displayError(this.state.messageContent)
+						this.displayError(messageContent)
 					})
 				}
 			})
@@ -443,42 +452,42 @@ class Preview extends React.Component<{}, State> {
 	}
 
 	preview = (): void => {
-		// @ts-expect-error ts-migrate(2339)
-		// FIXME: Property 'login' does not exist on type 'Readonly<...
-		//  Remove this comment to see the full error message
-		if (this.props.login) {
+		const { messageContent } = this.state
+		const { login } = this.props
+		if (login) {
 			this.loadPDF()
 		} else {
 			this.setState({
 				messageContent: 'You need to login first!',
 			}, () => {
-				this.displayError(this.state.messageContent)
+				this.displayError(messageContent)
 			})
 		}
 	}
 
 	render() {
-		const ErrorMessage = () => <p className={this.state.messageStyle}>{this.state.message}</p>
+		const {
+			messageStyle, message,
+			previewStyle,
+			disabled,
+			isLoading,
+		} = this.state
+		const { login, store } = this.props
+		const ErrorMessage = () => <p className={messageStyle}>{message}</p>
 		return (
-			<div className={this.state.previewStyle}>
+			<div className={previewStyle}>
 				<ErrorMessage />
 				<Toolbar
-					// @ts-expect-error ts-migrate(2339)
-					// FIXME: Property 'login' does not exist on type 'Readonly<...
-					//  Remove this comment to see the full error message
-					login={this.props.login}
-					// @ts-expect-error ts-migrate(2339)
-					// FIXME: Property 'store' does not exist on type 'Readonly<...
-					//  Remove this comment to see the full error message
-					store={this.props.store}
-					disabled={this.state.disabled}
+					login={login}
+					store={store}
+					disabled={disabled}
 					onClick={this.preview}
 				/>
 				<iframe
 					id="pdf"
 					title="hello"
 				/>
-				<Loading isLoading={this.state.isLoading} />
+				<Loading isLoading={isLoading} />
 			</div>
 		)
 	}

@@ -43,24 +43,28 @@ type StyleControlsTypes = {
 
 type RichTextEditorTypes = {
 	login: boolean,
-	store: object,
+	store: {
+		token: string,
+	},
 }
 
-const StyleButton = (props: StyleButtonTypes) => {
+const StyleButton: React.FC<StyleButtonTypes> = ({
+	onToggle, style, active, label,
+}) => {
 // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-	function onToggle(e): void {
+	function onToggleStyle(e): void {
 		e.preventDefault()
-		props.onToggle(props.style)
+		onToggle(style)
 	}
 	let className = 'RichEditor-styleButton'
-	if (props.active) {
+	if (active) {
 		className += ' RichEditor-activeButton'
 	}
 
 	return (
 		// eslint-disable-next-line jsx-a11y/no-static-element-interactions
-		<span className={className} onMouseDown={onToggle}>
-			{props.label}
+		<span className={className} onMouseDown={onToggleStyle}>
+			{label}
 		</span>
 	)
 }
@@ -72,8 +76,8 @@ const INLINE_STYLES = [
 	{ label: 'Monospace', style: 'CODE' },
 ]
 
-const InlineStyleControls = (props: StyleControlsTypes) => {
-	const currentStyle = props.editorState.getCurrentInlineStyle()
+const InlineStyleControls: React.FC<StyleControlsTypes> = ({ editorState, onToggle }) => {
+	const currentStyle = editorState.getCurrentInlineStyle()
 
 	return (
 		<div className="RichEditor-controls">
@@ -82,7 +86,7 @@ const InlineStyleControls = (props: StyleControlsTypes) => {
 					key={type.label}
 					active={currentStyle.has(type.style)}
 					label={type.label}
-					onToggle={props.onToggle}
+					onToggle={onToggle}
 					style={type.style}
 				/>
 			))}
@@ -341,9 +345,6 @@ const RichTextEditor: React.FC<RichTextEditorTypes> = ({ login, store }) => {
 				</div>
 			</div>
 			<Preview
-				// @ts-expect-error ts-migrate(2322)
-				// FIXME: Property 'login' does not exist on type 'Intrinsic...
-				//  Remove this comment to see the full error message
 				login={login}
 				store={store}
 				contentState={contentState}

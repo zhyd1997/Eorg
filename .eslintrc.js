@@ -23,9 +23,6 @@ module.exports = {
 		'@typescript-eslint',
 	],
 	'rules': {
-		"react/destructuring-assignment": [
-			0
-		],
 		"react/jsx-indent-props": [
 			2,
 			'tab'

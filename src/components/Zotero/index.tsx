@@ -41,27 +41,29 @@ function getDecoratedStyle(mutability: string) {
 	}
 }
 
-export const TokenSpan: React.FC<PropType> = (props) => {
+export const TokenSpan: React.FC<PropType> = ({
+	contentState, entityKey, offsetkey, children,
+}) => {
 	const style = getDecoratedStyle(
-		props.contentState.getEntity(props.entityKey).getMutability(),
+		contentState.getEntity(entityKey).getMutability(),
 	)
 
-	const text = props.contentState.getEntity(props.entityKey).getData().value
+	const text = contentState.getEntity(entityKey).getData().value
 
 	return (
 		<span>
 			<sup>
 				<cite
-					data-offset-key={props.offsetkey}
+					data-offset-key={offsetkey}
 					// TODO
 					// @ts-ignore
 					style={style}
-					id={`Popover-${props.entityKey}`}
+					id={`Popover-${entityKey}`}
 				>
-					{props.children}
+					{children}
 				</cite>
 			</sup>
-			<Example target={`Popover-${props.entityKey}`} text={text} />
+			<Example target={`Popover-${entityKey}`} text={text} />
 		</span>
 	)
 }

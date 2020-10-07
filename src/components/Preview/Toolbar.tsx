@@ -3,18 +3,17 @@ import { baseUrl } from '../baseUrl'
 
 type PropTypes = {
 	login: boolean,
-	store: {},
+	store: {
+		token: string
+	},
 	disabled: boolean,
 	onClick: () => void,
 }
 
-const Toolbar: React.FC<PropTypes> = (props) => {
-	const {
-		login, store, disabled, onClick,
-	} = props
-
-	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'auth' implicitly has an 'any' type.
-	function download(auth, contentType, fileExtension): void {
+const Toolbar: React.FC<PropTypes> = ({
+	login, store, disabled, onClick,
+}) => {
+	function download(auth: { token: string }, contentType: string, fileExtension: string): void {
 		const token = `Bearer ${auth.token}`
 		fetch(`${baseUrl}draftJS/${fileExtension}`, {
 			method: 'GET',
