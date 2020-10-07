@@ -6,11 +6,11 @@ import {
 import { baseUrl } from './baseUrl'
 
 type HeaderProps = {
-	storeCollector: Function,
+	storeCollector: () => void,
 	isLogIn: boolean,
 }
 
-const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
+const Header: React.FC<HeaderProps> = ({ storeCollector, isLogIn }) => {
 	const [username, setUsername] = React.useState('')
 	const [password, setPassword] = React.useState('')
 	const [response, setResponse] = React.useState('')
@@ -18,15 +18,15 @@ const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
 	const [signUpModal, setSignUpModal] = React.useState(false)
 	const [logInModal, setLogInModal] = React.useState(false)
 
-	function toggleSignUp() {
+	function toggleSignUp(): void {
 		setSignUpModal(!signUpModal)
 	}
 
-	function toggleLogIn() {
+	function toggleLogIn(): void {
 		setLogInModal(!logInModal)
 	}
 
-	function signUp() {
+	function signUp(): void {
 		const state = {
 			username, password,
 		}
@@ -53,7 +53,7 @@ const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
 			})
 	}
 
-	function logIn() {
+	function logIn(): void {
 		const state = {
 			username, password,
 		}
@@ -85,7 +85,7 @@ const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
 			})
 	}
 
-	function logOut() {
+	function logOut(): void {
 		fetch(`${baseUrl}users/logout`, {
 			method: 'GET',
 		})
@@ -99,14 +99,14 @@ const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
 	}
 
 	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'evt' implicitly has an 'any' type.
-	function handleSignUp(evt) {
+	function handleSignUp(evt): void {
 		signUp()
 		toggleSignUp()
 		evt.preventDefault()
 	}
 
 	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'evt' implicitly has an 'any' type.
-	function handleLogIn(evt) {
+	function handleLogIn(evt): void {
 		logIn()
 		toggleLogIn()
 		evt.preventDefault()

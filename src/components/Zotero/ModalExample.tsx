@@ -30,27 +30,27 @@ const ModalExample = (props) => {
 		text: '',
 	})
 
-	function toggle() {
+	function toggle(): void {
 		setModal(!modal)
 	}
-	function toggleInput() {
+	function toggleInput(): void {
 		setModalInput(!modalInput)
 	}
 
 	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-	function handleChange(e) {
+	function handleChange(e): void {
 		setAuth({
 			...auth,
 			[e.target.name]: e.target.value,
 		})
 	}
 
-	function cite() {
+	function cite(): void {
 		insertCite(fetchText, targetValue)
 		setIsClick(false)
 	}
 
-	function fetchItems() {
+	function fetchItems(): void {
 		setIsLoading(true)
 		// @ts-expect-error ts-migrate(2345) FIXME: Type 'null' is not assignable to type 'string'.
 		const { userID, APIkey } = JSON.parse(localStorage.getItem('zotero-Auth'))
@@ -84,9 +84,7 @@ const ModalExample = (props) => {
 						 * ]
 						 *
 						 */
-						// @ts-expect-error ts-migrate(7034)
-						// FIXME: Variable 'metadata' implicitly has type 'any[]' in...
-						//  Remove this comment to see the full error message
+						// @ts-ignore
 						const metadata = []
 
 						// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'i' implicitly has an 'any' type.
@@ -100,21 +98,18 @@ const ModalExample = (props) => {
 
 							metadata.push(tempObj)
 
-							// @ts-expect-error ts-migrate(7005)
-							// FIXME: Variable 'metadata' implicitly has an 'any[]' type...
-							//  Remove this comment to see the full error message
+							// @ts-ignore
 							return metadata
 						})
 
-						// @ts-expect-error ts-migrate(2345)
-						// FIXME: Type 'any' is not assignable to type 'never'.
+						// @ts-ignore
 						setFetchText(metadata)
 						setIsLoading(false)
 					})
 			})
 	}
 
-	function createCitations() {
+	function createCitations(): void {
 		// 2. close input modal
 		// and open cite modal, fetch citations.
 		toggleInput()
@@ -122,8 +117,7 @@ const ModalExample = (props) => {
 		fetchItems()
 	}
 
-	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'loading' implicitly has an 'any' type.
-	function verifyState(loading, valid, detail) {
+	function verifyState(loading: boolean, valid: boolean, detail: string): void {
 		setIsLoading(loading)
 		setFeedback({
 			isValid: valid,
@@ -131,7 +125,7 @@ const ModalExample = (props) => {
 		})
 	}
 
-	function verifyAuth() {
+	function verifyAuth(): void {
 		verifyState(true, true, '')
 		if (auth.userID === '' || auth.APIkey === '') {
 			verifyState(false, false, 'empty input')
@@ -151,9 +145,7 @@ const ModalExample = (props) => {
 							 * if API-key changed, user maybe also changed.
 							 * and localStorage Item 'zotero-Auth' changed.
 							 */
-							// @ts-expect-error ts-migrate(2345)
-							// FIXME: Type 'null' is not assignable to type 'string'.
-							const { APIkey } = JSON.parse(localStorage.getItem('zotero-Auth'))
+							const { APIkey } = JSON.parse(localStorage.getItem('zotero-Auth')!)
 							if (auth.APIkey !== APIkey) {
 								localStorage.setItem('zotero-Auth', JSON.stringify({
 									userID: auth.userID,
@@ -182,19 +174,19 @@ const ModalExample = (props) => {
 		}
 	}
 
-	function handleNext() {
+	function handleNext(): void {
 		// 1. open input modal
 		toggleInput()
 	}
 
-	function handleClick() {
+	function handleClick(): void {
 		// 3. close cite modal
 		toggle()
 		cite()
 	}
 
 	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'evt' implicitly has an 'any' type.
-	function selectItem(evt) {
+	function selectItem(evt): null {
 		if (evt.target.tagName === 'TD') {
 			const value = evt.target.getAttribute('data-cite')
 			setTargetValue(value)

@@ -4,7 +4,7 @@ import Toolbar from './Toolbar'
 import Loading from '../Loading'
 import { baseUrl, zoteroUrl } from '../baseUrl'
 
-const allTeX: any = []
+const allTeX: string[] = []
 
 const texMap = {
 	'header-one': '\\section',
@@ -35,10 +35,7 @@ class Preview extends React.Component<{}, State> {
 		}
 	}
 
-	// @ts-expect-error ts-migrate(7006)
-	// FIXME: Parameter 'messageContent' implicitly has an 'any'...
-	//  Remove this comment to see the full error message
-	displayError = (messageContent) => {
+	displayError = (messageContent: string): void => {
 		this.setState({
 			message: messageContent,
 			messageStyle: 'error-message error-message-active',
@@ -51,7 +48,7 @@ class Preview extends React.Component<{}, State> {
 		)
 	}
 
-	convertToTeX = () => {
+	convertToTeX = (): void => {
 		// @ts-expect-error ts-migrate(2339)
 		// FIXME: Property 'contentState' does not exist on type 'Re...
 		//  Remove this comment to see the full error message
@@ -60,22 +57,13 @@ class Preview extends React.Component<{}, State> {
 
 		const { blocks, entityMap } = editorContentRaw
 		const Math = []
-		// @ts-expect-error ts-migrate(7034)
-		// FIXME: Variable 'citations' implicitly has type 'any[]' i...
-		//  Remove this comment to see the full error message
-		const citations = []
+		const citations: string[] = []
 
 		const ul = []
 		const ulStart = []
 		const ulEnd = []
-		// @ts-expect-error ts-migrate(7034)
-		// FIXME: Variable 'ulIndex' implicitly has type 'any[]' in ...
-		//  Remove this comment to see the full error message
-		const ulIndex = []
-		// @ts-expect-error ts-migrate(7034)
-		// FIXME: Variable 'ulDepth' implicitly has type 'any[]' in ...
-		//  Remove this comment to see the full error message
-		const ulDepth = []
+		const ulIndex: number[] = []
+		const ulDepth: number[] = []
 		const ulJumpIndex = []
 		const ulJumpDepth = []
 
@@ -121,21 +109,13 @@ class Preview extends React.Component<{}, State> {
 		})
 
 		for (let i = 1; i < ulIndex.length; i += 1) {
-			// @ts-expect-error ts-migrate(7005)
-			// FIXME: Variable 'ulIndex' implicitly has an 'any[]' type.
 			if (ulIndex[i] - ulIndex[i - 1] !== 1) {
-				// @ts-expect-error ts-migrate(7005)
-				// FIXME: Variable 'ulIndex' implicitly has an 'any[]' type.
 				ulJumpIndex.push(ulIndex[i - 1])
 			}
 		}
 
 		for (let i = 1; i < ulDepth.length; i += 1) {
-			// @ts-expect-error ts-migrate(7005)
-			// FIXME: Variable 'ulDepth' implicitly has an 'any[]' type.
 			if (ulDepth[i] - ulDepth[i - 1] !== 1) {
-				// @ts-expect-error ts-migrate(7005)
-				// FIXME: Variable 'ulDepth' implicitly has an 'any[]' type.
 				ulJumpDepth.push(ulDepth[i - 1])
 			}
 		}
@@ -214,9 +194,6 @@ class Preview extends React.Component<{}, State> {
 
 							if (style === undefined) {
 							// cite item
-								// @ts-expect-error ts-migrate(7005)
-								// FIXME: Variable 'citations' implicitly has an 'any[]' typ...
-								//  Remove this comment to see the full error message
 								styledText = citations[index]
 								index += 1
 							} else {
@@ -283,8 +260,7 @@ class Preview extends React.Component<{}, State> {
 		}
 	}
 
-	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'callback' implicitly has an 'any' type.
-	storeCitations = (callback) => {
+	storeCitations = (callback: () => void): void => {
 		// @ts-expect-error ts-migrate(2339)
 		// FIXME: Property 'contentState' does not exist on type 'Re...
 		//  Remove this comment to see the full error message
@@ -308,9 +284,7 @@ class Preview extends React.Component<{}, State> {
 			for (let i = 0; i < Object.keys(entityMap).length; i += 1) {
 				if (entityMap[i].type === 'CITATION') {
 					const { key } = entityMap[i].data
-					// @ts-expect-error ts-migrate(2345)
-					// FIXME: Type 'null' is not assignable to type 'string'.
-					const { userID, APIkey } = JSON.parse(localStorage.getItem('zotero-Auth'))
+					const { userID, APIkey } = JSON.parse(localStorage.getItem('zotero-Auth')!)
 					fetch(`${zoteroUrl}users/${userID}/items/${key}/?format=biblatex`, {
 						method: 'GET',
 						headers: {
@@ -358,7 +332,7 @@ class Preview extends React.Component<{}, State> {
 		}
 	}
 
-	postData = () => {
+	postData = (): void => {
 		// @ts-expect-error ts-migrate(2339)
 		// FIXME: Property 'store' does not exist on type 'Readonly<...
 		//  Remove this comment to see the full error message
@@ -373,8 +347,7 @@ class Preview extends React.Component<{}, State> {
 		})
 			.then((res) => res.json())
 			.then(() => {
-				// @ts-expect-error ts-migrate(2554) FIXME: Expected 0 arguments, but got 1.
-				this.previewPDF(this.props.store)
+				this.previewPDF()
 				this.setState({
 					isLoading: false,
 					previewStyle: 'preview',
@@ -399,7 +372,7 @@ class Preview extends React.Component<{}, State> {
 			.then((res) => res.json())
 	}
 
-	previewPDF = () => {
+	previewPDF = (): void => {
 		// @ts-expect-error ts-migrate(2339)
 		// FIXME: Property 'store' does not exist on type 'Readonly<...
 		//  Remove this comment to see the full error message
@@ -423,8 +396,8 @@ class Preview extends React.Component<{}, State> {
 			})
 	}
 
-	loadPDF = () => {
-		const convertAndPost = () => {
+	loadPDF = (): void => {
+		const convertAndPost = (): void => {
 			this.convertToTeX()
 			this.setState({
 				content: allTeX,
@@ -441,15 +414,12 @@ class Preview extends React.Component<{}, State> {
 				//  Remove this comment to see the full error message
 				if (this.props.contentState.hasText()) {
 					if (Object.keys(this.state.bib).length !== 0 && this.state.bib.constructor === Object) {
-						// @ts-expect-error ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
-						this.postBib(this.props.store, this.state.bib)
+						this.postBib()
 							.then(() => {
-								// @ts-expect-error ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
-								this.postData(this.props.store, this.state.content)
+								this.postData()
 							})
 					} else {
-						// @ts-expect-error ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
-						this.postData(this.props.store, this.state.content)
+						this.postData()
 					}
 				} else {
 					this.setState({
@@ -472,7 +442,7 @@ class Preview extends React.Component<{}, State> {
 		})
 	}
 
-	preview = () => {
+	preview = (): void => {
 		// @ts-expect-error ts-migrate(2339)
 		// FIXME: Property 'login' does not exist on type 'Readonly<...
 		//  Remove this comment to see the full error message

@@ -6,7 +6,7 @@ const Main = () => {
 	const [login, setLogin] = React.useState(false)
 	const [store, setStore] = React.useState({})
 
-	function storeCollector() {
+	function storeCollector(): void {
 		const localStore = JSON.parse(localStorage.getItem('login')!)
 
 		if (localStore && localStore.login) {

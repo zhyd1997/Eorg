@@ -1,6 +1,6 @@
 import React from 'react'
 
-const TableExample = (props: any) => {
+const TableExample: React.FC<any> = (props) => {
 	const { fetchText, handleClick } = props
 	let i = 0
 

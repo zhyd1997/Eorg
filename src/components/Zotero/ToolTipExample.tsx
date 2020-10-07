@@ -1,7 +1,12 @@
 import React from 'react'
 import { UncontrolledTooltip } from 'reactstrap'
 
-const Example = ({ target, text }: any) => (
+type ExampleTypes = {
+	target: string,
+	text: string,
+}
+
+const Example: React.FC<ExampleTypes> = ({ target, text }) => (
 	<span>
 		<UncontrolledTooltip placement="right" target={target}>
 			{text}

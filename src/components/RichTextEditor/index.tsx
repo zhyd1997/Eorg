@@ -48,7 +48,7 @@ type RichTextEditorTypes = {
 
 const StyleButton = (props: StyleButtonTypes) => {
 // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-	function onToggle(e) {
+	function onToggle(e): void {
 		e.preventDefault()
 		props.onToggle(props.style)
 	}
@@ -138,7 +138,7 @@ const styleMap = {
 }
 
 // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'block' implicitly has an 'any' type.
-function getBlockStyle(block) {
+function getBlockStyle(block): null | string {
 	switch (block.getType()) {
 		case 'blockquote':
 			return 'RichEditor-blockquote'
@@ -147,7 +147,7 @@ function getBlockStyle(block) {
 	}
 }
 
-const RichTextEditor = ({ login, store }: RichTextEditorTypes) => {
+const RichTextEditor: React.FC<RichTextEditorTypes> = ({ login, store }) => {
 	const decorator = new CompositeDecorator([
 		{
 			strategy: getEntityStrategy('IMMUTABLE'),
@@ -160,7 +160,7 @@ const RichTextEditor = ({ login, store }: RichTextEditorTypes) => {
 
 	const editorRef = React.useRef<HTMLElement>(null!)
 
-	function focusEditor() {
+	function focusEditor(): void {
 		editorRef.current.focus()
 	}
 
@@ -168,28 +168,28 @@ const RichTextEditor = ({ login, store }: RichTextEditorTypes) => {
 		focusEditor()
 	}, [])
 
-	function onChange(editorStateChanged: any) {
+	function onChange(editorStateChanged: any): void {
 		setEditorState(editorStateChanged)
 	}
 
-	function removeTeX(blockKey: string) {
+	function removeTeX(blockKey: string): void {
 		setLiveCustomBlockEdits(liveCustomBlockEdits.remove(blockKey))
 		setEditorState(removeTeXBlock(editorState, blockKey))
 	}
 
-	function insertTeX() {
+	function insertTeX(): void {
 		setLiveCustomBlockEdits(Map())
 		setEditorState(insertTeXBlock(editorState))
 	}
 
-	function insertTable() {
+	function insertTable(): void {
 		setEditorState(createTable(editorState))
 	}
 
 	// @ts-expect-error ts-migrate(7006)
 	// FIXME: Parameter 'fetchText' implicitly has an 'any' type...
 	//  Remove this comment to see the full error message
-	function insertCite(fetchText, targetValue) {
+	function insertCite(fetchText, targetValue): void {
 		const currentContent = editorState.getCurrentContent()
 		const selection = editorState.getSelection()
 		const entityKey = currentContent
@@ -241,7 +241,7 @@ const RichTextEditor = ({ login, store }: RichTextEditorTypes) => {
 	}
 
 	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'command' implicitly has an 'any' type.
-	function handleKeyCommand(command, editorStateChanged) {
+	function handleKeyCommand(command, editorStateChanged): boolean {
 		const newState = RichUtils.handleKeyCommand(editorStateChanged, command)
 		if (newState) {
 			onChange(newState)
@@ -281,10 +281,7 @@ const RichTextEditor = ({ login, store }: RichTextEditorTypes) => {
 		return null
 	}
 
-	// @ts-expect-error ts-migrate(7006)
-	// FIXME: Parameter 'inlineStyle' implicitly has an 'any' ty...
-	//  Remove this comment to see the full error message
-	function toggleInlineStyle(inlineStyle) {
+	function toggleInlineStyle(inlineStyle: string): void {
 		onChange(
 			RichUtils.toggleInlineStyle(
 				editorState,

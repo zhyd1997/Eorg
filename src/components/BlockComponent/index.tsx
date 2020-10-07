@@ -6,7 +6,7 @@ const BlockComponent = (props: any) => {
 	const entity = props.contentState.getEntity(
 		props.block.getEntityAt(0),
 	)
-	const type = entity.getType()
+	const type: string = entity.getType()
 
 	let media
 	if (type === 'TOKEN') {

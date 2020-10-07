@@ -9,7 +9,7 @@ const styles = {
 	},
 }
 
-export function getEntityStrategy(mutability: any) {
+export function getEntityStrategy(mutability: string) {
 // @ts-expect-error ts-migrate(7006)
 // FIXME: Parameter 'contentBlock' implicitly has an 'any' t...
 //  Remove this comment to see the full error message
@@ -30,10 +30,7 @@ export function getEntityStrategy(mutability: any) {
 	}
 }
 
-// @ts-expect-error ts-migrate(7006)
-// FIXME: Parameter 'mutability' implicitly has an 'any' typ...
-//  Remove this comment to see the full error message
-function getDecoratedStyle(mutability) {
+function getDecoratedStyle(mutability: string) {
 	switch (mutability) {
 		case 'IMMUTABLE': return styles.immutable
 		default: return null
@@ -53,9 +50,8 @@ export const TokenSpan = (props) => {
 			<sup>
 				<cite
 					data-offset-key={props.offsetkey}
-					// @ts-expect-error ts-migrate(2322)
-					// FIXME: Type 'null' is not assignable to type 'CSSProperti...
-					//  Remove this comment to see the full error message
+					// TODO
+					// @ts-ignore
 					style={style}
 					id={`Popover-${props.entityKey}`}
 				>
