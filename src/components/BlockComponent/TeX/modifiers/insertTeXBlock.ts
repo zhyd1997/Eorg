@@ -5,10 +5,7 @@ import {
 
 const examples = '\\sin{x^2} + \\cos{x^2} = 1'
 
-// @ts-expect-error ts-migrate(7006)
-// FIXME: Parameter 'editorState' implicitly has an 'any' ty...
-//  Remove this comment to see the full error message
-function insertTeXBlock(editorState) {
+function insertTeXBlock(editorState: EditorState): EditorState {
 	const contentState = editorState.getCurrentContent()
 	const contentStateWithEntity = contentState.createEntity(
 		'TOKEN',
