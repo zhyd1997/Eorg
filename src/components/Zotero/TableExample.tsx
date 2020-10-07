@@ -1,7 +1,11 @@
 import React from 'react'
 
-const TableExample: React.FC<any> = (props) => {
-	const { fetchText, handleClick } = props
+type PropTypes = {
+	fetchText: any[],
+	handleClick: (evt: any) => null,
+}
+
+const TableExample: React.FC<PropTypes> = ({ fetchText, handleClick }) => {
 	let i = 0
 
 	return (

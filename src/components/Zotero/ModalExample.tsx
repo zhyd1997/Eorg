@@ -7,14 +7,14 @@ import Loading from '../Loading'
 import TableExample from './TableExample'
 import { zoteroUrl } from '../baseUrl'
 
-// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'props' implicitly has an 'any' type.
-const ModalExample = (props) => {
-	const {
-		buttonLabel,
-		className,
-		insertCite,
-	} = props
+type PropTypes = {
+	buttonLabel: string,
+	className?: string,
+	/** (biblatex entry, selected biblatex item) */
+	insertCite: (text: any [], value: number) => void,
+}
 
+const ModalExample: React.FC<PropTypes> = ({ buttonLabel, className, insertCite }) => {
 	const [modal, setModal] = useState(false)
 	const [modalInput, setModalInput] = useState(false)
 	const [targetValue, setTargetValue] = useState(0)

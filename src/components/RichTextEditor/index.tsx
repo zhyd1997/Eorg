@@ -190,10 +190,7 @@ const RichTextEditor: React.FC<RichTextEditorTypes> = ({ login, store }) => {
 		setEditorState(createTable(editorState))
 	}
 
-	// @ts-expect-error ts-migrate(7006)
-	// FIXME: Parameter 'fetchText' implicitly has an 'any' type...
-	//  Remove this comment to see the full error message
-	function insertCite(fetchText, targetValue): void {
+	function insertCite(fetchText: any[], targetValue: number): void {
 		const currentContent = editorState.getCurrentContent()
 		const selection = editorState.getSelection()
 		const entityKey = currentContent
