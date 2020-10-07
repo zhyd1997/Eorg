@@ -1,7 +1,7 @@
 import React from 'react'
 import {
 	Editor, EditorState, getDefaultKeyBinding, RichUtils,
-	CompositeDecorator, Modifier, ContentState,
+	CompositeDecorator, Modifier, ContentState, ContentBlock,
 } from 'draft-js'
 import './index.css'
 import 'draft-js/dist/Draft.css'
@@ -141,8 +141,7 @@ const styleMap = {
 	},
 }
 
-// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'block' implicitly has an 'any' type.
-function getBlockStyle(block): null | string {
+function getBlockStyle(block: ContentBlock): null | string {
 	switch (block.getType()) {
 		case 'blockquote':
 			return 'RichEditor-blockquote'
@@ -215,8 +214,7 @@ const RichTextEditor: React.FC<RichTextEditorTypes> = ({ login, store }) => {
 		setEditorState(EditorState.push(editorState, textWithEntity, 'insert-characters'))
 	}
 
-	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'block' implicitly has an 'any' type.
-	function blockRenderer(block) {
+	function blockRenderer(block: ContentBlock): any | null {
 		if (block.getType() === 'atomic') {
 			return {
 				component: BlockComponent,
