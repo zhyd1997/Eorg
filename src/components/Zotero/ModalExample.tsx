@@ -52,8 +52,7 @@ const ModalExample = (props) => {
 
 	function fetchItems(): void {
 		setIsLoading(true)
-		// @ts-expect-error ts-migrate(2345) FIXME: Type 'null' is not assignable to type 'string'.
-		const { userID, APIkey } = JSON.parse(localStorage.getItem('zotero-Auth'))
+		const { userID, APIkey } = JSON.parse(localStorage.getItem('zotero-Auth')!)
 		fetch(`${zoteroUrl}users/${userID}/items`, {
 			method: 'GET',
 			headers: {
