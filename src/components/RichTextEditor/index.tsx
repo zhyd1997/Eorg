@@ -30,7 +30,7 @@ import '../BlockComponent/Table/Table.css'
  */
 
 type StyleButtonTypes = {
-	onToggle: any,
+	onToggle: (style: string) => void,
 	style: string,
 	active: boolean,
 	label: string,
@@ -38,7 +38,7 @@ type StyleButtonTypes = {
 
 type StyleControlsTypes = {
 	editorState: any,
-	onToggle: any,
+	onToggle: (style: string) => void,
 }
 
 type RichTextEditorTypes = {

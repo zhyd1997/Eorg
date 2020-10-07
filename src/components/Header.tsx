@@ -5,12 +5,12 @@ import {
 } from 'reactstrap'
 import { baseUrl } from './baseUrl'
 
-type HeaderProps = {
+type PropTypes = {
 	storeCollector: () => void,
 	isLogIn: boolean,
 }
 
-const Header: React.FC<HeaderProps> = ({ storeCollector, isLogIn }) => {
+const Header: React.FC<PropTypes> = ({ storeCollector, isLogIn }) => {
 	const [username, setUsername] = React.useState('')
 	const [password, setPassword] = React.useState('')
 	const [response, setResponse] = React.useState('')

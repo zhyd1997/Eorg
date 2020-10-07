@@ -1,14 +1,14 @@
 import React from 'react'
 import { baseUrl } from '../baseUrl'
 
-type ToolbarPropsType = {
+type PropTypes = {
 	login: boolean,
 	store: {},
 	disabled: boolean,
 	onClick: () => void,
 }
 
-const Toolbar: React.FC<ToolbarPropsType> = (props) => {
+const Toolbar: React.FC<PropTypes> = (props) => {
 	const {
 		login, store, disabled, onClick,
 	} = props
