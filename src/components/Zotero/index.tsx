@@ -1,5 +1,12 @@
 import React from 'react'
+import { CharacterMetadata, ContentState } from 'draft-js'
 import Example from './ToolTipExample'
+
+type PropType = {
+	contentState: ContentState,
+	entityKey: string,
+	offsetkey: string,
+}
 
 const styles = {
 	immutable: {
@@ -15,10 +22,7 @@ export function getEntityStrategy(mutability: string) {
 //  Remove this comment to see the full error message
 	return function anonymous(contentBlock, callback, contentState) {
 		contentBlock.findEntityRanges(
-			// @ts-expect-error ts-migrate(7006)
-			// FIXME: Parameter 'character' implicitly has an 'any' type...
-			//  Remove this comment to see the full error message
-			(character) => {
+			(character: CharacterMetadata) => {
 				const entityKey = character.getEntity()
 				if (entityKey === null) {
 					return false
@@ -37,8 +41,7 @@ function getDecoratedStyle(mutability: string) {
 	}
 }
 
-// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'props' implicitly has an 'any' type.
-export const TokenSpan = (props) => {
+export const TokenSpan: React.FC<PropType> = (props) => {
 	const style = getDecoratedStyle(
 		props.contentState.getEntity(props.entityKey).getMutability(),
 	)

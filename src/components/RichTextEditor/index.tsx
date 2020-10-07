@@ -1,7 +1,7 @@
 import React from 'react'
 import {
 	Editor, EditorState, getDefaultKeyBinding, RichUtils,
-	CompositeDecorator, Modifier,
+	CompositeDecorator, Modifier, ContentState,
 } from 'draft-js'
 import './index.css'
 import 'draft-js/dist/Draft.css'
@@ -37,7 +37,7 @@ type StyleButtonTypes = {
 }
 
 type StyleControlsTypes = {
-	editorState: any,
+	editorState: EditorState,
 	onToggle: (style: string) => void,
 }
 
@@ -168,7 +168,7 @@ const RichTextEditor: React.FC<RichTextEditorTypes> = ({ login, store }) => {
 		focusEditor()
 	}, [])
 
-	function onChange(editorStateChanged: any): void {
+	function onChange(editorStateChanged: EditorState): void {
 		setEditorState(editorStateChanged)
 	}
 
@@ -224,9 +224,7 @@ const RichTextEditor: React.FC<RichTextEditorTypes> = ({ login, store }) => {
 					onStartEdit: (blockKey: string) => {
 						setLiveCustomBlockEdits(liveCustomBlockEdits.set(blockKey, true))
 					},
-					// @ts-expect-error ts-migrate(7006)
-					// FIXME: Parameter 'blockKey' implicitly has an 'any' type.
-					onFinishTeXEdit: (blockKey: string, newContentState) => {
+					onFinishTeXEdit: (blockKey: string, newContentState: ContentState) => {
 						setLiveCustomBlockEdits(liveCustomBlockEdits.remove(blockKey))
 						setEditorState(EditorState.createWithContent(newContentState))
 					},
