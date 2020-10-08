@@ -1,10 +1,10 @@
 .eslintrc.js
+webpack.config.js
 
 build
 node_modules
 
-src/App.test.js
-src/serviceWorker.js
-src/setupTests.js
+src/App.test.tsx
+src/setupTests.ts
 
-src/components/BlockComponent/TeX/TeXBlock.js
+src/components/BlockComponent/TeX/TeXBlock.tsx

@@ -1,7 +1,7 @@
 import React from 'react'
 import {
 	Editor, EditorState, getDefaultKeyBinding, RichUtils,
-	CompositeDecorator, Modifier,
+	CompositeDecorator, Modifier, ContentState, ContentBlock,
 } from 'draft-js'
 import './index.css'
 import 'draft-js/dist/Draft.css'
@@ -29,7 +29,128 @@ import '../BlockComponent/Table/Table.css'
  *
  */
 
-function RichTextEditor({ login, store }) {
+type StyleButtonTypes = {
+	onToggle: (style: string) => void,
+	style: string,
+	active: boolean,
+	label: string,
+}
+
+type StyleControlsTypes = {
+	editorState: EditorState,
+	onToggle: (style: string) => void,
+}
+
+type RichTextEditorTypes = {
+	login: boolean,
+	store: {
+		token: string,
+	},
+}
+
+const StyleButton: React.FC<StyleButtonTypes> = ({
+	onToggle, style, active, label,
+}) => {
+// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
+	function onToggleStyle(e): void {
+		e.preventDefault()
+		onToggle(style)
+	}
+	let className = 'RichEditor-styleButton'
+	if (active) {
+		className += ' RichEditor-activeButton'
+	}
+
+	return (
+		// eslint-disable-next-line jsx-a11y/no-static-element-interactions
+		<span className={className} onMouseDown={onToggleStyle}>
+			{label}
+		</span>
+	)
+}
+
+const INLINE_STYLES = [
+	{ label: 'Bold', style: 'BOLD' },
+	{ label: 'Italic', style: 'ITALIC' },
+	{ label: 'Underline', style: 'UNDERLINE' },
+	{ label: 'Monospace', style: 'CODE' },
+]
+
+const InlineStyleControls: React.FC<StyleControlsTypes> = ({ editorState, onToggle }) => {
+	const currentStyle = editorState.getCurrentInlineStyle()
+
+	return (
+		<div className="RichEditor-controls">
+			{INLINE_STYLES.map((type) => (
+				<StyleButton
+					key={type.label}
+					active={currentStyle.has(type.style)}
+					label={type.label}
+					onToggle={onToggle}
+					style={type.style}
+				/>
+			))}
+		</div>
+	)
+}
+
+const BLOCK_TYPES = [
+	{ label: 'H1', style: 'header-one' },
+	{ label: 'H2', style: 'header-two' },
+	{ label: 'H3', style: 'header-three' },
+	{ label: 'Math', style: 'math' },
+	// {label: 'H4', style: 'header-four'},
+	// {label: 'H5', style: 'header-five'},
+	// {label: 'H6', style: 'header-six'},
+	// {label: 'Blockquote', style: 'blockquote'},
+	{ label: 'UL', style: 'unordered-list-item' },
+	// {label: 'OL', style: 'ordered-list-item'},
+	// {label: 'Code Block', style: 'code-block'},
+]
+
+const BlockStyleControls = (props: StyleControlsTypes) => {
+	const { editorState } = props
+	const selection = editorState.getSelection()
+	const blockType = editorState
+		.getCurrentContent()
+		.getBlockForKey(selection.getStartKey())
+		.getType()
+
+	return (
+		<div className="RichEditor-controls">
+			{BLOCK_TYPES.map((type) => (
+				<StyleButton
+					key={type.label}
+					active={type.style === blockType}
+					label={type.label}
+					onToggle={props.onToggle}
+					style={type.style}
+				/>
+			))}
+		</div>
+	)
+}
+
+// Custom overrides for "code" style.
+const styleMap = {
+	CODE: {
+		backgroundColor: 'rgba(0, 0, 0, 0.05)',
+		fontFamily: '"Inconsolata", "Menlo", "Consolas", monospace',
+		fontSize: 16,
+		padding: 2,
+	},
+}
+
+function getBlockStyle(block: ContentBlock): null | string {
+	switch (block.getType()) {
+		case 'blockquote':
+			return 'RichEditor-blockquote'
+		default:
+			return null
+	}
+}
+
+const RichTextEditor: React.FC<RichTextEditorTypes> = ({ login, store }) => {
 	const decorator = new CompositeDecorator([
 		{
 			strategy: getEntityStrategy('IMMUTABLE'),
@@ -40,9 +161,9 @@ function RichTextEditor({ login, store }) {
 	const [editorState, setEditorState] = React.useState(EditorState.createEmpty(decorator))
 	const [liveCustomBlockEdits, setLiveCustomBlockEdits] = React.useState(Map())
 
-	const editorRef = React.useRef(null)
+	const editorRef = React.useRef<HTMLElement>(null!)
 
-	const focusEditor = () => {
+	function focusEditor(): void {
 		editorRef.current.focus()
 	}
 
@@ -50,46 +171,25 @@ function RichTextEditor({ login, store }) {
 		focusEditor()
 	}, [])
 
-	const onChange = (editorStateChanged) => setEditorState(editorStateChanged)
-
-	const blockRenderer = (block) => {
-		if (block.getType() === 'atomic') {
-			return {
-				component: BlockComponent,
-				editable: false,
-				props: {
-					onStartEdit: (blockKey) => {
-						setLiveCustomBlockEdits(liveCustomBlockEdits.set(blockKey, true))
-					},
-					onFinishTeXEdit: (blockKey, newContentState) => {
-						setLiveCustomBlockEdits(liveCustomBlockEdits.remove(blockKey))
-						setEditorState(EditorState.createWithContent(newContentState))
-					},
-					onFinishTableEdit: (blockKey) => {
-						setLiveCustomBlockEdits(liveCustomBlockEdits.remove(blockKey))
-					},
-					onRemove: (blockKey) => removeTeX(blockKey),
-				},
-			}
-		}
-		return null
+	function onChange(editorStateChanged: EditorState): void {
+		setEditorState(editorStateChanged)
 	}
 
-	const removeTeX = (blockKey) => {
+	function removeTeX(blockKey: string): void {
 		setLiveCustomBlockEdits(liveCustomBlockEdits.remove(blockKey))
 		setEditorState(removeTeXBlock(editorState, blockKey))
 	}
 
-	const insertTeX = () => {
+	function insertTeX(): void {
 		setLiveCustomBlockEdits(Map())
 		setEditorState(insertTeXBlock(editorState))
 	}
 
-	const insertTable = () => {
+	function insertTable(): void {
 		setEditorState(createTable(editorState))
 	}
 
-	const insertCite = (fetchText, targetValue) => {
+	function insertCite(fetchText: any[], targetValue: number): void {
 		const currentContent = editorState.getCurrentContent()
 		const selection = editorState.getSelection()
 		const entityKey = currentContent
@@ -107,14 +207,38 @@ function RichTextEditor({ login, store }) {
 			currentContent,
 			selection,
 			' ',
-			null,
+			undefined,
 			entityKey,
 		)
 
 		setEditorState(EditorState.push(editorState, textWithEntity, 'insert-characters'))
 	}
 
-	const handleKeyCommand = (command, editorStateChanged) => {
+	function blockRenderer(block: ContentBlock): any | null {
+		if (block.getType() === 'atomic') {
+			return {
+				component: BlockComponent,
+				editable: false,
+				props: {
+					onStartEdit: (blockKey: string) => {
+						setLiveCustomBlockEdits(liveCustomBlockEdits.set(blockKey, true))
+					},
+					onFinishTeXEdit: (blockKey: string, newContentState: ContentState) => {
+						setLiveCustomBlockEdits(liveCustomBlockEdits.remove(blockKey))
+						setEditorState(EditorState.createWithContent(newContentState))
+					},
+					onFinishTableEdit: (blockKey: string) => {
+						setLiveCustomBlockEdits(liveCustomBlockEdits.remove(blockKey))
+					},
+					onRemove: (blockKey: string) => removeTeX(blockKey),
+				},
+			}
+		}
+		return null
+	}
+
+	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'command' implicitly has an 'any' type.
+	function handleKeyCommand(command, editorStateChanged): boolean {
 		const newState = RichUtils.handleKeyCommand(editorStateChanged, command)
 		if (newState) {
 			onChange(newState)
@@ -123,7 +247,8 @@ function RichTextEditor({ login, store }) {
 		return false
 	}
 
-	const mapKeyToEditorCommand = (e) => {
+	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
+	function mapKeyToEditorCommand(e) {
 		if (e.keyCode === 9 /* TAB */) {
 			const newEditorState = RichUtils.onTab(
 				e,
@@ -139,7 +264,7 @@ function RichTextEditor({ login, store }) {
 		return getDefaultKeyBinding(e)
 	}
 
-	const toggleBlockType = (blockType) => {
+	function toggleBlockType(blockType: string) {
 		if (blockType === 'math') {
 			return insertTeX()
 		}
@@ -153,7 +278,7 @@ function RichTextEditor({ login, store }) {
 		return null
 	}
 
-	const toggleInlineStyle = (inlineStyle) => {
+	function toggleInlineStyle(inlineStyle: string): void {
 		onChange(
 			RichUtils.toggleInlineStyle(
 				editorState,
@@ -198,6 +323,7 @@ function RichTextEditor({ login, store }) {
 				{/* eslint-disable-next-line max-len */}
 				{/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
 				<div className={className} onClick={focusEditor}>
+					{ /* @ts-ignore */ }
 					<Editor
 						blockRendererFn={blockRenderer}
 						blockStyleFn={getBlockStyle}
@@ -218,105 +344,6 @@ function RichTextEditor({ login, store }) {
 				store={store}
 				contentState={contentState}
 			/>
-		</div>
-	)
-}
-
-// Custom overrides for "code" style.
-const styleMap = {
-	CODE: {
-		backgroundColor: 'rgba(0, 0, 0, 0.05)',
-		fontFamily: '"Inconsolata", "Menlo", "Consolas", monospace',
-		fontSize: 16,
-		padding: 2,
-	},
-}
-
-function getBlockStyle(block) {
-	switch (block.getType()) {
-	case 'blockquote':
-		return 'RichEditor-blockquote'
-	default:
-		return null
-	}
-}
-
-const StyleButton = (props) => {
-	const onToggle = (e) => {
-		e.preventDefault()
-		props.onToggle(props.style)
-	}
-	let className = 'RichEditor-styleButton'
-	if (props.active) {
-		className += ' RichEditor-activeButton'
-	}
-
-	return (
-		// eslint-disable-next-line jsx-a11y/no-static-element-interactions
-		<span className={className} onMouseDown={onToggle}>
-			{props.label}
-		</span>
-	)
-}
-
-const BLOCK_TYPES = [
-	{ label: 'H1', style: 'header-one' },
-	{ label: 'H2', style: 'header-two' },
-	{ label: 'H3', style: 'header-three' },
-	{ label: 'Math', style: 'math' },
-	// {label: 'H4', style: 'header-four'},
-	// {label: 'H5', style: 'header-five'},
-	// {label: 'H6', style: 'header-six'},
-	// {label: 'Blockquote', style: 'blockquote'},
-	{ label: 'UL', style: 'unordered-list-item' },
-	// {label: 'OL', style: 'ordered-list-item'},
-	// {label: 'Code Block', style: 'code-block'},
-]
-
-const BlockStyleControls = (props) => {
-	const { editorState } = props
-	const selection = editorState.getSelection()
-	const blockType = editorState
-		.getCurrentContent()
-		.getBlockForKey(selection.getStartKey())
-		.getType()
-
-	return (
-		<div className="RichEditor-controls">
-			{BLOCK_TYPES.map((type) => (
-				<StyleButton
-					key={type.label}
-					active={type.style === blockType}
-					label={type.label}
-					onToggle={props.onToggle}
-					style={type.style}
-				/>
-			))}
-		</div>
-	)
-}
-
-const INLINE_STYLES = [
-	{ label: 'Bold', style: 'BOLD' },
-	{ label: 'Italic', style: 'ITALIC' },
-	{ label: 'Underline', style: 'UNDERLINE' },
-	{ label: 'Monospace', style: 'CODE' },
-]
-
-const InlineStyleControls = (props) => {
-	const currentStyle = props.editorState.getCurrentInlineStyle()
-
-	return (
-		<div className="RichEditor-controls">
-			{INLINE_STYLES.map((type) => (
-				<StyleButton
-					key={type.label}
-					active={currentStyle.has(type.style)}
-					label={type.label}
-					onToggle={props.onToggle}
-					style={type.style}
-				/>
-			))}
 		</div>
 	)
 }

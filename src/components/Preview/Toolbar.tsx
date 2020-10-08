@@ -1,12 +1,19 @@
 import React from 'react'
 import { baseUrl } from '../baseUrl'
 
-const Toolbar = (props) => {
-	const {
-		login, store, disabled, onClick,
-	} = props
+type PropTypes = {
+	login: boolean,
+	store: {
+		token: string
+	},
+	disabled: boolean,
+	onClick: () => void,
+}
 
-	const download = (auth, contentType, fileExtension) => {
+const Toolbar: React.FC<PropTypes> = ({
+	login, store, disabled, onClick,
+}) => {
+	function download(auth: { token: string }, contentType: string, fileExtension: string): void {
 		const token = `Bearer ${auth.token}`
 		fetch(`${baseUrl}draftJS/${fileExtension}`, {
 			method: 'GET',
@@ -27,16 +34,17 @@ const Toolbar = (props) => {
 						// 4. Force download
 						link.click()
 						// 5. Clean up and remove the link
+						// @ts-expect-error ts-migrate(2531) FIXME: Object is possibly 'null'.
 						link.parentNode.removeChild(link)
 					})
 			})
 	}
 
-	function handleZipDownload() {
+	function handleZipDownload(): void {
 		download(store, 'application/zip', 'zip')
 	}
 
-	function handlePDFDownload() {
+	function handlePDFDownload(): void {
 		download(store, 'application/pdf', 'pdf')
 	}
 
@@ -50,7 +58,7 @@ const Toolbar = (props) => {
 				aria-label="archive-file"
 				aria-hidden="true"
 				aria-disabled={disabled}
-				tabIndex="0"
+				tabIndex={0}
 			/>
 			&nbsp;&nbsp;&nbsp;&nbsp;
 			<i
@@ -60,7 +68,7 @@ const Toolbar = (props) => {
 				aria-label="pdf"
 				aria-hidden="true"
 				aria-disabled={disabled}
-				tabIndex="-1"
+				tabIndex={-1}
 			/>
 		</span>
 	)

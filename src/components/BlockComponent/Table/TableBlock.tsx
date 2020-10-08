@@ -1,6 +1,6 @@
 import React from 'react'
 
-const TableOutput = (props) => {
+const TableOutput = (props: any) => {
 	const {
 		row, column, caption, cell, block, blockProps,
 	} = props
@@ -19,14 +19,16 @@ const TableOutput = (props) => {
 	const rowsTh = []
 	const colsTh = []
 
-	const [coordinate, setCoordinate] = React.useState([])
+	const [coordinate, setCoordinate] = React.useState([1, 0])
 
+	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'evt' implicitly has an 'any' type.
 	function handleClick(evt) {
 		const trTarget = evt.target
 		blockProps.onStartEdit(block.getKey())
 		trTarget.contentEditable = true
 	}
 
+	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'evt' implicitly has an 'any' type.
 	function handleBlur(evt) {
 		const trTarget = evt.target
 		trTarget.contentEditable = false
@@ -85,6 +87,7 @@ const TableOutput = (props) => {
 	)
 }
 
+// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'props' implicitly has an 'any' type.
 const TableBlock = (props) => {
 	const { contentState, block, blockProps } = props
 

@@ -3,9 +3,9 @@ import {
 	EditorState,
 } from 'draft-js'
 
-const examples = '\\LaTeX'
+const examples = '\\sin{x^2} + \\cos{x^2} = 1'
 
-function insertTeXBlock(editorState) {
+function insertTeXBlock(editorState: EditorState): EditorState {
 	const contentState = editorState.getCurrentContent()
 	const contentStateWithEntity = contentState.createEntity(
 		'TOKEN',

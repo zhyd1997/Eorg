@@ -7,13 +7,14 @@ import Loading from '../Loading'
 import TableExample from './TableExample'
 import { zoteroUrl } from '../baseUrl'
 
-const ModalExample = (props) => {
-	const {
-		buttonLabel,
-		className,
-		insertCite,
-	} = props
+type PropTypes = {
+	buttonLabel: string,
+	className?: string,
+	/** (biblatex entry, selected biblatex item) */
+	insertCite: (text: any [], value: number) => void,
+}
 
+const ModalExample: React.FC<PropTypes> = ({ buttonLabel, className, insertCite }) => {
 	const [modal, setModal] = useState(false)
 	const [modalInput, setModalInput] = useState(false)
 	const [targetValue, setTargetValue] = useState(0)
@@ -29,104 +30,29 @@ const ModalExample = (props) => {
 		text: '',
 	})
 
-	const toggle = () => setModal(!modal)
-	const toggleInput = () => setModalInput(!modalInput)
+	function toggle(): void {
+		setModal(!modal)
+	}
+	function toggleInput(): void {
+		setModalInput(!modalInput)
+	}
 
-	const handleChange = (e) => {
+	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
+	function handleChange(e): void {
 		setAuth({
 			...auth,
 			[e.target.name]: e.target.value,
 		})
 	}
 
-	const verifyState = (loading, valid, detail) => {
-		setIsLoading(loading)
-		setFeedback({
-			isValid: valid,
-			text: detail,
-		})
+	function cite(): void {
+		insertCite(fetchText, targetValue)
+		setIsClick(false)
 	}
 
-	const verifyAuth = () => {
-		verifyState(true, true, '')
-		if (auth.userID === '' || auth.APIkey === '') {
-			verifyState(false, false, 'empty input')
-		} else {
-			fetch(`${zoteroUrl}users/${auth.userID}/items`, {
-				method: 'GET',
-				headers: {
-					'Zotero-API-Version': '3',
-					'Zotero-API-Key': auth.APIkey,
-				},
-			})
-				.then((res) => {
-					if (res.status === 200) {
-						if (localStorage.getItem('zotero-Auth') !== null) {
-							/**
-							 * every user has unique userID, and only API-key can be changed.
-							 * if API-key changed, user maybe also changed.
-							 * and localStorage Item 'zotero-Auth' changed.
-							 */
-							const { APIkey } = JSON.parse(localStorage.getItem('zotero-Auth'))
-							if (auth.APIkey !== APIkey) {
-								localStorage.setItem('zotero-Auth', JSON.stringify({
-									userID: auth.userID,
-									APIkey: auth.APIkey,
-								}))
-							}
-						} else {
-							localStorage.setItem('zotero-Auth', JSON.stringify({
-								userID: auth.userID,
-								APIkey: auth.APIkey,
-							}))
-						}
-						verifyState(false, true, '')
-						createCitations()
-					} else if (res.status === 403) {
-						verifyState(false, false, `${auth.userID} has invalid API key`)
-					} else {
-						/**
-						 * TODO HTTP status codes
-						 * https://www.zotero.org/support/dev/web_api/v3/basics # HTTP Status Codes
-						 */
-
-						verifyState(false, false, 'something wrong')
-					}
-				})
-		}
-	}
-
-	const handleNext = () => {
-		// 1. open input modal
-		toggleInput()
-	}
-
-	const handleClick = () => {
-		// 3. close cite modal
-		toggle()
-		cite()
-	}
-
-	const createCitations = () => {
-		// 2. close input modal
-		// and open cite modal, fetch citations.
-		toggleInput()
-		toggle()
-		fetchItems()
-	}
-
-	const selectItem = (evt) => {
-		if (evt.target.tagName === 'TD') {
-			const value = evt.target.getAttribute('data-cite')
-			setTargetValue(value)
-			setIsClick(true)
-		}
-		return null
-	}
-
-	const fetchItems = () => {
+	function fetchItems(): void {
 		setIsLoading(true)
-		const { userID, APIkey } = JSON.parse(localStorage.getItem('zotero-Auth'))
+		const { userID, APIkey } = JSON.parse(localStorage.getItem('zotero-Auth')!)
 		fetch(`${zoteroUrl}users/${userID}/items`, {
 			method: 'GET',
 			headers: {
@@ -157,8 +83,10 @@ const ModalExample = (props) => {
 						 * ]
 						 *
 						 */
+						// @ts-ignore
 						const metadata = []
 
+						// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'i' implicitly has an 'any' type.
 						data.map((i) => {
 							const tempObj = Object.create({})
 
@@ -169,18 +97,101 @@ const ModalExample = (props) => {
 
 							metadata.push(tempObj)
 
+							// @ts-ignore
 							return metadata
 						})
 
+						// @ts-ignore
 						setFetchText(metadata)
 						setIsLoading(false)
 					})
 			})
 	}
 
-	const cite = () => {
-		insertCite(fetchText, targetValue)
-		setIsClick(false)
+	function createCitations(): void {
+		// 2. close input modal
+		// and open cite modal, fetch citations.
+		toggleInput()
+		toggle()
+		fetchItems()
+	}
+
+	function verifyState(loading: boolean, valid: boolean, detail: string): void {
+		setIsLoading(loading)
+		setFeedback({
+			isValid: valid,
+			text: detail,
+		})
+	}
+
+	function verifyAuth(): void {
+		verifyState(true, true, '')
+		if (auth.userID === '' || auth.APIkey === '') {
+			verifyState(false, false, 'empty input')
+		} else {
+			fetch(`${zoteroUrl}users/${auth.userID}/items`, {
+				method: 'GET',
+				headers: {
+					'Zotero-API-Version': '3',
+					'Zotero-API-Key': auth.APIkey,
+				},
+			})
+				.then((res) => {
+					if (res.status === 200) {
+						if (localStorage.getItem('zotero-Auth') !== null) {
+							/**
+							 * every user has unique userID, and only API-key can be changed.
+							 * if API-key changed, user maybe also changed.
+							 * and localStorage Item 'zotero-Auth' changed.
+							 */
+							const { APIkey } = JSON.parse(localStorage.getItem('zotero-Auth')!)
+							if (auth.APIkey !== APIkey) {
+								localStorage.setItem('zotero-Auth', JSON.stringify({
+									userID: auth.userID,
+									APIkey: auth.APIkey,
+								}))
+							}
+						} else {
+							localStorage.setItem('zotero-Auth', JSON.stringify({
+								userID: auth.userID,
+								APIkey: auth.APIkey,
+							}))
+						}
+						verifyState(false, true, '')
+						createCitations()
+					} else if (res.status === 403) {
+						verifyState(false, false, `${auth.userID} has invalid API key`)
+					} else {
+						/**
+						 * TODO HTTP status codes
+						 * https://www.zotero.org/support/dev/web_api/v3/basics # HTTP Status Codes
+						 */
+
+						verifyState(false, false, 'something wrong')
+					}
+				})
+		}
+	}
+
+	function handleNext(): void {
+		// 1. open input modal
+		toggleInput()
+	}
+
+	function handleClick(): void {
+		// 3. close cite modal
+		toggle()
+		cite()
+	}
+
+	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'evt' implicitly has an 'any' type.
+	function selectItem(evt): null {
+		if (evt.target.tagName === 'TD') {
+			const value = evt.target.getAttribute('data-cite')
+			setTargetValue(value)
+			setIsClick(true)
+		}
+		return null
 	}
 
 	return (
@@ -206,6 +217,9 @@ const ModalExample = (props) => {
 								id="userID"
 								placeholder="userID"
 								onChange={handleChange}
+								// @ts-expect-error ts-migrate(2769)
+								// FIXME: Type 'string' is not assignable to type '((instanc...
+								//  Remove this comment to see the full error message
 								innerRef={auth.userID}
 								invalid={!feedback.isValid}
 							/>
@@ -228,6 +242,9 @@ const ModalExample = (props) => {
 								id="APIkey"
 								placeholder="API key"
 								onChange={handleChange}
+								// @ts-expect-error ts-migrate(2769)
+								// FIXME: Type 'string' is not assignable to type '((instanc...
+								//  Remove this comment to see the full error message
 								innerRef={auth.APIkey}
 								invalid={!feedback.isValid}
 							/>

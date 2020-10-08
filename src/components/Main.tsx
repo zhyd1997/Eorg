@@ -4,23 +4,23 @@ import Header from './Header'
 
 const Main = () => {
 	const [login, setLogin] = React.useState(false)
-	const [store, setStore] = React.useState(null)
+	const [store, setStore] = React.useState({ token: '' })
 
-	React.useEffect(() => {
-		storeCollector()
-	}, [login])
-
-	function storeCollector() {
-		const localStore = JSON.parse(localStorage.getItem('login'))
+	function storeCollector(): void {
+		const localStore = JSON.parse(localStorage.getItem('login')!)
 
 		if (localStore && localStore.login) {
 			setLogin(true)
 			setStore(localStore)
 		} else {
 			setLogin(false)
-			setStore(null)
+			setStore({ token: '' })
 		}
 	}
+
+	React.useEffect(() => {
+		storeCollector()
+	}, [login])
 
 	return (
 		<>

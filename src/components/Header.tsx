@@ -5,7 +5,12 @@ import {
 } from 'reactstrap'
 import { baseUrl } from './baseUrl'
 
-const Header = ({ storeCollector, isLogIn }) => {
+type PropTypes = {
+	storeCollector: () => void,
+	isLogIn: boolean,
+}
+
+const Header: React.FC<PropTypes> = ({ storeCollector, isLogIn }) => {
 	const [username, setUsername] = React.useState('')
 	const [password, setPassword] = React.useState('')
 	const [response, setResponse] = React.useState('')
@@ -13,15 +18,15 @@ const Header = ({ storeCollector, isLogIn }) => {
 	const [signUpModal, setSignUpModal] = React.useState(false)
 	const [logInModal, setLogInModal] = React.useState(false)
 
-	function toggleSignUp() {
+	function toggleSignUp(): void {
 		setSignUpModal(!signUpModal)
 	}
 
-	function toggleLogIn() {
+	function toggleLogIn(): void {
 		setLogInModal(!logInModal)
 	}
 
-	function signUp() {
+	function signUp(): void {
 		const state = {
 			username, password,
 		}
@@ -48,7 +53,7 @@ const Header = ({ storeCollector, isLogIn }) => {
 			})
 	}
 
-	function logIn() {
+	function logIn(): void {
 		const state = {
 			username, password,
 		}
@@ -80,7 +85,7 @@ const Header = ({ storeCollector, isLogIn }) => {
 			})
 	}
 
-	function logOut() {
+	function logOut(): void {
 		fetch(`${baseUrl}users/logout`, {
 			method: 'GET',
 		})
@@ -93,13 +98,15 @@ const Header = ({ storeCollector, isLogIn }) => {
 			})
 	}
 
-	function handleSignUp(evt) {
+	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'evt' implicitly has an 'any' type.
+	function handleSignUp(evt): void {
 		signUp()
 		toggleSignUp()
 		evt.preventDefault()
 	}
 
-	function handleLogIn(evt) {
+	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'evt' implicitly has an 'any' type.
+	function handleLogIn(evt): void {
 		logIn()
 		toggleLogIn()
 		evt.preventDefault()

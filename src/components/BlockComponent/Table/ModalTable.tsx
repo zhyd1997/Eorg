@@ -6,6 +6,7 @@ import {
 
 export const tableShape = []
 
+// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'props' implicitly has an 'any' type.
 const ModalTable = (props) => {
 	const {
 		buttonLabel,
@@ -18,7 +19,9 @@ const ModalTable = (props) => {
 	// const columnRef = React.useRef(null)
 	// const captionRef = React.useRef(null)
 
-	const toggle = () => setModal(!modal)
+	function toggle() {
+		setModal(!modal)
+	}
 
 	// const handleClick = () => {
 	// 	const tableData = {

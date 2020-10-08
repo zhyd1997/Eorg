@@ -1,7 +1,11 @@
 import React from 'react'
 
-export default function TableExample(props) {
-	const { fetchText, handleClick } = props
+type PropTypes = {
+	fetchText: any[],
+	handleClick: (evt: any) => null,
+}
+
+const TableExample: React.FC<PropTypes> = ({ fetchText, handleClick }) => {
 	let i = 0
 
 	return (
@@ -17,7 +21,10 @@ export default function TableExample(props) {
 			{/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-noninteractive-element-interactions */}
 			<tbody onClick={handleClick}>
 				{/* eslint-disable-next-line no-return-assign */}
-				{fetchText.map((data) => (
+				{/* @ts-expect-error ts-migrate(7006)
+				 FIXME: Parameter 'data' implicitly has an 'any' type. */}
+				{/* eslint-disable-next-line no-return-assign */}
+				{fetchText.map((data: any) => (
 					<tr data-cite={i += 1} key={data.key}>
 						<td data-cite={i} key={`${data.key}author`}>{data.creatorSummary}</td>
 						<td data-cite={i} key={`${data.key}title`}>{data.title}</td>
@@ -28,3 +35,5 @@ export default function TableExample(props) {
 		</table>
 	)
 }
+
+export default TableExample
