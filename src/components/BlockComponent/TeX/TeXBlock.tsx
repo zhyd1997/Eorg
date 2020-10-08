@@ -1,4 +1,3 @@
-import katex from 'katex'
 import React from 'react'
 
 const KaTexOutput = ({
@@ -24,6 +23,7 @@ const KaTexOutput = ({
 	}
 
 	function update() {
+		// @ts-ignore
 		katex.render(
 			content,
 			container.current,
