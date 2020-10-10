@@ -1,10 +1,22 @@
 import React from 'react'
-import TeXBlock from './TeX/TeXBlock'
-import TableBlock from './Table/TableBlock'
+import { ContentBlock, ContentState } from 'draft-js'
+import TeXBlock from './TeX'
+import TableBlock from './Table'
 
-const BlockComponent = (props: any) => {
-	const entity = props.contentState.getEntity(
-		props.block.getEntityAt(0),
+interface Block {
+	block: ContentBlock,
+	contentState: ContentState,
+	blockProps: {
+		onStartEdit?: any,
+		onFinishTeXEdit?: any,
+		onFinishTableEdit?: any,
+		onRemove?: any,
+	},
+}
+
+const BlockComponent = ({ contentState, block, blockProps }: Block) => {
+	const entity = contentState.getEntity(
+		block.getEntityAt(0),
 	)
 	const type: string = entity.getType()
 
@@ -12,20 +24,17 @@ const BlockComponent = (props: any) => {
 	if (type === 'TOKEN') {
 		media = (
 			<TeXBlock
-				// @ts-expect-error ts-migrate(2322)
-				// FIXME: Property 'blockProps' does not exist on type 'Intr...
-				//  Remove this comment to see the full error message
-				blockProps={props.blockProps}
-				block={props.block}
-				contentState={props.contentState}
+				blockProps={blockProps}
+				block={block}
+				contentState={contentState}
 			/>
 		)
 	} else if (type === 'TABLE') {
 		media = (
 			<TableBlock
-				blockProps={props.blockProps}
-				block={props.block}
-				contentState={props.contentState}
+				blockProps={blockProps}
+				block={block}
+				contentState={contentState}
 			/>
 		)
 	}

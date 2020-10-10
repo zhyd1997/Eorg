@@ -8,5 +8,3 @@ node_modules
 
 src/App.test.tsx
 src/setupTests.ts
-
-src/components/BlockComponent/TeX/TeXBlock.tsx
