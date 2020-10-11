@@ -1,18 +1,7 @@
 import React from 'react'
-import { ContentBlock, ContentState } from 'draft-js'
+import Block from './blockTypes'
 import TeXBlock from './TeX'
 import TableBlock from './Table'
-
-interface Block {
-	block: ContentBlock,
-	contentState: ContentState,
-	blockProps: {
-		onStartEdit?: any,
-		onFinishTeXEdit?: any,
-		onFinishTableEdit?: any,
-		onRemove?: any,
-	},
-}
 
 const BlockComponent = ({ contentState, block, blockProps }: Block) => {
 	const entity = contentState.getEntity(

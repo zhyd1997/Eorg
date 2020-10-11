@@ -1,21 +1,11 @@
 import katex from 'katex'
 import React from 'react'
-import { ContentBlock, ContentState } from 'draft-js'
+import { ContentState } from 'draft-js'
+import Block from '../blockTypes'
 
 type PropTypes = {
 	content: string,
 	onClick: () => void,
-}
-
-interface Block {
-	block: ContentBlock,
-	contentState: ContentState,
-	blockProps: {
-		onStartEdit?: any, // TODO what's immutable Map() type?
-		onFinishTeXEdit?: any,
-		onFinishTableEdit?: any,
-		onRemove?: any,
-	},
 }
 
 const KaTexOutput: React.FC<PropTypes> = ({ content, onClick }) => {
