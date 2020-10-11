@@ -223,12 +223,12 @@ export function convertToTeX(
 }
 
 export function previewPDF(store: { token: string }): void {
-	const token = `Bearer ${store.token}`
+	const TOKEN = `Bearer ${store.token}`
 	fetch(`${baseUrl}draftJS/pdf`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/pdf',
-			Authorization: token,
+			Authorization: TOKEN,
 		},
 	})
 		.then((res) => {
