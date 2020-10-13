@@ -1,5 +1,5 @@
 import { ContentState, convertToRaw } from 'draft-js'
-import { baseUrl } from '../baseUrl'
+import { baseUrl, zoteroUrl } from '../baseUrl'
 
 const texMap = {
 	'header-one': '\\section',
@@ -13,10 +13,10 @@ const texMap = {
 }
 
 export function convertToTeX(
-	contentState: ContentState, biblatex: string[], allTeX: string[],
-): void {
+	contentState: ContentState, biblatex: string[],
+): string[] {
+	const allTeX: string[] = []
 	const editorContentRaw = convertToRaw(contentState)
-	// allTeX.length = 0
 
 	const { blocks, entityMap } = editorContentRaw
 	const Math = []
@@ -220,6 +220,7 @@ export function convertToTeX(
 
 		allTeX.push(TeX)
 	}
+	return allTeX
 }
 
 export function previewPDF(store: { token: string }): void {
@@ -258,7 +259,7 @@ export function postData(content: string[], store: { token: string }) {
 
 export function postBib(bib: {}, store: { token: string }) {
 	const TOKEN = `Bearer ${store.token}`
-	return fetch(`${baseUrl}draftJS/tex`, {
+	fetch(`${baseUrl}draftJS/tex`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -267,4 +268,15 @@ export function postBib(bib: {}, store: { token: string }) {
 		body: JSON.stringify(bib),
 	})
 		.then((res) => res.json())
+}
+
+export function fetchBibEntry(key: string, userID: string, APIkey: string) {
+	return fetch(`${zoteroUrl}users/${userID}/items/${key}/?format=biblatex`, {
+		method: 'GET',
+		headers: {
+			'Zotero-API-Version': '3',
+			'Zotero-API-Key': APIkey,
+		},
+	})
+		.then((res) => res.text())
 }

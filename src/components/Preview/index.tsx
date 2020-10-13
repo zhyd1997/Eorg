@@ -2,14 +2,11 @@ import React from 'react'
 import { convertToRaw, ContentState } from 'draft-js'
 import Toolbar from './Toolbar'
 import Loading from '../Loading'
-import { zoteroUrl } from '../baseUrl'
 import {
-	convertToTeX, previewPDF, postData, postBib,
+	convertToTeX, previewPDF, postBib, postData, fetchBibEntry,
 } from './utils'
 
-const allTeX: string[] = []
-
-type Props = {
+type PropTypes = {
 	contentState: ContentState,
 	store: {
 		token: string,
@@ -17,221 +14,170 @@ type Props = {
 	login: boolean,
 }
 
-type State = {
-	content: string [],
-	message: string,
-	messageContent: string,
-	isLoading: boolean,
-	previewStyle: string,
-	messageStyle: string,
-	disabled: boolean,
-	biblatex: any [],
-	bib: {},
-}
+const Preview: React.FC<PropTypes> = ({ contentState, store, login }) => {
+	const [content, setContent] = React.useState<string[]>([])
+	const [citations, setCitations] = React.useState<{
+		biblatex: string[], bib: {}, hasCite: string
+	}>({
+		biblatex: [],
+		bib: {},
+		hasCite: 'waiting...',
+	})
+	const [loading, setLoading] = React.useState({
+		isLoading: false,
+		style: 'preview',
+		disabled: false,
+	})
+	const [message, setMessage] = React.useState({
+		text: '',
+		style: 'error-message',
+	})
 
-class Preview extends React.Component<Props, State> {
-	constructor(props: Props) {
-		super(props)
-		this.state = {
-			content: [],
-			message: '',
-			messageContent: '',
-			isLoading: false,
-			previewStyle: 'preview',
-			messageStyle: 'error-message',
-			disabled: false,
-			biblatex: [],
-			bib: {},
-		}
+	function displayError(errorMessage: string): void {
+		setMessage((prevState) => ({
+			text: errorMessage,
+			style: `${prevState.style} error-message-active`,
+		}))
+		setTimeout(() => {
+			setMessage({
+				...message,
+				style: 'tips-fade',
+			})
+		}, 3000)
 	}
 
-	displayError = (messageContent: string): void => {
-		this.setState({
-			message: messageContent,
-			messageStyle: 'error-message error-message-active',
-		})
-		setTimeout(
-			() => {
-				this.setState({ messageStyle: 'tips-fade' })
-			},
-			3000,
-		)
-	}
-
-	storeCitations = (callback: () => void): void => {
-		const { contentState } = this.props
+	function saveCitations() {
 		const editorContentRaw = convertToRaw(contentState)
 		const { entityMap } = editorContentRaw
+		const tempArray: string[] = []
+		const tempBib = Object.create({})
+		/**
+		 * filter items that @entityMap type === 'CITATION'
+		 * and then fetch biblatex entries.
+		 */
 
-		if (Object.keys(entityMap).length === 0 && entityMap.constructor === Object) {
-			this.setState({
+		const citationEntityKeys = Object.values(entityMap)
+		const citationEntities = citationEntityKeys.filter((value) => value.type === 'CITATION')
+		if (citationEntities.length === 0) {
+			setCitations({
 				biblatex: [],
 				bib: {},
-			}, () => {
-				callback()
+				hasCite: 'no',
 			})
 		} else {
-			// @ts-expect-error ts-migrate(7034)
-			// FIXME: Variable 'tempArray' implicitly has type 'any[]' i...
-			//  Remove this comment to see the full error message
-			const tempArray = []
-			const tempBib = Object.create({})
+			const { userID, APIkey } = JSON.parse(localStorage.getItem('zotero-Auth')!)
+			citationEntities.forEach((entity, index, array) => {
+				const { key } = entity.data
+				fetchBibEntry(key, userID, APIkey)
+					.then((data) => {
+						const searchTerm = '{'
+						const searchTerm2 = ','
+						const indexOfFirst = data.indexOf(searchTerm)
+						const indexOfFirst2 = data.indexOf(searchTerm2)
+						const temp = Object.create({})
+						const value = data.substr(indexOfFirst + 1, indexOfFirst2 - indexOfFirst - 1)
 
-			for (let i = 0; i < Object.keys(entityMap).length; i += 1) {
-				if (entityMap[i].type === 'CITATION') {
-					const { key } = entityMap[i].data
-					const { userID, APIkey } = JSON.parse(localStorage.getItem('zotero-Auth')!)
-					fetch(`${zoteroUrl}users/${userID}/items/${key}/?format=biblatex`, {
-						method: 'GET',
-						headers: {
-							'Zotero-API-Version': '3',
-							'Zotero-API-Key': APIkey,
-						},
-					}).then((res) => {
-						res.text()
-							.then((data) => {
-								const searchTerm = '{'
-								const searchTerm2 = ','
-								const indexOfFirst = data.indexOf(searchTerm)
-								const indexOfFirst2 = data.indexOf(searchTerm2)
-								const temp = Object.create({})
-								const value = data.substr(indexOfFirst + 1, indexOfFirst2 - indexOfFirst - 1)
+						temp[key] = value
 
-								temp[key] = value
-
-								// @ts-expect-error ts-migrate(7005)
-								// FIXME: Variable 'tempArray' implicitly has an 'any[]' typ...
-								//  Remove this comment to see the full error message
-								if (tempArray.findIndex((item) => item[key] === value) === -1) {
-									tempArray.push(temp)
-								}
-								tempBib[key] = data
-								if (i === Object.keys(entityMap).length - 1) {
-									if (tempArray.length !== 0) {
-										this.setState({
-											// @ts-expect-error ts-migrate(7005)
-											// FIXME: Variable 'tempArray' implicitly has an 'any[]' typ...
-											//  Remove this comment to see the full error message
-											biblatex: tempArray,
-											bib: tempBib,
-										}, () => {
-											callback()
-										})
-									}
-								}
-							})
+						if (tempArray.findIndex((item) => item[key] === value) === -1) {
+							tempArray.push(temp)
+						}
+						tempBib[key] = data
 					})
-				} else {
-					callback()
-				}
-			}
+					.then(() => {
+						if (index === array.length - 1) {
+							setCitations({
+								biblatex: tempArray,
+								bib: tempBib,
+								hasCite: 'yes',
+							})
+						}
+					})
+			})
 		}
 	}
 
-	loadPDF = (): void => {
-		const convertAndPost = (): void => {
-			const { contentState, store } = this.props
-			const {
-				biblatex,
-				bib, messageContent, content,
-			} = this.state
-			convertToTeX(contentState, biblatex, allTeX)
-			this.setState({
-				content: allTeX,
-			}, () => {
-				/**
-				 * TODO load pdf
-				 *  if and only if
-				 *      - [x] this.state.data is not empty
-				 *      - [ ] and not equal to prevState.data
-				 */
-
-				if (contentState.hasText()) {
-					if (Object.keys(bib).length !== 0 && bib.constructor === Object) {
-						postBib(bib, store)
-							.then(() => {
-								postData(content, store)
-									.then(() => {
-										previewPDF(store)
-										this.setState({
-											isLoading: false,
-											previewStyle: 'preview',
-											disabled: false,
-										})
-									})
-							})
-					} else {
-						postData(content, store)
-							.then(() => {
-								previewPDF(store)
-								this.setState({
-									isLoading: false,
-									previewStyle: 'preview',
-									disabled: false,
-								})
-							})
-					}
-				} else {
-					this.setState({
-						isLoading: false,
-						previewStyle: 'preview',
-						disabled: false,
-						messageContent: 'Nothing you wrote',
-					}, () => {
-						this.displayError(messageContent)
-					})
-				}
-			})
-		}
-		this.setState({
+	function loadPDF(): void {
+		setLoading((prevState) => ({
 			isLoading: true,
-			previewStyle: 'preview loading',
+			style: `${prevState.style} loading`,
 			disabled: true,
-		}, () => {
-			this.storeCitations(convertAndPost)
-		})
+		}))
+		saveCitations()
 	}
 
-	preview = (): void => {
-		const { messageContent } = this.state
-		const { login } = this.props
+	function preview(): void {
 		if (login) {
-			this.loadPDF()
+			/**
+			 * TODO load pdf
+			 *  if and only if
+			 *      - [x] this.state.data is not empty
+			 *      - [ ] and not equal to prevState.data
+			 */
+
+			if (contentState.hasText()) {
+				loadPDF()
+			} else {
+				setLoading({
+					isLoading: false,
+					style: 'preview',
+					disabled: false,
+				})
+				displayError('Nothing you wrote')
+			}
 		} else {
-			this.setState({
-				messageContent: 'You need to login first!',
-			}, () => {
-				this.displayError(messageContent)
-			})
+			displayError('You need to login first!')
 		}
 	}
 
-	render() {
-		const {
-			messageStyle, message,
-			previewStyle,
-			disabled,
-			isLoading,
-		} = this.state
-		const { login, store } = this.props
-		const ErrorMessage = () => <p className={messageStyle}>{message}</p>
-		return (
-			<div className={previewStyle}>
-				<ErrorMessage />
-				<Toolbar
-					login={login}
-					store={store}
-					disabled={disabled}
-					onClick={this.preview}
-				/>
-				<iframe
-					id="pdf"
-					title="hello"
-				/>
-				<Loading isLoading={isLoading} />
-			</div>
-		)
-	}
+	React.useEffect(() => {
+		if (content.length !== 0) { // disabled initial render
+			postData(content, store)
+				.then(() => {
+					previewPDF(store)
+					setLoading({
+						isLoading: false,
+						style: 'preview',
+						disabled: false,
+					})
+					setCitations({
+						biblatex: [],
+						bib: {},
+						hasCite: 'waiting...',
+					})
+				})
+		}
+	}, [content, store])
+
+	React.useEffect(() => {
+		const { biblatex, bib, hasCite } = citations
+		if (hasCite !== 'waiting...') {
+			const allTeX = convertToTeX(contentState, biblatex)
+			setContent(allTeX)
+		}
+		if (biblatex.length !== 0) {
+			postBib(bib, store)
+		}
+	}, [citations, store, contentState])
+
+	const ErrorMessage = () => <p className={message.style}>{message.text}</p>
+
+	return (
+		<div className={loading.style}>
+			<ErrorMessage />
+			<Toolbar
+				login={login}
+				store={store}
+				disabled={loading.disabled}
+				onClick={preview}
+			/>
+			<iframe
+				id="pdf"
+				title="hello"
+			/>
+			<Loading isLoading={loading.isLoading} />
+		</div>
+	)
 }
 
 export default Preview
