@@ -54,9 +54,7 @@ const TeXBlock: React.FC<Block> = ({ block, contentState, blockProps }) => {
 		const { value } = evt.target
 		let invalid = false
 		try {
-			// @ts-ignore
-			// eslint-disable-next-line no-underscore-dangle
-			katex.__parse(value)
+			katex.renderToString(value)
 		} catch (e) {
 			invalid = true
 		} finally {
