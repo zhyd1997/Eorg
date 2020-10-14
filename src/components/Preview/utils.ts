@@ -1,6 +1,10 @@
 import { ContentState, convertToRaw } from 'draft-js'
 import { baseUrl, zoteroUrl } from '../baseUrl'
 
+type StoreType = {
+	token: string,
+}
+
 const texMap = {
 	'header-one': '\\section',
 	'header-two': '\\subsection',
@@ -223,7 +227,7 @@ export function convertToTeX(
 	return allTeX
 }
 
-export function previewPDF(store: { token: string }): void {
+export function previewPDF(store: StoreType): void {
 	const TOKEN = `Bearer ${store.token}`
 	fetch(`${baseUrl}draftJS/pdf`, {
 		method: 'GET',
@@ -244,7 +248,7 @@ export function previewPDF(store: { token: string }): void {
 		})
 }
 
-export function postData(content: string[], store: { token: string }) {
+export function postData(content: string[], store: StoreType) {
 	const TOKEN = `Bearer ${store.token}`
 	return fetch(`${baseUrl}draftJS`, {
 		method: 'POST',
@@ -257,7 +261,7 @@ export function postData(content: string[], store: { token: string }) {
 		.then((res) => res.json())
 }
 
-export function postBib(bib: {}, store: { token: string }) {
+export function postBib(bib: {}, store: StoreType) {
 	const TOKEN = `Bearer ${store.token}`
 	fetch(`${baseUrl}draftJS/tex`, {
 		method: 'POST',
@@ -279,4 +283,33 @@ export function fetchBibEntry(key: string, userID: string, APIkey: string) {
 		},
 	})
 		.then((res) => res.text())
+}
+
+export function download(
+	store: StoreType, contentType: string, fileExtension: string,
+): void {
+	const TOKEN = `Bearer ${store.token}`
+	fetch(`${baseUrl}draftJS/${fileExtension}`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': `${contentType}`,
+			Authorization: TOKEN,
+		},
+	})
+		.then((res) => {
+			res.blob()
+				.then((data) => {
+					const fileURL = URL.createObjectURL(data)
+					const link = document.createElement('a')
+					link.href = fileURL
+					link.setAttribute('download', `main.${fileExtension}`)
+					// 3. Append to html page
+					document.body.appendChild(link)
+					// 4. Force download
+					link.click()
+					// 5. Clean up and remove the link
+					// @ts-expect-error ts-migrate(2531) FIXME: Object is possibly 'null'.
+					link.parentNode.removeChild(link)
+				})
+		})
 }

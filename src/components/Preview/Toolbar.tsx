@@ -1,5 +1,5 @@
 import React from 'react'
-import { baseUrl } from '../baseUrl'
+import { download } from './utils'
 
 type PropTypes = {
 	login: boolean,
@@ -13,33 +13,6 @@ type PropTypes = {
 const Toolbar: React.FC<PropTypes> = ({
 	login, store, disabled, onClick,
 }) => {
-	function download(auth: { token: string }, contentType: string, fileExtension: string): void {
-		const token = `Bearer ${auth.token}`
-		fetch(`${baseUrl}draftJS/${fileExtension}`, {
-			method: 'GET',
-			headers: {
-				'Content-Type': `${contentType}`,
-				Authorization: token,
-			},
-		})
-			.then((res) => {
-				res.blob()
-					.then((data) => {
-						const fileURL = URL.createObjectURL(data)
-						const link = document.createElement('a')
-						link.href = fileURL
-						link.setAttribute('download', `main.${fileExtension}`)
-						// 3. Append to html page
-						document.body.appendChild(link)
-						// 4. Force download
-						link.click()
-						// 5. Clean up and remove the link
-						// @ts-expect-error ts-migrate(2531) FIXME: Object is possibly 'null'.
-						link.parentNode.removeChild(link)
-					})
-			})
-	}
-
 	function handleZipDownload(): void {
 		download(store, 'application/zip', 'zip')
 	}
