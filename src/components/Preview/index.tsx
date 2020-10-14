@@ -70,16 +70,25 @@ const Preview: React.FC<PropTypes> = ({ contentState, store, login }) => {
 				const { key } = entity.data
 				fetchBibEntry(key, userID, APIkey)
 					.then((data) => {
-						const searchTerm = '{'
-						const searchTerm2 = ','
-						const indexOfFirst = data.indexOf(searchTerm)
-						const indexOfFirst2 = data.indexOf(searchTerm2)
+						/** find identifier of bib entry, for example:
+						 *
+						 * '@bib_type{identifier,
+						 * 		title = {...},
+						 * 		author = {...},
+						 * 		...other metadata,
+						 * 	}'
+						 *
+						 * 	we need the 'identifier' between '{' and ','
+						 */
+						const position = data.indexOf('{') + 1 // the starting position of the desired substring
+						const length = data.indexOf(',') - position
+
+						const identifier = data.substr(position, length)
+
 						const temp = Object.create({})
-						const value = data.substr(indexOfFirst + 1, indexOfFirst2 - indexOfFirst - 1)
+						temp[key] = identifier
 
-						temp[key] = value
-
-						if (tempArray.findIndex((item) => item[key] === value) === -1) {
+						if (tempArray.findIndex((item) => item[key] === identifier) === -1) {
 							tempArray.push(temp)
 						}
 						tempBib[key] = data
@@ -131,7 +140,8 @@ const Preview: React.FC<PropTypes> = ({ contentState, store, login }) => {
 	}
 
 	React.useEffect(() => {
-		if (content.length !== 0) { // disabled initial render
+		// do not postData when logout.
+		if (content.length !== 0 && store.token.length !== 0) { // disabled initial render
 			postData(content, store)
 				.then(() => {
 					previewPDF(store)
