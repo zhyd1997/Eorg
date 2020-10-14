@@ -6,16 +6,16 @@ import {
 import './index.css'
 import 'draft-js/dist/Draft.css'
 import { Map } from 'immutable'
-import BlockComponent from '../BlockComponent'
-import removeTeXBlock from '../BlockComponent/TeX/modifiers/removeTeXBlock'
-import insertTeXBlock from '../BlockComponent/TeX/modifiers/insertTeXBlock'
-import createTable from '../BlockComponent/Table/modifiers/createTable'
-import ModalTable from '../BlockComponent/Table/ModalTable'
+import BlockComponent from './BlockComponent'
+import removeTeXBlock from './BlockComponent/TeX/modifiers/removeTeXBlock'
+import insertTeXBlock from './BlockComponent/TeX/modifiers/insertTeXBlock'
+import createTable from './BlockComponent/Table/modifiers/createTable'
+import ModalTable from './BlockComponent/Table/ModalTable'
 import Preview from '../Preview'
 import { getEntityStrategy, TokenSpan } from '../Zotero'
 import ModalExample from '../Zotero/ModalExample'
-import '../BlockComponent/TeX/TeXEditor.css'
-import '../BlockComponent/Table/Table.css'
+import './BlockComponent/TeX/TeXEditor.css'
+import './BlockComponent/Table/Table.css'
 
 /**
  * Editor Template and KaTeX support are all referenced to Draft.js official example.

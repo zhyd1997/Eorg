@@ -1,5 +1,5 @@
 import React from 'react'
-import RichTextEditor from './RichTextEditor'
+import RichTextEditor from './Editor'
 import Header from './Header'
 
 const Main = () => {
