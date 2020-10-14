@@ -49,7 +49,7 @@ const Preview: React.FC<PropTypes> = ({ contentState, store, login }) => {
 	function saveCitations() {
 		const editorContentRaw = convertToRaw(contentState)
 		const { entityMap } = editorContentRaw
-		const tempArray: string[] = []
+		const tempBiblatex: string[] = []
 		const tempBib = Object.create({})
 		/**
 		 * filter items that @entityMap type === 'CITATION'
@@ -88,15 +88,21 @@ const Preview: React.FC<PropTypes> = ({ contentState, store, login }) => {
 						const temp = Object.create({})
 						temp[key] = identifier
 
-						if (tempArray.findIndex((item) => item[key] === identifier) === -1) {
-							tempArray.push(temp)
+						/**
+						 * set temporary citations
+ 						 */
+
+						const newBiblatexIndex = tempBiblatex.findIndex((item) => item[key] === identifier)
+
+						if (newBiblatexIndex === -1) { // deduplicate
+							tempBiblatex.push(temp)
 						}
 						tempBib[key] = data
 					})
 					.then(() => {
 						if (index === array.length - 1) {
 							setCitations({
-								biblatex: tempArray,
+								biblatex: tempBiblatex,
 								bib: tempBib,
 								hasCite: 'yes',
 							})
