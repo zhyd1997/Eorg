@@ -149,8 +149,13 @@ const Preview: React.FC<PropTypes> = ({ contentState, store, login }) => {
 		// do not postData when logout.
 		if (content.length !== 0 && store.token.length !== 0) { // disabled initial render
 			postData(content, store)
-				.then(() => {
-					previewPDF(store)
+				.then((data) => {
+					const { status, body } = data
+					if (status === 'success') {
+						previewPDF(store)
+					} else {
+						displayError(body)
+					}
 					setLoading({
 						isLoading: false,
 						style: 'preview',
