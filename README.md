@@ -32,7 +32,7 @@ DEBUG=Eorg-Server:* yarn run start # runs on http://localhost:3000
 git clone https://github.com/zhyd1997/Eorg.git
 cd Eorg
 yarn install
-yarn start # it should run on http://localhost:8080.
+yarn run start # it should run on http://localhost:8080.
 
 ```
 
