@@ -16,6 +16,8 @@ const texMap = {
 	CODE: '\\texttt',
 }
 
+const store: StoreType = JSON.parse(localStorage.getItem('login')!)
+
 export function convertToTeX(
 	contentState: ContentState, biblatex: string[],
 ): string[] {
@@ -227,7 +229,7 @@ export function convertToTeX(
 	return allTeX
 }
 
-export function previewPDF(store: StoreType): void {
+export function previewPDF(): void {
 	const TOKEN = `Bearer ${store.token}`
 	fetch(`${baseUrl}draftJS/pdf`, {
 		method: 'GET',
@@ -248,7 +250,7 @@ export function previewPDF(store: StoreType): void {
 		})
 }
 
-export function postData(content: string[], store: StoreType) {
+export function postData(content: string[]) {
 	const TOKEN = `Bearer ${store.token}`
 	return fetch(`${baseUrl}draftJS`, {
 		method: 'POST',
@@ -261,7 +263,7 @@ export function postData(content: string[], store: StoreType) {
 		.then((res) => res.json())
 }
 
-export function postBib(bib: {}, store: StoreType) {
+export function postBib(bib: {}) {
 	const TOKEN = `Bearer ${store.token}`
 	fetch(`${baseUrl}draftJS/tex`, {
 		method: 'POST',
@@ -286,7 +288,7 @@ export function fetchBibEntry(key: string, userID: string, APIkey: string) {
 }
 
 export function download(
-	store: StoreType, contentType: string, fileExtension: string,
+	contentType: string, fileExtension: string,
 ): void {
 	const TOKEN = `Bearer ${store.token}`
 	fetch(`${baseUrl}draftJS/${fileExtension}`, {

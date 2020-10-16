@@ -148,11 +148,11 @@ const Preview: React.FC<PropTypes> = ({ contentState, store, login }) => {
 	React.useEffect(() => {
 		// do not postData when logout.
 		if (content.length !== 0 && store.token.length !== 0) { // disabled initial render
-			postData(content, store)
+			postData(content)
 				.then((data) => {
 					const { status, body } = data
 					if (status === 'success') {
-						previewPDF(store)
+						previewPDF()
 					} else {
 						displayError(body)
 					}
@@ -177,9 +177,9 @@ const Preview: React.FC<PropTypes> = ({ contentState, store, login }) => {
 			setContent(allTeX)
 		}
 		if (biblatex.length !== 0) {
-			postBib(bib, store)
+			postBib(bib)
 		}
-	}, [citations, store, contentState])
+	}, [citations, contentState])
 
 	const ErrorMessage = () => <p className={message.style}>{message.text}</p>
 
@@ -188,7 +188,6 @@ const Preview: React.FC<PropTypes> = ({ contentState, store, login }) => {
 			<ErrorMessage />
 			<Toolbar
 				login={login}
-				store={store}
 				disabled={loading.disabled}
 				onClick={preview}
 			/>
