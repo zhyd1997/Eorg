@@ -24,15 +24,15 @@ Migrated to [project management](https://github.com/zhyd1997/Eorg/projects)
 
 git clone https://github.com/zhyd1997/Eorg-Server.git
 cd Eorg-Server
-npm install
-DEBUG=Eorg-Server:* npm start # runs on http://localhost:3000
+yarn install
+DEBUG=Eorg-Server:* yarn run start # runs on http://localhost:3000
 
 ## `start` frontend
 
 git clone https://github.com/zhyd1997/Eorg.git
 cd Eorg
-yarn
-yarn start # it should run on another port other than 3000.
+yarn install
+yarn start # it should run on http://localhost:8080.
 
 ```
 
