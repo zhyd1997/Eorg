@@ -3,7 +3,7 @@ import { convertToRaw, ContentState } from 'draft-js'
 import Toolbar from './Toolbar'
 import Loading from '../Loading'
 import {
-	convertToTeX, previewPDF, postBib, postData, fetchBibEntry,
+	parseRawContent, previewPDF, postBib, postData, fetchBibEntry,
 } from './utils'
 
 type PropTypes = {
@@ -173,7 +173,7 @@ const Preview: React.FC<PropTypes> = ({ contentState, store, login }) => {
 	React.useEffect(() => {
 		const { biblatex, bib, hasCite } = citations
 		if (hasCite !== 'waiting...') {
-			const allTeX = convertToTeX(contentState, biblatex)
+			const allTeX = parseRawContent(contentState, biblatex)
 			setContent(allTeX)
 		}
 		if (biblatex.length !== 0) {

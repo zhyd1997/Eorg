@@ -18,7 +18,7 @@ const texMap = {
 
 const store: StoreType = JSON.parse(localStorage.getItem('login')!)
 
-export function convertToTeX(
+export function parseRawContent(
 	contentState: ContentState, biblatex: string[],
 ): string[] {
 	const allTeX: string[] = []
