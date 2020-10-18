@@ -1,6 +1,6 @@
 import { EditorState, Modifier, SelectionState } from 'draft-js'
 
-function removeTeXBlock(editorState: EditorState, blockKey: string): EditorState {
+function removeCustomBlock(editorState: EditorState, blockKey: string): EditorState {
 	const content = editorState.getCurrentContent()
 	const block = content.getBlockForKey(blockKey)
 
@@ -22,4 +22,4 @@ function removeTeXBlock(editorState: EditorState, blockKey: string): EditorState
 	return EditorState.forceSelection(newState, resetBlock.getSelectionAfter())
 }
 
-export default removeTeXBlock
+export default removeCustomBlock

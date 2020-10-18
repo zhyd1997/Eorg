@@ -39,7 +39,7 @@ const TableOutput = (props: any) => {
 
 		// update shape.cell[x][y]
 		cell[x][y] = trTarget.innerHTML
-		blockProps.onFinishTableEdit(block.getKey())
+		blockProps.onFinishEdit(block.getKey())
 	}
 
 	// colsTh

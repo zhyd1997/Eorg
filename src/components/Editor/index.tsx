@@ -7,11 +7,8 @@ import './index.css'
 import 'draft-js/dist/Draft.css'
 import { Map } from 'immutable'
 import BlockComponent from './BlockComponent'
-import removeTeXBlock from './BlockComponent/TeX/modifiers/removeTeXBlock'
-import insertTeXBlock from './BlockComponent/TeX/modifiers/insertTeXBlock'
-import insertImageBlock from './BlockComponent/Image/modifiers/insertImageBlock'
-import removeImageBlock from './BlockComponent/Image/modifiers/removeImageBlock'
-import createTable from './BlockComponent/Table/modifiers/createTable'
+import insertCustomBlock from './BlockComponent/modifiers/insertCustomBlock'
+import removeCustomBlock from './BlockComponent/modifiers/removeCustomBlock'
 import ModalTable from './BlockComponent/Table/ModalTable'
 import Preview from '../Preview'
 import { getEntityStrategy, TokenSpan } from '../Zotero'
@@ -179,28 +176,23 @@ const RichTextEditor: React.FC<RichTextEditorTypes> = ({ login, store }) => {
 		setEditorState(editorStateChanged)
 	}
 
-	function removeTeX(blockKey: string): void {
+	function removeBlock(blockKey: string): void {
 		setLiveCustomBlockEdits(liveCustomBlockEdits.remove(blockKey))
-		setEditorState(removeTeXBlock(editorState, blockKey))
+		setEditorState(removeCustomBlock(editorState, blockKey))
 	}
 
 	function insertTeX(): void {
 		setLiveCustomBlockEdits(Map())
-		setEditorState(insertTeXBlock(editorState))
+		setEditorState(insertCustomBlock(editorState, 'TOKEN', { content: '\\sin{x^2} + \\cos{x^2} = 1' }))
 	}
 
 	function insertImage(): void {
 		setLiveCustomBlockEdits(Map())
-		setEditorState(insertImageBlock(editorState))
-	}
-
-	function removeImage(blockKey: string): void {
-		setLiveCustomBlockEdits(liveCustomBlockEdits.remove(blockKey))
-		setEditorState(removeImageBlock(editorState, blockKey))
+		setEditorState(insertCustomBlock(editorState, 'IMAGE', { path: 'logo192.png', caption: 'This is a caption' }))
 	}
 
 	function insertTable(): void {
-		setEditorState(createTable(editorState))
+		setEditorState(insertCustomBlock(editorState, 'TABLE'))
 	}
 
 	function insertCite(fetchText: any[], targetValue: number): void {
@@ -237,15 +229,11 @@ const RichTextEditor: React.FC<RichTextEditorTypes> = ({ login, store }) => {
 					onStartEdit: (blockKey: string) => {
 						setLiveCustomBlockEdits(liveCustomBlockEdits.set(blockKey, true))
 					},
-					onFinishTeXEdit: (blockKey: string, newContentState: ContentState) => {
+					onFinishEdit: (blockKey: string, newContentState: ContentState) => {
 						setLiveCustomBlockEdits(liveCustomBlockEdits.remove(blockKey))
 						setEditorState(EditorState.createWithContent(newContentState))
 					},
-					onFinishTableEdit: (blockKey: string) => {
-						setLiveCustomBlockEdits(liveCustomBlockEdits.remove(blockKey))
-					},
-					onRemove: (blockKey: string) => removeTeX(blockKey),
-					onRemoveImage: (blockKey: string) => removeImage(blockKey),
+					onRemove: (blockKey: string) => removeBlock(blockKey),
 				},
 			}
 		}

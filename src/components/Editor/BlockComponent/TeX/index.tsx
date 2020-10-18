@@ -72,7 +72,7 @@ const TeXBlock: React.FC<Block> = ({ block, contentState, blockProps }) => {
 	}
 
 	function finishEdit(newContentState: ContentState): void {
-		blockProps.onFinishTeXEdit(
+		blockProps.onFinishEdit(
 			block.getKey(),
 			newContentState,
 		)

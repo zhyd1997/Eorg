@@ -5,9 +5,7 @@ export default interface Block {
 	contentState: ContentState,
 	blockProps: {
 		onStartEdit?: any, // TODO what's immutable Map() type?
-		onFinishTeXEdit?: any,
-		onFinishTableEdit?: any,
+		onFinishEdit?: any,
 		onRemove?: any,
-		onRemoveImage?: any,
 	},
 }

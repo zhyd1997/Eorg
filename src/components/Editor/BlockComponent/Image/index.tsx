@@ -35,14 +35,14 @@ const ImageBlock: React.FC<Block> = ({ block, contentState, blockProps }) => {
 	}
 
 	function finishEdit(newContentState: ContentState): void {
-		blockProps.onFinishTeXEdit(
+		blockProps.onFinishEdit(
 			block.getKey(),
 			newContentState,
 		)
 	}
 
 	function remove(): void {
-		blockProps.onRemoveImage(block.getKey())
+		blockProps.onRemove(block.getKey())
 	}
 
 	function save(): void {
