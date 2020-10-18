@@ -1,0 +1,37 @@
+.hello-span {
+    display: inherit;
+    position: relative;
+    text-align: center;
+}
+
+.edit-span {
+    border: dashed red;
+}
+
+.img-remove {
+    position: absolute;
+    margin: auto;
+    top: -16px;
+    right: -15px;
+}
+
+form {
+    position: absolute;
+    margin: auto;
+    top: 5em;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.img-initial {
+    width: 50%;
+}
+
+.img-active {
+    opacity: 20%;
+}
+
+.visually-hidden {
+    max-width: 200px;
+}

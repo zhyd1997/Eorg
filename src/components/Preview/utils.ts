@@ -94,6 +94,8 @@ export function convertToTeX(
 		for (let i = 0; i < Object.keys(entityMap).length; i += 1) { // Iterating <entityMap> ...
 			if (entityMap[i].type === 'TOKEN') {
 				Math.push(Object.values(entityMap)[i].data.content)
+			} else if (entityMap[i].type === 'IMAGE') {
+				Math.push(Object.values(entityMap)[i].data)
 			} else if (entityMap[i].type === 'TABLE') {
 				// TODO table
 
@@ -184,11 +186,25 @@ export function convertToTeX(
 				}
 				break
 			case 'atomic':
-				blocks[k].text = Math[count]
-				TeX += '\\begin{equation}'
-				TeX += blocks[k].text
-				TeX += '\\end{equation}'
-				count += 1
+				// @ts-ignore
+				if (Math[count].caption !== null) {
+					TeX += '\\begin{figure}'
+					TeX += `\\caption{${Math[count].caption}}`
+					TeX += '\\centering'
+					if (Math[count].path !== 'logo192.png') {
+						TeX += `\\includegraphics[scale=0.1]{./images/${Math[count].path}}`
+					} else {
+						alert('change default image first!!')
+					}
+					TeX += '\\end{figure}'
+					count += 1
+				} else {
+					blocks[k].text = Math[count]
+					TeX += '\\begin{equation}'
+					TeX += blocks[k].text
+					TeX += '\\end{equation}'
+					count += 1
+				}
 
 				break
 			case 'unordered-list-item': // TODO added indentation (depth)

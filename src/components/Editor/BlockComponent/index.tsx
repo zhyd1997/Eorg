@@ -1,6 +1,7 @@
 import React from 'react'
 import Block from './blockTypes'
 import TeXBlock from './TeX'
+import ImageBlock from './Image'
 import TableBlock from './Table'
 
 const BlockComponent = ({ contentState, block, blockProps }: Block) => {
@@ -21,6 +22,14 @@ const BlockComponent = ({ contentState, block, blockProps }: Block) => {
 	} else if (type === 'TABLE') {
 		media = (
 			<TableBlock
+				blockProps={blockProps}
+				block={block}
+				contentState={contentState}
+			/>
+		)
+	} else if (type === 'IMAGE') {
+		media = (
+			<ImageBlock
 				blockProps={blockProps}
 				block={block}
 				contentState={contentState}

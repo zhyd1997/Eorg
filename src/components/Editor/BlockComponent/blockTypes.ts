@@ -8,5 +8,6 @@ export default interface Block {
 		onFinishTeXEdit?: any,
 		onFinishTableEdit?: any,
 		onRemove?: any,
+		onRemoveImage?: any,
 	},
 }

@@ -9,6 +9,8 @@ import { Map } from 'immutable'
 import BlockComponent from './BlockComponent'
 import removeTeXBlock from './BlockComponent/TeX/modifiers/removeTeXBlock'
 import insertTeXBlock from './BlockComponent/TeX/modifiers/insertTeXBlock'
+import insertImageBlock from './BlockComponent/Image/modifiers/insertImageBlock'
+import removeImageBlock from './BlockComponent/Image/modifiers/removeImageBlock'
 import createTable from './BlockComponent/Table/modifiers/createTable'
 import ModalTable from './BlockComponent/Table/ModalTable'
 import Preview from '../Preview'
@@ -16,6 +18,7 @@ import { getEntityStrategy, TokenSpan } from '../Zotero'
 import ModalExample from '../Zotero/ModalExample'
 import './BlockComponent/TeX/TeXEditor.css'
 import './BlockComponent/Table/Table.css'
+import './BlockComponent/Image/imageBlockStyle.css'
 
 /**
  * Editor Template and KaTeX support are all referenced to Draft.js official example.
@@ -99,6 +102,7 @@ const BLOCK_TYPES = [
 	{ label: 'H2', style: 'header-two' },
 	{ label: 'H3', style: 'header-three' },
 	{ label: 'Math', style: 'math' },
+	{ label: 'Image', style: 'image-block' },
 	// {label: 'H4', style: 'header-four'},
 	// {label: 'H5', style: 'header-five'},
 	// {label: 'H6', style: 'header-six'},
@@ -185,6 +189,16 @@ const RichTextEditor: React.FC<RichTextEditorTypes> = ({ login, store }) => {
 		setEditorState(insertTeXBlock(editorState))
 	}
 
+	function insertImage(): void {
+		setLiveCustomBlockEdits(Map())
+		setEditorState(insertImageBlock(editorState))
+	}
+
+	function removeImage(blockKey: string): void {
+		setLiveCustomBlockEdits(liveCustomBlockEdits.remove(blockKey))
+		setEditorState(removeImageBlock(editorState, blockKey))
+	}
+
 	function insertTable(): void {
 		setEditorState(createTable(editorState))
 	}
@@ -231,6 +245,7 @@ const RichTextEditor: React.FC<RichTextEditorTypes> = ({ login, store }) => {
 						setLiveCustomBlockEdits(liveCustomBlockEdits.remove(blockKey))
 					},
 					onRemove: (blockKey: string) => removeTeX(blockKey),
+					onRemoveImage: (blockKey: string) => removeImage(blockKey),
 				},
 			}
 		}
@@ -267,6 +282,10 @@ const RichTextEditor: React.FC<RichTextEditorTypes> = ({ login, store }) => {
 	function toggleBlockType(blockType: string) {
 		if (blockType === 'math') {
 			return insertTeX()
+		}
+
+		if (blockType === 'image-block') {
+			return insertImage()
 		}
 
 		onChange(
