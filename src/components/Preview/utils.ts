@@ -25,222 +25,113 @@ export function parseRawContent(
 	const editorContentRaw = convertToRaw(contentState)
 
 	const { blocks, entityMap } = editorContentRaw
-	const Math = []
-	const citations: string[] = []
-
-	const ul = []
-	const ulStart = []
-	const ulEnd = []
-	const ulIndex: number[] = []
-	const ulDepth: number[] = []
-	const ulJumpIndex = []
-	const ulJumpDepth = []
-
-	// find ul index
-
-	for (let i = 0; i < blocks.length; i += 1) {
-		if (blocks[i].type === 'unordered-list-item') {
-			const tempO = Object.create({})
-
-			tempO.index = i
-			tempO.depth = blocks[i].depth
-
-			ul.push(tempO)
-		}
-	}
-
-	for (let i = 0; i < ul.length - 1; i += 1) {
-		if (i === 0) {
-			ulStart.push(ul[0])
-		}
-		if (ul[i + 1].index - ul[i].index === 1) {
-			if (ul[i + 1].depth > ul[i].depth) {
-				ulStart.push(ul[i + 1])
-			} else if (ul[i + 1].depth < ul[i].depth) {
-				ulEnd.push(ul[i])
-			}
-		}
-		if (i + 1 === ul.length - 1) {
-			ulEnd.push(ul[i + 1])
-		}
-		if (ul[i + 1].index - ul[i].index !== 1) { // look here
-			ulEnd.push(ul[i])
-			ulStart.push(ul[i + 1])
-		}
-	}
-
-	ul.forEach((item) => {
-		ulIndex.push(item.index)
-	})
-
-	ul.forEach((item) => {
-		ulDepth.push(item.depth)
-	})
-
-	for (let i = 1; i < ulIndex.length; i += 1) {
-		if (ulIndex[i] - ulIndex[i - 1] !== 1) {
-			ulJumpIndex.push(ulIndex[i - 1])
-		}
-	}
-
-	for (let i = 1; i < ulDepth.length; i += 1) {
-		if (ulDepth[i] - ulDepth[i - 1] !== 1) {
-			ulJumpDepth.push(ulDepth[i - 1])
-		}
-	}
-
-	// Blocks Processing
-	if (Object.keys(entityMap).length) {
-		for (let i = 0; i < Object.keys(entityMap).length; i += 1) { // Iterating <entityMap> ...
-			if (entityMap[i].type === 'TOKEN') {
-				Math.push(Object.values(entityMap)[i].data.content)
-			} else if (entityMap[i].type === 'IMAGE') {
-				Math.push(Object.values(entityMap)[i].data)
-			} else if (entityMap[i].type === 'TABLE') {
-				// TODO table
-
-				Math.push('sorry, but the table feature has not finished !!!')
-			} else if (entityMap[i].type === 'CITATION') {
-				const { key } = entityMap[i].data
-
-				biblatex.filter((item) => {
-					const title = item[key]
-					if (title !== undefined) {
-						citations.push(`\\cite{${title}}`)
-					}
-					return null
-				})
-			}
-		}
-	}
-
-	let count = 0
-
 	/**
 	 * TODO optimization
 	 *  -- Oops!!!
 	 *  O(n^2) algorithm
 	 */
+	blocks.forEach((row) => { // by row
+		const {
+			type, text, inlineStyleRanges, entityRanges,
+		} = row
+		let tex = ''
 
-	for (let k = 0; k < blocks.length; k += 1) { // Iterating <blocks> ...
-		let TeX = ''
-		const { inlineStyleRanges, entityRanges } = blocks[k]
-
-		// @ts-expect-error ts-migrate(7034)
-		// FIXME: Variable 'ranges' implicitly has type 'any[]' in s...
-		//  Remove this comment to see the full error message
-		const ranges = []
-
-		inlineStyleRanges.forEach((item) => {
-			ranges.push(item)
-		})
-		entityRanges.forEach((item) => {
-			ranges.push(item)
-		})
-
-		// @ts-expect-error ts-migrate(7005) FIXME: Variable 'ranges' implicitly has an 'any[]' type.
-		ranges.sort((a, b) => a.offset - b.offset)
-
-		/**
-		 * ** text split algorithm **
-		 * split with inlineStyledText offset and its length
-		 */
-
-		let position = 0
-		let index = 0 // citations[Index]
-		const { type } = blocks[k]
-
+		const ranges: { offset: number, length: number, style?: string, key?: number }[] = []
 		switch (type) {
+			// inline style
 			case 'unstyled':
-				if (ranges.length !== 0) {
-					for (let i = 0; i < ranges.length; i += 1) {
-						// 1. find the offset and length of styled text.
-						// @ts-expect-error ts-migrate(7005)
-						// FIXME: Variable 'ranges' implicitly has an 'any[]' type.
-						const { offset, length, style } = ranges[i]
-						// 2. slice and concat.
-						const plaintext = blocks[k].text.slice(position, offset)
-						let styledText = ''
+				inlineStyleRanges.forEach((range) => {
+					ranges.push(range)
+				})
+				entityRanges.forEach((range) => {
+					ranges.push(range)
+				})
 
-						if (style === undefined) {
-							// cite item
-							styledText = citations[index]
-							index += 1
+				ranges.sort((a, b) => a.offset - b.offset)
+
+				if (ranges.length !== 0) {
+					let position = 0
+					let finaltex = ''
+
+					ranges.forEach((range, index) => {
+						// 1. find the offset and length of styled text.
+						const { offset, length, style } = range
+						// 2. slice and concat.
+						let plaintext = ''
+						if (index === 0 && offset !== 0) {
+							plaintext += (text.slice(0, offset))
 						} else {
-							// inline style
-							// @ts-expect-error ts-migrate(7053)
-							// FIXME: Element implicitly has an 'any' type because expre...
-							//  Remove this comment to see the full error message
-							styledText = `${texMap[style]}{${blocks[k].text.slice(offset, offset + length)}}`
+							plaintext += (text.slice(position, offset))
 						}
-						const finalText = plaintext.concat(styledText)
-						// 3. append to TeX.
-						TeX += finalText
+						let styledText = ''
+						if (range.key !== undefined) {
+							const { key } = entityMap[range.key].data
+							biblatex.filter((entry) => {
+								const identifier = entry[key]
+								if (entry[key] !== undefined) {
+									styledText = `\\cite{${identifier}}`
+								}
+								return null
+							})
+						} else {
+							// @ts-ignore
+							styledText = `${texMap[style]}{${text.slice(offset, offset + length)}}`
+						}
+						plaintext += (styledText)
 						position = offset + length
-						if (i === ranges.length - 1) {
-							TeX += blocks[k].text.slice(position)
+						if (index === ranges.length - 1 && position !== text.length) {
+							plaintext += (text.slice(position))
 						}
-					}
+						finaltex += plaintext
+						// 3. append.
+					})
+					tex += finaltex
+					tex += '\n'
 				} else {
-					TeX += blocks[k].text
+					tex += text
+					tex += '\n'
 				}
 				break
 			case 'atomic':
-				if (Math[count].caption !== undefined) {
-					TeX += '\\begin{figure}'
-					TeX += `\\caption{${Math[count].caption}}`
-					TeX += '\\centering'
-					if (Math[count].path !== 'logo192.png') {
-						TeX += `\\includegraphics[scale=0.1]{./images/${Math[count].path}}`
+				entityRanges.forEach((entityRange) => {
+					const { key } = entityRange
+					if (entityMap[key].type === 'TOKEN') {
+						const { content } = entityMap[key].data
+						tex += '\\begin{equation}'
+						tex += content
+						tex += '\\end{equation}'
+					} else if (entityMap[key].type === 'IMAGE') {
+						const { path, caption } = entityMap[key].data
+						tex += '\\begin{figure}'
+						tex += `\\caption{${caption}}`
+						if (path !== 'logo192.png') {
+							tex += `\\includegraphics[scale=0.1]{./images/${path}}`
+						}
+						tex += '\\end{figure}'
+					} else if (entityMap[key].type === 'TABLE') {
+						// TODO
 					} else {
-						alert('change default image first!!')
+						// TODO
 					}
-					TeX += '\\end{figure}'
-					count += 1
-				} else {
-					blocks[k].text = Math[count]
-					TeX += '\\begin{equation}'
-					TeX += blocks[k].text
-					TeX += '\\end{equation}'
-					count += 1
-				}
-
-				break
-			case 'unordered-list-item': // TODO added indentation (depth)
-				ulStart.filter((item) => {
-					if (item.index === k) {
-						TeX += '\\begin{itemize}'
-					}
-					return null
 				})
-				TeX += `${texMap[type]} ${blocks[k].text}` // has a space between them.
-				if (ulJumpIndex.indexOf(k) !== -1) {
-					for (let i = 0; i < blocks[k].depth - 1; i += 1) {
-						TeX += '\\end{itemize}'
-					}
-				}
-				if (ulJumpDepth.indexOf(k) !== -1) {
-					for (let i = 0; i < blocks[k].depth - 1; i += 1) {
-						TeX += '\\end{itemize}'
-					}
-				}
-				ulEnd.filter((item) => {
-					if (item.index === k) {
-						TeX += '\\end{itemize}'
-					}
-					return null
-				})
-
 				break
+			case 'code-block':
+				// TODO
+				break
+			case 'ordered-list-item':
+				// TODO
+				break
+			case 'unordered-list-item':
+				// TODO
+				break
+			// block style, except for 'atomic', 'code-block', 'list-item'
 			default:
-				// @ts-expect-error ts-migrate(7053)
-				// FIXME: Element implicitly has an 'any' type because expre...
-				//  Remove this comment to see the full error message
-				TeX += `${texMap[type]}{${blocks[k].text}}`
+				// @ts-ignore
+				tex += `${texMap[type]}{${text}}`
 		}
+		allTeX.push(tex)
+	})
 
-		allTeX.push(TeX)
-	}
 	return allTeX
 }
 
