@@ -186,8 +186,7 @@ export function parseRawContent(
 				}
 				break
 			case 'atomic':
-				// @ts-ignore
-				if (Math[count].caption !== null) {
+				if (Math[count].caption !== undefined) {
 					TeX += '\\begin{figure}'
 					TeX += `\\caption{${Math[count].caption}}`
 					TeX += '\\centering'
