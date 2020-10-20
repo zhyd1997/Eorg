@@ -103,6 +103,7 @@ export function parseRawContent(
 						const { path, caption } = entityMap[key].data
 						tex += '\\begin{figure}'
 						tex += `\\caption{${caption}}`
+						tex += '\\centering'
 						if (path !== 'logo192.png') {
 							tex += `\\includegraphics[scale=0.1]{./images/${path}}`
 						}
