@@ -16,8 +16,6 @@ const texMap = {
 	CODE: '\\texttt',
 }
 
-const store: StoreType = JSON.parse(localStorage.getItem('login')!)
-
 export function parseRawContent(
 	contentState: ContentState, biblatex: string[],
 ): string[] {
@@ -66,6 +64,7 @@ export function parseRawContent(
 						let styledText = ''
 						if (range.key !== undefined) {
 							const { key } = entityMap[range.key].data
+							// TODO biblatex is async... why?
 							biblatex.filter((entry) => {
 								const identifier = entry[key]
 								if (entry[key] !== undefined) {
@@ -135,7 +134,7 @@ export function parseRawContent(
 	return allTeX
 }
 
-export function previewPDF(): void {
+export function previewPDF(store: StoreType): void {
 	const TOKEN = `Bearer ${store.token}`
 	fetch(`${baseUrl}draftJS/pdf`, {
 		method: 'GET',
@@ -156,7 +155,7 @@ export function previewPDF(): void {
 		})
 }
 
-export function postData(content: string[]) {
+export function postData(content: string[], store: StoreType) {
 	const TOKEN = `Bearer ${store.token}`
 	return fetch(`${baseUrl}draftJS`, {
 		method: 'POST',
@@ -169,7 +168,7 @@ export function postData(content: string[]) {
 		.then((res) => res.json())
 }
 
-export function postBib(bib: {}) {
+export function postBib(bib: {}, store: StoreType) {
 	const TOKEN = `Bearer ${store.token}`
 	fetch(`${baseUrl}draftJS/tex`, {
 		method: 'POST',
@@ -194,7 +193,7 @@ export function fetchBibEntry(key: string, userID: string, APIkey: string) {
 }
 
 export function download(
-	contentType: string, fileExtension: string,
+	store: StoreType, contentType: string, fileExtension: string,
 ): void {
 	const TOKEN = `Bearer ${store.token}`
 	fetch(`${baseUrl}draftJS/${fileExtension}`, {

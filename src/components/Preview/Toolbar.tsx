@@ -3,19 +3,22 @@ import { download } from './utils'
 
 type PropTypes = {
 	login: boolean,
+	store: {
+		token: string,
+	},
 	disabled: boolean,
 	onClick: () => void,
 }
 
 const Toolbar: React.FC<PropTypes> = ({
-	login, disabled, onClick,
+	login, store, disabled, onClick,
 }) => {
 	function handleZipDownload(): void {
-		download('application/zip', 'zip')
+		download(store, 'application/zip', 'zip')
 	}
 
 	function handlePDFDownload(): void {
-		download('application/pdf', 'pdf')
+		download(store, 'application/pdf', 'pdf')
 	}
 
 	const preview = <button disabled={disabled} className="save" type="button" onClick={onClick}>preview</button>
