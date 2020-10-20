@@ -11,6 +11,8 @@
 .Menu {
   display: flex;
   position: relative;
+  height: 54px;
+  padding: 9px;
 }
 
 .math {
