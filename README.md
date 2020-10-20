@@ -18,6 +18,10 @@ These situations above only suit me.
 Migrated to [project management](https://github.com/zhyd1997/Eorg/projects)
 ![wish list](https://i.imgur.com/mc9xri8.png)
 
+## demo
+![editor and preview panel](https://i.imgur.com/UNm4P0P.png)
+![downloaded pdf](https://i.imgur.com/EhLXoEC.png)
+
 # Developer Tips
 ```shell script
 ## `start` backend
