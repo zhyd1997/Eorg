@@ -1,9 +1,16 @@
-import { ContentState, convertToRaw } from 'draft-js'
+import { ContentState, convertToRaw, DraftInlineStyleType } from 'draft-js'
 import { baseUrl, zoteroUrl } from '../baseUrl'
 
 type StoreType = {
 	token: string,
 }
+
+type RangesType = {
+	offset: number,
+	length: number,
+	style?: DraftInlineStyleType, // 'BOLD' | 'CODE' | 'ITALIC' | 'STRIKETHROUGH' | 'UNDERLINE'
+	key?: number,
+}[]
 
 const texMap = {
 	'header-one': '\\section',
@@ -34,17 +41,11 @@ export function parseRawContent(
 		} = row
 		let tex = ''
 
-		const ranges: { offset: number, length: number, style?: string, key?: number }[] = []
+		let ranges: RangesType
 		switch (type) {
 			// inline style
 			case 'unstyled':
-				inlineStyleRanges.forEach((range) => {
-					ranges.push(range)
-				})
-				entityRanges.forEach((range) => {
-					ranges.push(range)
-				})
-
+				ranges = (inlineStyleRanges as RangesType).concat(entityRanges)
 				ranges.sort((a, b) => a.offset - b.offset)
 
 				if (ranges.length !== 0) {
