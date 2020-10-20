@@ -40,7 +40,7 @@ const Image: React.FC<PropTypes> = ({ id, update, save }) => {
 	}
 
 	return (
-		<form onSubmit={handleSubmit}>
+		<form className="img-form" onSubmit={handleSubmit}>
 			<label htmlFor="fileElem">
 				<input
 					type="file"
