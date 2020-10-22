@@ -23,6 +23,42 @@ const texMap = {
 	CODE: '\\texttt',
 }
 
+// contributor: https://v2ex.com/member/shadeofgod
+
+export function mergeSortedRanges(
+	inlineRanges: any[],
+	entityRanges: any[],
+): RangesType {
+	let i = 0
+	let j = 0
+	const range = []
+
+	while (i < inlineRanges.length && j < entityRanges.length) {
+		const x = inlineRanges[i]
+		const y = entityRanges[j]
+
+		if (x.offset < y.offset) {
+			range.push(x)
+			i += 1
+		} else {
+			range.push(y)
+			j += 1
+		}
+	}
+
+	while (i < inlineRanges.length) {
+		range.push(inlineRanges[i])
+		i += 1
+	}
+
+	while (j < entityRanges.length) {
+		range.push(entityRanges[j])
+		j += 1
+	}
+
+	return range
+}
+
 export function parseRawContent(
 	contentState: ContentState, biblatex: string[],
 ): string[] {
@@ -45,8 +81,7 @@ export function parseRawContent(
 		switch (type) {
 			// inline style
 			case 'unstyled':
-				ranges = (inlineStyleRanges as RangesType).concat(entityRanges)
-				ranges.sort((a, b) => a.offset - b.offset)
+				ranges = mergeSortedRanges(inlineStyleRanges, entityRanges)
 
 				if (ranges.length !== 0) {
 					let position = 0
