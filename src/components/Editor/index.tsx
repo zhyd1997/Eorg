@@ -119,7 +119,9 @@ const RichTextEditor: React.FC<RichTextEditorTypes> = ({ login, store }) => {
 					},
 					onFinishEdit: (blockKey: string, newContentState: ContentState) => {
 						setLiveCustomBlockEdits(liveCustomBlockEdits.remove(blockKey))
-						setEditorState(EditorState.createWithContent(newContentState))
+						setEditorState(
+							EditorState.push(editorState, newContentState, 'change-block-data'),
+						)
 					},
 					onRemove: (blockKey: string) => removeBlock(blockKey),
 				},
