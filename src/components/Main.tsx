@@ -23,10 +23,10 @@ const Main = () => {
 	}, [login])
 
 	return (
-		<>
+		<div>
 			<Header storeCollector={storeCollector} isLogIn={login} />
 			<RichTextEditor login={login} store={store} />
-		</>
+		</div>
 	)
 }
 
