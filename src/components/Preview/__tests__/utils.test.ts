@@ -62,22 +62,24 @@ const result3 = [
 	{ offset: 13, length: 1, key: 1 },
 ]
 
-test('mergeSortedRanges: inlineRanges.length = EntityRanges.length', () => {
-	const ranges = mergeSortedRanges(inline1, entity1)
+describe('mergeSortedRanges', () => {
+	test('mergeSortedRanges: inlineRanges.length = EntityRanges.length', () => {
+		const ranges = mergeSortedRanges(inline1, entity1)
 
-	expect(ranges).toStrictEqual(result1)
-})
+		expect(ranges).toStrictEqual(result1)
+	})
 
-test('mergeSortedRanges: inlineRanges.length > EntityRanges.length', () => {
-	const ranges = mergeSortedRanges(inline2, entity2)
+	test('mergeSortedRanges: inlineRanges.length > EntityRanges.length', () => {
+		const ranges = mergeSortedRanges(inline2, entity2)
 
-	expect(ranges).toStrictEqual(result2)
-})
+		expect(ranges).toStrictEqual(result2)
+	})
 
-test('mergeSortedRanges: inlineRanges.length < EntityRanges.length', () => {
-	const ranges = mergeSortedRanges(inline3, entity3)
+	test('mergeSortedRanges: inlineRanges.length < EntityRanges.length', () => {
+		const ranges = mergeSortedRanges(inline3, entity3)
 
-	expect(ranges).toStrictEqual(result3)
+		expect(ranges).toStrictEqual(result3)
+	})
 })
 
 /**
@@ -197,27 +199,29 @@ function parseItems(items: { type: string, text: string, depth: number }[]): str
 	return tex
 }
 
-test('list-items', () => {
-	const tex = parseItems(blocks)
-	expect(tex).toBe(result)
-})
+describe('test list-items', () => {
+	test('list-items', () => {
+		const tex = parseItems(blocks)
+		expect(tex).toBe(result)
+	})
 
-test('list-items-1', () => {
-	const tex = parseItems(blocks1)
-	expect(tex).toBe(single)
-})
+	test('list-items-1', () => {
+		const tex = parseItems(blocks1)
+		expect(tex).toBe(single)
+	})
 
-test('list-items-2', () => {
-	const tex = parseItems(blocks2)
-	expect(tex).toBe(single1)
-})
+	test('list-items-2', () => {
+		const tex = parseItems(blocks2)
+		expect(tex).toBe(single1)
+	})
 
-test('list-items-3', () => {
-	const tex = parseItems(blocks3)
-	expect(tex).toBe(single2)
-})
+	test('list-items-3', () => {
+		const tex = parseItems(blocks3)
+		expect(tex).toBe(single2)
+	})
 
-test('list-items-4', () => {
-	const tex = parseItems(blocks4)
-	expect(tex).toBe(single3)
+	test('list-items-4', () => {
+		const tex = parseItems(blocks4)
+		expect(tex).toBe(single3)
+	})
 })
