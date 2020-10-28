@@ -1,4 +1,5 @@
-* In Progress latex [1/2]
+* CANCELLED latex [1/2]
+  CLOSED: [2020-10-28 Wed 18:32]
   - [X] highlight ~latex~ code ::  [[https://github.com/highlightjs/highlight.js][highlight.js]]
   - [ ] wrap line :: use CSS (maybe ~text-overflow~)
 * DONE Leetcode-Like Problem
@@ -14,3 +15,7 @@
 ** TODO ~.sty~ template 
 * TODO [#A] code spliting :: component reused
 * TODO [#B] UI/UX
+* TODO offical website
+** Tutorial Video
+   - [ ] YouTube
+   - [ ] bilibili
