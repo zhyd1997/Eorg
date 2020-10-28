@@ -47,5 +47,7 @@ module.exports = {
 		'@typescript-eslint/quotes': ['error', 'single'],
 		// no-shadow
 		'no-shadow': 'off',
+		// except test files
+		'import/no-extraneous-dependencies': ['error', {'devDependencies': ['**/*.test.js', '**/*.spec.js']}]
 	}
 }
