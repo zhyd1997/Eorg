@@ -48,6 +48,11 @@ module.exports = {
 		// no-shadow
 		'no-shadow': 'off',
 		// except test files
-		'import/no-extraneous-dependencies': ['error', {'devDependencies': ['**/*.test.js', '**/*.spec.js']}]
+		'import/no-extraneous-dependencies': [
+			'error',
+			{
+				'devDependencies': ['src/setupTests.ts', '**/*.test\\.tsx?$', '**/*.spec\\.tsx?$']
+			}
+		]
 	}
 }
