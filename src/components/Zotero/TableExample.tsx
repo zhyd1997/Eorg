@@ -1,7 +1,14 @@
 import React from 'react'
 
+interface DataType {
+	key: string,
+	creatorSummary: string,
+	parsedDate: string,
+	title: string,
+}
+
 type PropTypes = {
-	fetchText: any[],
+	fetchText: DataType[],
 	handleClick: (evt: any) => null,
 }
 
@@ -21,10 +28,7 @@ const TableExample: React.FC<PropTypes> = ({ fetchText, handleClick }) => {
 			{/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-noninteractive-element-interactions */}
 			<tbody onClick={handleClick}>
 				{/* eslint-disable-next-line no-return-assign */}
-				{/* @ts-expect-error ts-migrate(7006)
-				 FIXME: Parameter 'data' implicitly has an 'any' type. */}
-				{/* eslint-disable-next-line no-return-assign */}
-				{fetchText.map((data: any) => (
+				{fetchText.map((data) => (
 					<tr data-cite={i += 1} key={data.key}>
 						<td data-cite={i} key={`${data.key}author`}>{data.creatorSummary}</td>
 						<td data-cite={i} key={`${data.key}title`}>{data.title}</td>
