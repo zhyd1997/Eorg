@@ -8,7 +8,7 @@ Migrated to [blog](https://zhangyadong.me/)
 I am trying to transfer the framework of rich-text-editor from draft-js to quill-js.
 
 - draft-js API is too hard.
-- implement citation after content is impossible.
+- ~~implement citation after content is impossible~~.
 - modify the block elements style like markdown or org-mode is impossible.
 
 These situations above only suit me.
