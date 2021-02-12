@@ -23,6 +23,9 @@ module.exports = {
 		'@typescript-eslint',
 	],
 	'rules': {
+		"react-hooks/rules-of-hooks": "error",
+		// It warns when dependencies are specified incorrectly and suggests a fix.
+    	"react-hooks/exhaustive-deps": "warn",
 		"react/jsx-indent-props": [
 			2,
 			'tab'
