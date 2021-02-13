@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import RichTextEditor from './Editor'
 import Header from './Header'
 
 const Main = () => {
-	const [login, setLogin] = React.useState(false)
-	const [store, setStore] = React.useState({ token: '' })
+	const [login, setLogin] = useState(false)
+	const [store, setStore] = useState({ token: '' })
 
 	function storeCollector(): void {
 		const localStore = JSON.parse(localStorage.getItem('login')!)
@@ -18,7 +18,7 @@ const Main = () => {
 		}
 	}
 
-	React.useEffect(() => {
+	useEffect(() => {
 		storeCollector()
 	}, [login])
 

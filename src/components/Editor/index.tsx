@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import {
 	Editor, EditorState, getDefaultKeyBinding, RichUtils,
 	CompositeDecorator, Modifier, ContentState, ContentBlock,
@@ -47,16 +47,16 @@ const RichTextEditor = ({ login, store }: PropTypes) => {
 		},
 	])
 
-	const [editorState, setEditorState] = React.useState(EditorState.createEmpty(decorator))
-	const [liveCustomBlockEdits, setLiveCustomBlockEdits] = React.useState(Map())
+	const [editorState, setEditorState] = useState(EditorState.createEmpty(decorator))
+	const [liveCustomBlockEdits, setLiveCustomBlockEdits] = useState(Map())
 
-	const editorRef = React.useRef<HTMLElement>(null!)
+	const editorRef = useRef<HTMLElement>(null!)
 
 	function focusEditor(): void {
 		editorRef.current.focus()
 	}
 
-	React.useEffect(() => {
+	useEffect(() => {
 		focusEditor()
 	}, [])
 

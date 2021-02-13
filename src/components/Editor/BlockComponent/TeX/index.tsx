@@ -1,5 +1,5 @@
 import katex from 'katex'
-import React from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { ContentState } from 'draft-js'
 import Block from '../blockTypes'
 
@@ -9,12 +9,12 @@ type PropTypes = {
 }
 
 const KaTexOutput = ({ content, onClick }: PropTypes) => {
-	const container = React.useRef<HTMLElement>(null!)
+	const container = useRef<HTMLElement>(null!)
 
 	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'value' implicitly has an 'any' type.
 	function usePrevious(value) {
-		const ref = React.useRef(null)
-		React.useEffect(() => {
+		const ref = useRef(null)
+		useEffect(() => {
 			ref.current = value
 		})
 		return ref.current
@@ -29,7 +29,7 @@ const KaTexOutput = ({ content, onClick }: PropTypes) => {
 		)
 	}
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (prevProps !== content) {
 			update()
 		}
@@ -40,10 +40,10 @@ const KaTexOutput = ({ content, onClick }: PropTypes) => {
 }
 
 const TeXBlock = ({ block, contentState, blockProps }: Block) => {
-	const [editMode, setEditMode] = React.useState(false)
-	const [texValue, setTexValue] = React.useState('')
-	const [invalidTeX, setInvalidTeX] = React.useState(false)
-	const textareaRef = React.useRef(null)
+	const [editMode, setEditMode] = useState(false)
+	const [texValue, setTexValue] = useState('')
+	const [invalidTeX, setInvalidTeX] = useState(false)
+	const textareaRef = useRef(null)
 
 	function getValue(): string {
 		return contentState.getEntity(block.getEntityAt(0)).getData().content

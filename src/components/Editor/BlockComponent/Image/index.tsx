@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { ContentState } from 'draft-js'
 import Block from '../blockTypes'
 import Image from './image'
@@ -10,21 +10,21 @@ const ImageBlock = ({ block, contentState, blockProps }: Block) => {
 	}
 	const { path, caption } = getValue()
 
-	const [src, setSrc] = React.useState(path)
-	const [title, setTitle] = React.useState(caption)
-	const [titleValue, setTitleValue] = React.useState(caption)
-	const [editImage, setEditImage] = React.useState(false)
-	const [editCaption, setEditCaption] = React.useState(false)
-	const [className, setClassName] = React.useState('img-initial')
-	const textareaRef = React.useRef(null)
+	const [src, setSrc] = useState(path)
+	const [title, setTitle] = useState(caption)
+	const [titleValue, setTitleValue] = useState(caption)
+	const [editImage, setEditImage] = useState(false)
+	const [editCaption, setEditCaption] = useState(false)
+	const [className, setClassName] = useState('img-initial')
+	const textareaRef = useRef(null)
 
 	const blockKey = block.getKey()
 	const store = JSON.parse(localStorage.getItem('login')!)
 
 	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'value' implicitly has an 'any' type.
 	function usePrevious(value) {
-		const ref = React.useRef(null)
-		React.useEffect(() => {
+		const ref = useRef(null)
+		useEffect(() => {
 			ref.current = value
 		})
 		return ref.current

@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { useState, useRef } from 'react'
 
 const TableOutput = (props: any) => {
 	const {
 		row, column, caption, cell, block, blockProps,
 	} = props
-	const container = React.useRef(null)
+	const container = useRef(null)
 
 	/**
 	 * if rowNum === 1
@@ -19,7 +19,7 @@ const TableOutput = (props: any) => {
 	const rowsTh = []
 	const colsTh = []
 
-	const [coordinate, setCoordinate] = React.useState([1, 0])
+	const [coordinate, setCoordinate] = useState([1, 0])
 
 	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'evt' implicitly has an 'any' type.
 	function handleClick(evt) {

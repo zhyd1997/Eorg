@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
 	Nav, NavItem, Button,
 	Modal, ModalHeader, ModalBody,
@@ -11,12 +11,12 @@ type PropTypes = {
 }
 
 const Header = ({ storeCollector, isLogIn }: PropTypes) => {
-	const [username, setUsername] = React.useState('')
-	const [password, setPassword] = React.useState('')
-	const [response, setResponse] = React.useState('')
-	const [tips, setTips] = React.useState('tips')
-	const [signUpModal, setSignUpModal] = React.useState(false)
-	const [logInModal, setLogInModal] = React.useState(false)
+	const [username, setUsername] = useState('')
+	const [password, setPassword] = useState('')
+	const [response, setResponse] = useState('')
+	const [tips, setTips] = useState('tips')
+	const [signUpModal, setSignUpModal] = useState(false)
+	const [logInModal, setLogInModal] = useState(false)
 
 	function toggleSignUp(): void {
 		setSignUpModal(!signUpModal)

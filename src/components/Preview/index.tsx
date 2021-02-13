@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { convertToRaw, ContentState } from 'draft-js'
 import Toolbar from './Toolbar'
 import Loading from '../Loading'
@@ -15,20 +15,20 @@ type PropTypes = {
 }
 
 const Preview = ({ contentState, store, login }: PropTypes) => {
-	const [content, setContent] = React.useState<string[]>([])
-	const [citations, setCitations] = React.useState<{
+	const [content, setContent] = useState<string[]>([])
+	const [citations, setCitations] = useState<{
 		biblatex: string[], bib: {}, hasCite: string
 	}>({
 		biblatex: [],
 		bib: {},
 		hasCite: 'waiting...',
 	})
-	const [loading, setLoading] = React.useState({
+	const [loading, setLoading] = useState({
 		isLoading: false,
 		style: 'preview',
 		disabled: false,
 	})
-	const [message, setMessage] = React.useState({
+	const [message, setMessage] = useState({
 		text: '',
 		style: 'error-message',
 	})
@@ -145,7 +145,7 @@ const Preview = ({ contentState, store, login }: PropTypes) => {
 		}
 	}
 
-	React.useEffect(() => {
+	useEffect(() => {
 		// do not postData when logout.
 		if (content.length !== 0 && store.token.length !== 0) { // disabled initial render
 			postData(content, store)
@@ -170,7 +170,7 @@ const Preview = ({ contentState, store, login }: PropTypes) => {
 		}
 	}, [content, store])
 
-	React.useEffect(() => {
+	useEffect(() => {
 		const { biblatex, bib, hasCite } = citations
 		if (hasCite !== 'waiting...') {
 			const allTeX = parseRawContent(contentState, biblatex)
