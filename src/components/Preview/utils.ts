@@ -1,16 +1,16 @@
 import { ContentState, convertToRaw, DraftInlineStyleType } from 'draft-js'
 import { baseUrl, zoteroUrl } from '../baseUrl'
 
-type StoreType = {
+interface StoreType {
 	token: string,
 }
 
-type RangesType = {
+interface RangesType {
 	offset: number,
 	length: number,
 	style?: DraftInlineStyleType, // 'BOLD' | 'CODE' | 'ITALIC' | 'STRIKETHROUGH' | 'UNDERLINE'
 	key?: number,
-}[]
+}
 
 const texMap = {
 	'header-one': '\\section',
@@ -28,7 +28,7 @@ const texMap = {
 export function mergeSortedRanges(
 	inlineRanges: any[],
 	entityRanges: any[],
-): RangesType {
+): RangesType[] {
 	let i = 0
 	let j = 0
 	const range = []
@@ -77,7 +77,7 @@ export function parseRawContent(
 		} = row
 		let tex = ''
 
-		let ranges: RangesType
+		let ranges: RangesType[]
 		switch (type) {
 			// inline style
 			case 'unstyled':

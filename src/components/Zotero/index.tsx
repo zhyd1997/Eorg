@@ -2,7 +2,7 @@ import React from 'react'
 import { CharacterMetadata, ContentState } from 'draft-js'
 import Example from './ToolTipExample'
 
-type PropType = {
+type PropTypes = {
 	contentState: ContentState,
 	entityKey: string,
 	offsetkey: string,
@@ -41,7 +41,7 @@ function getDecoratedStyle(mutability: string) {
 	}
 }
 
-export const TokenSpan: React.FC<PropType> = ({
+export const TokenSpan: React.FC<PropTypes> = ({
 	contentState, entityKey, offsetkey, children,
 }) => {
 	const style = getDecoratedStyle(

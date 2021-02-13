@@ -14,7 +14,7 @@ type PropTypes = {
 	login: boolean,
 }
 
-const Preview: React.FC<PropTypes> = ({ contentState, store, login }) => {
+const Preview = ({ contentState, store, login }: PropTypes) => {
 	const [content, setContent] = React.useState<string[]>([])
 	const [citations, setCitations] = React.useState<{
 		biblatex: string[], bib: {}, hasCite: string

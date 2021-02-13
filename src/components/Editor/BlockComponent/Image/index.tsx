@@ -4,7 +4,7 @@ import Block from '../blockTypes'
 import Image from './image'
 import { baseUrl } from '../../../baseUrl'
 
-const ImageBlock: React.FC<Block> = ({ block, contentState, blockProps }) => {
+const ImageBlock = ({ block, contentState, blockProps }: Block) => {
 	function getValue() {
 		return contentState.getEntity(block.getEntityAt(0)).getData()
 	}

@@ -10,9 +10,9 @@ type PropTypes = {
 	onClick: () => void,
 }
 
-const Toolbar: React.FC<PropTypes> = ({
+const Toolbar = ({
 	login, store, disabled, onClick,
-}) => {
+}: PropTypes) => {
 	function handleZipDownload(): void {
 		download(store, 'application/zip', 'zip')
 	}

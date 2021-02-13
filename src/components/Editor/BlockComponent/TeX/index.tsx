@@ -8,7 +8,7 @@ type PropTypes = {
 	onClick: () => void,
 }
 
-const KaTexOutput: React.FC<PropTypes> = ({ content, onClick }) => {
+const KaTexOutput = ({ content, onClick }: PropTypes) => {
 	const container = React.useRef<HTMLElement>(null!)
 
 	// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'value' implicitly has an 'any' type.
@@ -39,7 +39,7 @@ const KaTexOutput: React.FC<PropTypes> = ({ content, onClick }) => {
 	return <span ref={container} onClick={onClick} />
 }
 
-const TeXBlock: React.FC<Block> = ({ block, contentState, blockProps }) => {
+const TeXBlock = ({ block, contentState, blockProps }: Block) => {
 	const [editMode, setEditMode] = React.useState(false)
 	const [texValue, setTexValue] = React.useState('')
 	const [invalidTeX, setInvalidTeX] = React.useState(false)

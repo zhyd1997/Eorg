@@ -1,11 +1,11 @@
 import React from 'react'
 import { Spinner } from 'reactstrap'
 
-type PropType = {
+type PropTypes = {
 	isLoading: boolean,
 }
 
-const Loading: React.FC<PropType> = ({ isLoading }) => {
+const Loading = ({ isLoading }: PropTypes) => {
 	if (isLoading) {
 		return <Spinner className="spinner" type="grow" />
 	}

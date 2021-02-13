@@ -6,7 +6,7 @@ type PropTypes = {
 	text: string,
 }
 
-const Example: React.FC<PropTypes> = ({ target, text }) => (
+const Example = ({ target, text }: PropTypes) => (
 	<span>
 		<UncontrolledTooltip placement="right" target={target}>
 			{text}

@@ -1,21 +1,23 @@
 import React from 'react'
 import { ContentBlock, EditorState } from 'draft-js'
 
-type StyleButtonTypes = {
+interface Toggle {
 	onToggle: (style: string) => void,
+}
+
+interface StyleButtonProps extends Toggle {
 	style: string,
 	active: boolean,
 	label: string,
 }
 
-type StyleControlsTypes = {
+interface StyleControlsProps extends Toggle {
 	editorState: EditorState,
-	onToggle: (style: string) => void,
 }
 
-const StyleButton: React.FC<StyleButtonTypes> = ({
+const StyleButton = ({
 	onToggle, style, active, label,
-}) => {
+}: StyleButtonProps) => {
 // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
 	function onToggleStyle(e): void {
 		e.preventDefault()
@@ -41,7 +43,7 @@ const INLINE_STYLES = [
 	{ label: 'Monospace', style: 'CODE' },
 ]
 
-export const InlineStyleControls: React.FC<StyleControlsTypes> = ({ editorState, onToggle }) => {
+export const InlineStyleControls = ({ editorState, onToggle }: StyleControlsProps) => {
 	const currentStyle = editorState.getCurrentInlineStyle()
 
 	return (
@@ -74,7 +76,7 @@ const BLOCK_TYPES = [
 	// {label: 'Code Block', style: 'code-block'},
 ]
 
-export const BlockStyleControls = (props: StyleControlsTypes) => {
+export const BlockStyleControls = (props: StyleControlsProps) => {
 	const { editorState } = props
 	const selection = editorState.getSelection()
 	const blockType = editorState

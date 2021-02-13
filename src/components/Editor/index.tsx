@@ -32,14 +32,14 @@ import {
  *
  */
 
-type RichTextEditorTypes = {
+type PropTypes = {
 	login: boolean,
 	store: {
 		token: string,
 	},
 }
 
-const RichTextEditor: React.FC<RichTextEditorTypes> = ({ login, store }) => {
+const RichTextEditor = ({ login, store }: PropTypes) => {
 	const decorator = new CompositeDecorator([
 		{
 			strategy: getEntityStrategy('IMMUTABLE'),

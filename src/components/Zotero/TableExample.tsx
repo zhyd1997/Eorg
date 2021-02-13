@@ -12,7 +12,7 @@ type PropTypes = {
 	handleClick: (evt: any) => null,
 }
 
-const TableExample: React.FC<PropTypes> = ({ fetchText, handleClick }) => {
+const TableExample = ({ fetchText, handleClick }: PropTypes) => {
 	let i = 0
 
 	return (

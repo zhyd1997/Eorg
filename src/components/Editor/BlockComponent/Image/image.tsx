@@ -7,7 +7,7 @@ type PropTypes = {
 	save: (name?: string) => void,
 }
 
-const Image: React.FC<PropTypes> = ({ id, update, save }) => {
+const Image = ({ id, update, save }: PropTypes) => {
 	let image: File
 	const store = JSON.parse(localStorage.getItem('login')!)
 	// @ts-ignore

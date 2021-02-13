@@ -10,7 +10,7 @@ type PropTypes = {
 	isLogIn: boolean,
 }
 
-const Header: React.FC<PropTypes> = ({ storeCollector, isLogIn }) => {
+const Header = ({ storeCollector, isLogIn }: PropTypes) => {
 	const [username, setUsername] = React.useState('')
 	const [password, setPassword] = React.useState('')
 	const [response, setResponse] = React.useState('')

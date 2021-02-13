@@ -14,7 +14,7 @@ type PropTypes = {
 	insertCite: (text: any [], value: number) => void,
 }
 
-const ModalExample: React.FC<PropTypes> = ({ buttonLabel, className, insertCite }) => {
+const ModalExample = ({ buttonLabel, className, insertCite }: PropTypes) => {
 	const [modal, setModal] = useState(false)
 	const [modalInput, setModalInput] = useState(false)
 	const [targetValue, setTargetValue] = useState(0)
