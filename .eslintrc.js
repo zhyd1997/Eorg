@@ -46,7 +46,7 @@ module.exports = {
 		'react/jsx-indent': ['error', 'tab'],
 		'no-tabs': 'off',
 		// quote
-		'quote': 'off',
+		'quote': 'double',
 		'@typescript-eslint/quotes': ['error', 'single'],
 		// no-shadow
 		'no-shadow': 'off',
