@@ -3,7 +3,7 @@ import {
 	EditorState,
 } from 'draft-js'
 
-function insertCustomBlock(editorState: EditorState, type: string, data?: {}): EditorState {
+export function insertCustomBlock(editorState: EditorState, type: string, data?: {}): EditorState {
 	const contentState = editorState.getCurrentContent()
 	const contentStateWithEntity = contentState.createEntity(
 		type,
@@ -17,5 +17,3 @@ function insertCustomBlock(editorState: EditorState, type: string, data?: {}): E
 	)
 	return AtomicBlockUtils.insertAtomicBlock(newEditorState, entityKey, ' ')
 }
-
-export default insertCustomBlock

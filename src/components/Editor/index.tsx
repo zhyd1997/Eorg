@@ -13,8 +13,10 @@ import "./index.css";
 import "draft-js/dist/Draft.css";
 import { Map } from "immutable";
 import BlockComponent from "./BlockComponent";
-import insertCustomBlock from "./BlockComponent/modifiers/insertCustomBlock";
-import removeCustomBlock from "./BlockComponent/modifiers/removeCustomBlock";
+import {
+  insertCustomBlock,
+  removeCustomBlock,
+} from "./BlockComponent/modifiers";
 import ModalTable from "./BlockComponent/Table/ModalTable";
 import Preview from "../Preview";
 import { getEntityStrategy, TokenSpan } from "../Zotero";
@@ -22,12 +24,9 @@ import ModalExample from "../Zotero/ModalExample";
 import "./BlockComponent/TeX/TeXEditor.css";
 import "./BlockComponent/Table/Table.css";
 import "./BlockComponent/Image/imageBlockStyle.css";
-import {
-  InlineStyleControls,
-  BlockStyleControls,
-  styleMap,
-  getBlockStyle,
-} from "./utils";
+import { styleMap, getBlockStyle } from "./utils";
+import { BlockStyleControls } from "./BlockStyleControls";
+import { InlineStyleControls } from "./InlineStyleControls";
 
 /**
  * Editor Template and KaTeX support are all referenced to Draft.js official example.
@@ -41,14 +40,14 @@ import {
  *
  */
 
-type PropTypes = {
+type RichTextEditorProps = {
   login: boolean;
   store: {
     token: string;
   };
 };
 
-const RichTextEditor = ({ login, store }: PropTypes) => {
+const RichTextEditor = ({ login, store }: RichTextEditorProps) => {
   const decorator = new CompositeDecorator([
     {
       strategy: getEntityStrategy("IMMUTABLE"),
@@ -59,9 +58,9 @@ const RichTextEditor = ({ login, store }: PropTypes) => {
   const [editorState, setEditorState] = useState(
     EditorState.createEmpty(decorator)
   );
-  const [liveCustomBlockEdits, setLiveCustomBlockEdits] = useState(Map());
+  const [liveCustomBlockEdits, setLiveCustomBlockEdits] = useState<any>(Map());
 
-  const editorRef = useRef<HTMLElement>(null!);
+  const editorRef = useRef<any>(null!);
 
   function focusEditor(): void {
     editorRef.current.focus();
@@ -126,7 +125,7 @@ const RichTextEditor = ({ login, store }: PropTypes) => {
     );
   }
 
-  function blockRenderer(block: ContentBlock): any | null {
+  function blockRenderer(block: ContentBlock): any {
     if (block.getType() === "atomic") {
       return {
         component: BlockComponent,
@@ -152,8 +151,7 @@ const RichTextEditor = ({ login, store }: PropTypes) => {
     return null;
   }
 
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'command' implicitly has an 'any' type.
-  function handleKeyCommand(command, editorStateChanged): boolean {
+  function handleKeyCommand(command: any, editorStateChanged: any): any {
     const newState = RichUtils.handleKeyCommand(editorStateChanged, command);
     if (newState) {
       onChange(newState);
@@ -162,8 +160,7 @@ const RichTextEditor = ({ login, store }: PropTypes) => {
     return false;
   }
 
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-  function mapKeyToEditorCommand(e) {
+  function mapKeyToEditorCommand(e: any): any {
     if (e.keyCode === 9 /* TAB */) {
       const newEditorState = RichUtils.onTab(e, editorState, 4 /* maxDepth */);
       if (newEditorState !== editorState) {
@@ -171,7 +168,7 @@ const RichTextEditor = ({ login, store }: PropTypes) => {
       }
       return;
     }
-    // eslint-disable-next-line consistent-return
+
     return getDefaultKeyBinding(e);
   }
 
@@ -192,8 +189,10 @@ const RichTextEditor = ({ login, store }: PropTypes) => {
     onChange(RichUtils.toggleInlineStyle(editorState, inlineStyle));
   }
 
-  // If the user changes block type before entering any text, we can
-  // either style the placeholder or hide it. Let's just hide it now.
+  /**
+   * If the user changes block type before entering any text, we can
+   * either style the placeholder or hide it. Let's just hide it now.
+   */
   let className = "RichEditor-editor";
   const contentState = editorState.getCurrentContent();
   if (!contentState.hasText()) {
@@ -222,7 +221,6 @@ const RichTextEditor = ({ login, store }: PropTypes) => {
         {/* eslint-disable-next-line max-len */}
         {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
         <div className={className} onClick={focusEditor}>
-          {/* @ts-ignore */}
           <Editor
             blockRendererFn={blockRenderer}
             blockStyleFn={getBlockStyle}
