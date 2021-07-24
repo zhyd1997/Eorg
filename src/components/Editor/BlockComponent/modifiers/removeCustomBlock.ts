@@ -1,6 +1,6 @@
 import { EditorState, Modifier, SelectionState } from 'draft-js'
 
-function removeCustomBlock(editorState: EditorState, blockKey: string): EditorState {
+export function removeCustomBlock(editorState: EditorState, blockKey: string): EditorState {
 	const content = editorState.getCurrentContent()
 	const block = content.getBlockForKey(blockKey)
 
@@ -21,5 +21,3 @@ function removeCustomBlock(editorState: EditorState, blockKey: string): EditorSt
 	const newState = EditorState.push(editorState, resetBlock, 'remove-range')
 	return EditorState.forceSelection(newState, resetBlock.getSelectionAfter())
 }
-
-export default removeCustomBlock
