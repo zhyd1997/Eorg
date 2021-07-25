@@ -32,7 +32,7 @@ const texMap = {
 /**
  * contributor: https://v2ex.com/member/shadeofgod
  * @param inlineRanges RawDraftInlineStyleRange[]
- * @param entityRanges Array<EntityRange>
+ * @param entityRanges RawDraftEntityRange[]
  * @returns RangesType[]
  */
 
