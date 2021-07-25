@@ -1,14 +1,20 @@
-import { ContentState, convertToRaw, DraftInlineStyleType } from "draft-js";
+import {
+  ContentState,
+  convertToRaw,
+  DraftInlineStyleType,
+  RawDraftEntityRange,
+  RawDraftInlineStyleRange,
+} from "draft-js";
 import { baseUrl, zoteroUrl } from "../baseUrl";
 
 interface StoreType {
   token: string;
 }
 
-interface RangesType {
+export interface RangesType {
   offset: number;
   length: number;
-  style?: DraftInlineStyleType; // 'BOLD' | 'CODE' | 'ITALIC' | 'STRIKETHROUGH' | 'UNDERLINE'
+  style?: DraftInlineStyleType;
   key?: number;
 }
 
@@ -23,11 +29,16 @@ const texMap = {
   CODE: "\\texttt",
 };
 
-// contributor: https://v2ex.com/member/shadeofgod
+/**
+ * contributor: https://v2ex.com/member/shadeofgod
+ * @param inlineRanges RawDraftInlineStyleRange[]
+ * @param entityRanges Array<EntityRange>
+ * @returns RangesType[]
+ */
 
 export function mergeSortedRanges(
-  inlineRanges: any[],
-  entityRanges: any[]
+  inlineRanges: RawDraftInlineStyleRange[],
+  entityRanges: RawDraftEntityRange[]
 ): RangesType[] {
   let i = 0;
   let j = 0;
@@ -250,8 +261,7 @@ export function download(
       // 4. Force download
       link.click();
       // 5. Clean up and remove the link
-      // @ts-expect-error ts-migrate(2531) FIXME: Object is possibly 'null'.
-      link.parentNode.removeChild(link);
+      link.parentNode?.removeChild(link);
     });
   });
 }
