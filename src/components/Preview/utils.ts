@@ -13,9 +13,7 @@ interface StoreType {
 export type RangesType = Partial<
   Pick<RawDraftInlineStyleRange & RawDraftEntityRange, "key" | "style">
 > &
-  Required<
-    Omit<RawDraftInlineStyleRange & RawDraftEntityRange, "key" | "style">
-  >;
+  Omit<RawDraftInlineStyleRange & RawDraftEntityRange, "key" | "style">;
 
 const texMap = {
   "header-one": "\\section",
