@@ -1,7 +1,6 @@
 import {
   ContentState,
   convertToRaw,
-  DraftInlineStyleType,
   RawDraftEntityRange,
   RawDraftInlineStyleRange,
 } from "draft-js";
@@ -11,12 +10,12 @@ interface StoreType {
   token: string;
 }
 
-export interface RangesType {
-  offset: number;
-  length: number;
-  style?: DraftInlineStyleType;
-  key?: number;
-}
+export type RangesType = Partial<
+  Pick<RawDraftInlineStyleRange & RawDraftEntityRange, "key" | "style">
+> &
+  Required<
+    Omit<RawDraftInlineStyleRange & RawDraftEntityRange, "key" | "style">
+  >;
 
 const texMap = {
   "header-one": "\\section",
@@ -35,7 +34,6 @@ const texMap = {
  * @param entityRanges RawDraftEntityRange[]
  * @returns RangesType[]
  */
-
 export function mergeSortedRanges(
   inlineRanges: RawDraftInlineStyleRange[],
   entityRanges: RawDraftEntityRange[]
