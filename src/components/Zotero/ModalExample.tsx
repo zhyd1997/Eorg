@@ -10,8 +10,7 @@ import {
   FormFeedback,
   FormText,
 } from "reactstrap";
-import { Button } from "@material-ui/core";
-import Loading from "../Loading";
+import { Button, CircularProgress } from "@material-ui/core";
 import TableExample from "./TableExample";
 import { zoteroUrl } from "../baseUrl";
 
@@ -224,7 +223,7 @@ const ModalExample = ({
         className={className}>
         <ModalHeader toggle={toggleInput}>Zotero</ModalHeader>
         <ModalBody>
-          {isLoading ? <Loading isLoading={isLoading} /> : null}
+          {isLoading ? <CircularProgress /> : null}
           <Form>
             <FormGroup>
               <Input
@@ -296,7 +295,7 @@ const ModalExample = ({
         <ModalHeader toggle={toggle}>Zotero</ModalHeader>
         <ModalBody style={{ height: "200px", overflow: "auto" }}>
           {isLoading ? (
-            <Loading isLoading={isLoading} />
+            <CircularProgress />
           ) : (
             <TableExample handleClick={selectItem} fetchText={fetchText} />
           )}
