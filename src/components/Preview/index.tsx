@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { convertToRaw, ContentState } from "draft-js";
 import Toolbar from "./Toolbar";
-import Loading from "../Loading";
 import {
   parseRawContent,
   previewPDF,
@@ -9,6 +8,7 @@ import {
   postData,
   fetchBibEntry,
 } from "./utils";
+import { CircularProgress } from "@material-ui/core";
 
 type PreviewProps = {
   contentState: ContentState;
@@ -206,7 +206,7 @@ const Preview = ({ contentState, store, login }: PreviewProps) => {
         onClick={preview}
       />
       <iframe id="pdf" title="hello" />
-      <Loading isLoading={loading.isLoading} />
+      {loading.isLoading ? <CircularProgress /> : null}
     </div>
   );
 };
