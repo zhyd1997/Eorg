@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import {
-  Button,
   Modal,
   ModalHeader,
   ModalBody,
   ModalFooter,
   // Col, Row, Form, FormGroup, Label, Input,
 } from "reactstrap";
+import { Button } from "@material-ui/core";
 
 export const tableShape = [];
 
@@ -103,7 +103,7 @@ const ModalTable = (props) => {
 					</Form> */}
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" onClick={toggle}>
+          <Button variant="contained" color="default" onClick={toggle}>
             got it
           </Button>
           {/* <Button color="primary" onClick={handleClick}> */}

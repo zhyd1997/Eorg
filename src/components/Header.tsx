@@ -1,12 +1,6 @@
 import React, { useState } from "react";
-import {
-  Nav,
-  NavItem,
-  Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-} from "reactstrap";
+import { Nav, NavItem, Modal, ModalHeader, ModalBody } from "reactstrap";
+import { Button } from "@material-ui/core";
 import { baseUrl } from "./baseUrl";
 
 type HeaderProps = {
@@ -123,18 +117,24 @@ const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
         <NavItem>
           {!isLogIn ? (
             <div>
-              <Button outline color="secondary" onClick={toggleLogIn}>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={toggleLogIn}>
                 LogIn
               </Button>
               &nbsp;&nbsp;&nbsp;&nbsp;
-              <Button outline color="secondary" onClick={toggleSignUp}>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={toggleSignUp}>
                 SignUp
               </Button>
             </div>
           ) : (
             <div>
               <div className="navbar-text mr-3">{username}</div>
-              <Button outline color="secondary" onClick={logOut}>
+              <Button variant="contained" color="secondary" onClick={logOut}>
                 LogOut
               </Button>
             </div>
@@ -160,8 +160,7 @@ const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
             <br />
             <br />
             <Button
-              type="submit"
-              value="submit"
+              variant="contained"
               color="secondary"
               onClick={handleSignUp}>
               SignUp
@@ -187,11 +186,7 @@ const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
             />
             <br />
             <br />
-            <Button
-              type="submit"
-              value="submit"
-              color="secondary"
-              onClick={handleLogIn}>
+            <Button variant="contained" color="secondary" onClick={handleLogIn}>
               LogIn
             </Button>
           </div>
