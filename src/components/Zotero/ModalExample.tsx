@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Button,
   Modal,
   ModalHeader,
   ModalBody,
@@ -11,6 +10,7 @@ import {
   FormFeedback,
   FormText,
 } from "reactstrap";
+import { Button } from "@material-ui/core";
 import Loading from "../Loading";
 import TableExample from "./TableExample";
 import { zoteroUrl } from "../baseUrl";
@@ -280,11 +280,14 @@ const ModalExample = ({
         </ModalBody>
         <ModalFooter>
           {localStorage.getItem("zotero-Auth") !== null ? (
-            <Button color="dark" onClick={createCitations}>
+            <Button
+              variant="outlined"
+              color="default"
+              onClick={createCitations}>
               Restore User
             </Button>
           ) : null}
-          <Button color="primary" onClick={verifyAuth}>
+          <Button variant="contained" color="primary" onClick={verifyAuth}>
             Next
           </Button>
         </ModalFooter>
@@ -299,10 +302,14 @@ const ModalExample = ({
           )}
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" disabled={!isClick} onClick={handleClick}>
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={!isClick}
+            onClick={handleClick}>
             Insert
           </Button>{" "}
-          <Button color="secondary" onClick={toggle}>
+          <Button variant="contained" color="secondary" onClick={toggle}>
             Cancel
           </Button>
         </ModalFooter>
