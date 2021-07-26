@@ -32,7 +32,8 @@
 
 .Header {
   display: flex;
-  padding: 0 15px 15px;
+  justify-content: flex-end;
+  padding-bottom: 15px;
 }
 
 .tips {
