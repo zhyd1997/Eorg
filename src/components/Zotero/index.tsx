@@ -1,6 +1,6 @@
 import React from "react";
 import { CharacterMetadata, ContentState } from "draft-js";
-import Example from "./ToolTipExample";
+import { Tooltip } from "@material-ui/core";
 
 type TokenSpanProps = {
   contentState: ContentState;
@@ -50,21 +50,22 @@ export const TokenSpan: React.FC<TokenSpanProps> = ({
     contentState.getEntity(entityKey).getMutability()
   );
 
-  const text = contentState.getEntity(entityKey).getData().value;
+  const title = contentState.getEntity(entityKey).getData().value;
 
   return (
     <span>
-      <sup>
-        <cite
-          data-offset-key={offsetkey}
-          // TODO
-          // @ts-ignore
-          style={style}
-          id={`Popover-${entityKey}`}>
-          {children}
-        </cite>
-      </sup>
-      <Example target={`Popover-${entityKey}`} text={text} />
+      <Tooltip title={title} placement="right" arrow aira-label={title}>
+        <sup>
+          <cite
+            data-offset-key={offsetkey}
+            // TODO
+            // @ts-ignore
+            style={style}
+            id={`Popover-${entityKey}`}>
+            {children}
+          </cite>
+        </sup>
+      </Tooltip>
     </span>
   );
 };
