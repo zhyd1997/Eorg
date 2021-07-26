@@ -1,16 +1,15 @@
 import React, { useState } from "react";
+import { Form, FormGroup, Input, FormFeedback, FormText } from "reactstrap";
 import {
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Form,
-  FormGroup,
-  Input,
-  FormFeedback,
-  FormText,
-} from "reactstrap";
-import { Button, CircularProgress } from "@material-ui/core";
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+} from "@material-ui/core";
+import { Close } from "@material-ui/icons";
 import TableExample from "./TableExample";
 import { zoteroUrl } from "../baseUrl";
 
@@ -216,13 +215,14 @@ const ModalExample = ({
         className="math RichEditor-styleButton">
         {buttonLabel}
       </button>
-      <Modal
-        size="sm"
-        isOpen={modalInput}
-        toggle={toggleInput}
-        className={className}>
-        <ModalHeader toggle={toggleInput}>Zotero</ModalHeader>
-        <ModalBody>
+      <Dialog open={modalInput}>
+        <DialogTitle>
+          Zotero
+          <IconButton onClick={toggleInput}>
+            <Close />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers>
           {isLoading ? <CircularProgress /> : null}
           <Form>
             <FormGroup>
@@ -276,8 +276,8 @@ const ModalExample = ({
               </FormText>
             </FormGroup>
           </Form>
-        </ModalBody>
-        <ModalFooter>
+        </DialogContent>
+        <DialogActions>
           {localStorage.getItem("zotero-Auth") !== null ? (
             <Button
               variant="outlined"
@@ -289,18 +289,23 @@ const ModalExample = ({
           <Button variant="contained" color="primary" onClick={verifyAuth}>
             Next
           </Button>
-        </ModalFooter>
-      </Modal>
-      <Modal isOpen={modal} toggle={toggle} className={className}>
-        <ModalHeader toggle={toggle}>Zotero</ModalHeader>
-        <ModalBody style={{ height: "200px", overflow: "auto" }}>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={modal}>
+        <DialogTitle>
+          Zotero
+          <IconButton onClick={toggle}>
+            <Close />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers>
           {isLoading ? (
             <CircularProgress />
           ) : (
             <TableExample handleClick={selectItem} fetchText={fetchText} />
           )}
-        </ModalBody>
-        <ModalFooter>
+        </DialogContent>
+        <DialogActions>
           <Button
             variant="contained"
             color="primary"
@@ -311,8 +316,8 @@ const ModalExample = ({
           <Button variant="contained" color="secondary" onClick={toggle}>
             Cancel
           </Button>
-        </ModalFooter>
-      </Modal>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

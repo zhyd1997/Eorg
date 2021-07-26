@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import {
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  // Col, Row, Form, FormGroup, Label, Input,
-} from "reactstrap";
-import { Button } from "@material-ui/core";
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+} from "@material-ui/core";
+import { Close } from "@material-ui/icons";
 
 export const tableShape = [];
 
@@ -46,11 +47,14 @@ const ModalTable = (props) => {
         className="math RichEditor-styleButton">
         {buttonLabel}
       </button>
-      <Modal isOpen={modal} toggle={toggle} className={className}>
-        <ModalHeader toggle={toggle}>
+      <Dialog open={modal}>
+        <DialogTitle>
           Tips: &nbsp;the table feature has not finished yet.
-        </ModalHeader>
-        <ModalBody>
+          <IconButton onClick={toggle}>
+            <Close />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers>
           <p>
             You can use &nbsp;
             <a href="https://www.tablesgenerator.com/">tables generator</a>
@@ -101,8 +105,8 @@ const ModalTable = (props) => {
 							</Col>
 						</Row>
 					</Form> */}
-        </ModalBody>
-        <ModalFooter>
+        </DialogContent>
+        <DialogActions>
           <Button variant="contained" color="default" onClick={toggle}>
             got it
           </Button>
@@ -111,8 +115,8 @@ const ModalTable = (props) => {
           {/* </Button> */}
           {/* {' '} */}
           {/* <Button color="secondary" onClick={toggle}>Cancel</Button> */}
-        </ModalFooter>
-      </Modal>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
