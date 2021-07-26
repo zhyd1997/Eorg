@@ -1,6 +1,14 @@
 import React, { useState } from "react";
-import { Nav, NavItem, Modal, ModalHeader, ModalBody } from "reactstrap";
-import { Button } from "@material-ui/core";
+import { Nav, NavItem } from "reactstrap";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+} from "@material-ui/core";
+import { Close } from "@material-ui/icons";
 import { baseUrl } from "./baseUrl";
 
 type HeaderProps = {
@@ -141,9 +149,14 @@ const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
           )}
         </NavItem>
       </Nav>
-      <Modal isOpen={signUpModal} toggle={toggleSignUp} size="sm">
-        <ModalHeader toggle={toggleSignUp}>SignUp</ModalHeader>
-        <ModalBody>
+      <Dialog open={signUpModal}>
+        <DialogTitle>
+          SignUp
+          <IconButton onClick={toggleSignUp}>
+            <Close />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers>
           <div>
             username&nbsp;&nbsp;
             <input
@@ -159,18 +172,22 @@ const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
             />
             <br />
             <br />
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={handleSignUp}>
-              SignUp
-            </Button>
           </div>
-        </ModalBody>
-      </Modal>
-      <Modal isOpen={logInModal} toggle={toggleLogIn} size="sm">
-        <ModalHeader toggle={toggleLogIn}>LogIn</ModalHeader>
-        <ModalBody>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="contained" color="secondary" onClick={handleSignUp}>
+            SignUp
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={logInModal}>
+        <DialogTitle>
+          LogIn
+          <IconButton onClick={toggleLogIn}>
+            <Close />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers>
           <div>
             username&nbsp;&nbsp;
             <input
@@ -186,12 +203,14 @@ const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
             />
             <br />
             <br />
-            <Button variant="contained" color="secondary" onClick={handleLogIn}>
-              LogIn
-            </Button>
           </div>
-        </ModalBody>
-      </Modal>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="contained" color="secondary" onClick={handleLogIn}>
+            LogIn
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
