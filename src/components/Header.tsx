@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Nav, NavItem } from "reactstrap";
 import {
   Button,
   Dialog,
@@ -121,34 +120,24 @@ const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
   return (
     <div className="Header">
       <span className={tips}>{response}</span>
-      <Nav className="ml-auto" navbar>
-        <NavItem>
-          {!isLogIn ? (
-            <div>
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={toggleLogIn}>
-                LogIn
-              </Button>
-              &nbsp;&nbsp;&nbsp;&nbsp;
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={toggleSignUp}>
-                SignUp
-              </Button>
-            </div>
-          ) : (
-            <div>
-              <div className="navbar-text mr-3">{username}</div>
-              <Button variant="contained" color="secondary" onClick={logOut}>
-                LogOut
-              </Button>
-            </div>
-          )}
-        </NavItem>
-      </Nav>
+      {!isLogIn ? (
+        <div>
+          <Button variant="contained" color="secondary" onClick={toggleLogIn}>
+            LogIn
+          </Button>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <Button variant="contained" color="secondary" onClick={toggleSignUp}>
+            SignUp
+          </Button>
+        </div>
+      ) : (
+        <div>
+          <div className="navbar-text mr-3">{username}</div>
+          <Button variant="contained" color="secondary" onClick={logOut}>
+            LogOut
+          </Button>
+        </div>
+      )}
       <Dialog open={signUpModal}>
         <DialogTitle>
           SignUp
