@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, FormGroup, Input, FormFeedback, FormText } from "reactstrap";
+import { useForm } from "react-hook-form";
 import {
   Button,
   CircularProgress,
@@ -12,6 +12,11 @@ import {
 import { Close } from "@material-ui/icons";
 import TableExample from "./TableExample";
 import { zoteroUrl } from "../baseUrl";
+
+type AuthFormValues = {
+  userID: string;
+  APIkey: string;
+};
 
 type ModalExampleProps = {
   buttonLabel: string;
@@ -31,28 +36,18 @@ const ModalExample = ({
   const [isClick, setIsClick] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [fetchText, setFetchText] = useState([]);
-  const [auth, setAuth] = useState({
-    userID: "",
-    APIkey: "",
-  });
   const [feedback, setFeedback] = useState({
     isValid: true,
     text: "",
   });
+
+  const { register, handleSubmit } = useForm<AuthFormValues>();
 
   function toggle(): void {
     setModal(!modal);
   }
   function toggleInput(): void {
     setModalInput(!modalInput);
-  }
-
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-  function handleChange(e): void {
-    setAuth({
-      ...auth,
-      [e.target.name]: e.target.value,
-    });
   }
 
   function cite(): void {
@@ -132,7 +127,8 @@ const ModalExample = ({
     });
   }
 
-  function verifyAuth(): void {
+  function verifyAuth(auth: AuthFormValues): void {
+    console.log(auth);
     verifyState(true, true, "");
     if (auth.userID === "" || auth.APIkey === "") {
       verifyState(false, false, "empty input");
@@ -224,47 +220,31 @@ const ModalExample = ({
         </DialogTitle>
         <DialogContent dividers>
           {isLoading ? <CircularProgress /> : null}
-          <Form>
-            <FormGroup>
-              <Input
+          <form>
+            <fieldset>
+              <input
                 type="text"
-                name="userID"
                 id="userID"
                 placeholder="userID"
-                onChange={handleChange}
-                // @ts-expect-error ts-migrate(2769)
-                // FIXME: Type 'string' is not assignable to type '((instanc...
-                //  Remove this comment to see the full error message
-                innerRef={auth.userID}
-                invalid={!feedback.isValid}
+                {...register("userID", { required: true })}
               />
               {localStorage.getItem("zotero-Auth") !== null ? (
-                <FormText>
+                <div>
                   Still use previous API key? please click&nbsp;
                   <kbd>Restore User</kbd>
                   &nbsp;button.
-                </FormText>
+                </div>
               ) : null}
-            </FormGroup>
-            <FormGroup>
-              <Input
+            </fieldset>
+            <fieldset>
+              <input
                 type="text"
-                name="APIkey"
                 id="APIkey"
                 placeholder="API key"
-                onChange={handleChange}
-                // @ts-expect-error ts-migrate(2769)
-                // FIXME: Type 'string' is not assignable to type '((instanc...
-                //  Remove this comment to see the full error message
-                innerRef={auth.APIkey}
-                invalid={!feedback.isValid}
+                {...register("APIkey", { required: true })}
               />
-              {!feedback.isValid ? (
-                <FormFeedback>{feedback.text}</FormFeedback>
-              ) : (
-                ""
-              )}
-              <FormText>
+              {!feedback.isValid ? <span>{feedback.text}</span> : ""}
+              <div>
                 You can create API keys via&nbsp;
                 <a
                   href="https://www.zotero.org/settings/keys/new"
@@ -273,9 +253,9 @@ const ModalExample = ({
                   your Zotero account settings
                 </a>
                 .
-              </FormText>
-            </FormGroup>
-          </Form>
+              </div>
+            </fieldset>
+          </form>
         </DialogContent>
         <DialogActions>
           {localStorage.getItem("zotero-Auth") !== null ? (
@@ -286,7 +266,10 @@ const ModalExample = ({
               Restore User
             </Button>
           ) : null}
-          <Button variant="contained" color="primary" onClick={verifyAuth}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSubmit(verifyAuth)}>
             Next
           </Button>
         </DialogActions>

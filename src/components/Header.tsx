@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 import {
   Button,
   Dialog,
@@ -16,12 +17,12 @@ type HeaderProps = {
 };
 
 const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [response, setResponse] = useState("");
   const [tips, setTips] = useState("tips");
   const [signUpModal, setSignUpModal] = useState(false);
   const [logInModal, setLogInModal] = useState(false);
+
+  const { register, handleSubmit } = useForm();
 
   function toggleSignUp(): void {
     setSignUpModal(!signUpModal);
@@ -31,11 +32,7 @@ const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
     setLogInModal(!logInModal);
   }
 
-  function signUp(): void {
-    const state = {
-      username,
-      password,
-    };
+  function signUp(state: any): void {
     fetch(`${baseUrl}users/signup`, {
       method: "POST",
       headers: {
@@ -57,11 +54,7 @@ const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
     });
   }
 
-  function logIn(): void {
-    const state = {
-      username,
-      password,
-    };
+  function logIn(state: any): void {
     fetch(`${baseUrl}users/login`, {
       method: "POST",
       headers: {
@@ -79,6 +72,7 @@ const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
             JSON.stringify({
               login: true,
               token: result.token,
+              username: result.username,
             })
           );
           storeCollector();
@@ -104,15 +98,15 @@ const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
   }
 
   // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'evt' implicitly has an 'any' type.
-  function handleSignUp(evt): void {
-    signUp();
+  function handleSignUp(state, evt): void {
+    signUp(state);
     toggleSignUp();
     evt.preventDefault();
   }
 
   // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'evt' implicitly has an 'any' type.
-  function handleLogIn(evt): void {
-    logIn();
+  function handleLogIn(state, evt): void {
+    logIn(state);
     toggleLogIn();
     evt.preventDefault();
   }
@@ -132,7 +126,7 @@ const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
         </div>
       ) : (
         <div>
-          <div className="navbar-text mr-3">{username}</div>
+          <span>{JSON.parse(localStorage.getItem("login")!).username}</span>
           <Button variant="contained" color="secondary" onClick={logOut}>
             LogOut
           </Button>
@@ -148,23 +142,23 @@ const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
         <DialogContent dividers>
           <div>
             username&nbsp;&nbsp;
-            <input
-              type="text"
-              onChange={(event) => setUsername(event.target.value)}
-            />
+            <input type="text" {...register("username", { required: true })} />
             <br />
             <br />
             password&nbsp;&nbsp;
             <input
               type="password"
-              onChange={(event) => setPassword(event.target.value)}
+              {...register("password", { required: true })}
             />
             <br />
             <br />
           </div>
         </DialogContent>
         <DialogActions>
-          <Button variant="contained" color="secondary" onClick={handleSignUp}>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleSubmit(handleSignUp)}>
             SignUp
           </Button>
         </DialogActions>
@@ -179,23 +173,23 @@ const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
         <DialogContent dividers>
           <div>
             username&nbsp;&nbsp;
-            <input
-              type="text"
-              onChange={(event) => setUsername(event.target.value)}
-            />
+            <input type="text" {...register("username", { required: true })} />
             <br />
             <br />
             password&nbsp;&nbsp;
             <input
               type="password"
-              onChange={(event) => setPassword(event.target.value)}
+              {...register("password", { required: true })}
             />
             <br />
             <br />
           </div>
         </DialogContent>
         <DialogActions>
-          <Button variant="contained" color="secondary" onClick={handleLogIn}>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleSubmit(handleLogIn)}>
             LogIn
           </Button>
         </DialogActions>

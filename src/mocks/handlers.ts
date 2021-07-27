@@ -7,7 +7,10 @@ export const handlers = [
   }),
 
   rest.post(`${baseUrl}users/login`, (req, res, ctx) => {
-    return res(ctx.status(200), ctx.json({ success: true, token: "test" }));
+    return res(
+      ctx.status(200),
+      ctx.json({ success: true, token: "test", username: "test" })
+    );
   }),
 
   rest.get(`${baseUrl}users/logout`, (req, res, ctx) => {
