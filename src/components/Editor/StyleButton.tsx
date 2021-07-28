@@ -1,9 +1,12 @@
 import React from "react";
+import { ToggleButton } from "@material-ui/lab";
+import { Tooltip } from "@material-ui/core";
 
 type StyleButtonProps = {
   style: string;
   active: boolean;
   label: string;
+  icon: any;
   onToggle: (style: string) => void;
 };
 
@@ -12,6 +15,7 @@ export const StyleButton = ({
   style,
   active,
   label,
+  icon,
 }: StyleButtonProps) => {
   function onToggleStyle(e: any): void {
     e.preventDefault();
@@ -23,10 +27,23 @@ export const StyleButton = ({
     className += " RichEditor-activeButton";
   }
 
+  if (icon === "") {
+    return (
+      // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+      <span className={className} onMouseDown={onToggleStyle}>
+        {label}
+      </span>
+    );
+  }
+
   return (
-    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-    <span className={className} onMouseDown={onToggleStyle}>
-      {label}
-    </span>
+    <Tooltip title={label} placement="top">
+      <ToggleButton
+        value={label}
+        aria-label={label}
+        onMouseDown={onToggleStyle}>
+        {icon}
+      </ToggleButton>
+    </Tooltip>
   );
 };
