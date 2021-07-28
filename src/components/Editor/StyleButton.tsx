@@ -1,5 +1,6 @@
 import React from "react";
 import { ToggleButton } from "@material-ui/lab";
+import { Tooltip } from "@material-ui/core";
 
 type StyleButtonProps = {
   style: string;
@@ -36,8 +37,13 @@ export const StyleButton = ({
   }
 
   return (
-    <ToggleButton value={label} aria-label={label} onMouseDown={onToggleStyle}>
-      {icon}
-    </ToggleButton>
+    <Tooltip title={label} placement="top">
+      <ToggleButton
+        value={label}
+        aria-label={label}
+        onMouseDown={onToggleStyle}>
+        {icon}
+      </ToggleButton>
+    </Tooltip>
   );
 };
