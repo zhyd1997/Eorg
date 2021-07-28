@@ -1,6 +1,5 @@
 import React from "react";
 import { CharacterMetadata, ContentState } from "draft-js";
-import Example from "./ToolTipExample";
 
 type TokenSpanProps = {
   contentState: ContentState;
@@ -64,7 +63,7 @@ export const TokenSpan: React.FC<TokenSpanProps> = ({
           {children}
         </cite>
       </sup>
-      <Example target={`Popover-${entityKey}`} text={text} />
+      {/* TODO tooltip */}
     </span>
   );
 };

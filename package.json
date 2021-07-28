@@ -3,14 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "bootstrap": "^5.0.2",
     "core-js": "^3.15.2",
     "draft-js": "^0.11.7",
     "immutable": "^4.0.0-rc.14",
     "katex": "^0.13.13",
     "react": "^17.0.2",
     "react-device-detect": "^1.17.0",
-    "react-dom": "^17.0.2",
-    "reactstrap": "^8.9.0"
+    "react-dom": "^17.0.2"
   },
   "scripts": {
     "start": "webpack serve --config webpack.dev.js",
@@ -35,12 +35,12 @@
     "@popperjs/core": "^2.9.2",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^12.0.0",
+    "@types/bootstrap": "^5.0.17",
     "@types/draft-js": "^0.11.4",
     "@types/jest": "^26.0.24",
     "@types/katex": "^0.11.1",
     "@types/react": "^17.0.14",
     "@types/react-dom": "^17.0.9",
-    "@types/reactstrap": "^8.7.2",
     "@typescript-eslint/eslint-plugin": "^4.28.4",
     "@typescript-eslint/parser": "^4.28.4",
     "chokidar": "^3.5.2",

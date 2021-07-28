@@ -1,5 +1,4 @@
 import React from "react";
-import { Spinner } from "reactstrap";
 
 type LoadingProps = {
   isLoading: boolean;
@@ -7,7 +6,13 @@ type LoadingProps = {
 
 const Loading = ({ isLoading }: LoadingProps) => {
   if (isLoading) {
-    return <Spinner className="spinner" type="grow" />;
+    return (
+      <div className="d-flex justify-content-center">
+        <div className="spinner-grow" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
   }
   return null;
 };

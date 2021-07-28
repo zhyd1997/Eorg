@@ -6,7 +6,6 @@ module.exports = merge(common, {
   externals: {
     react: "React",
     "react-dom": "ReactDOM",
-    reactstrap: "Reactstrap",
   },
   optimization: {
     runtimeChunk: "single",

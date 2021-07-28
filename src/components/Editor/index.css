@@ -52,7 +52,7 @@
 .RichEditor-controls {
     font-family: 'Helvetica', sans-serif;
     font-size: 14px;
-    margin: auto;
+    margin: auto 0;
     user-select: none;
 }
 

@@ -1,12 +1,5 @@
-import React, { useState } from "react";
-import {
-  Nav,
-  NavItem,
-  Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-} from "reactstrap";
+import React, { useState, useRef } from "react";
+import { Modal } from "bootstrap";
 import { baseUrl } from "./baseUrl";
 
 type HeaderProps = {
@@ -19,15 +12,32 @@ const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
   const [password, setPassword] = useState("");
   const [response, setResponse] = useState("");
   const [tips, setTips] = useState("tips");
-  const [signUpModal, setSignUpModal] = useState(false);
-  const [logInModal, setLogInModal] = useState(false);
 
-  function toggleSignUp(): void {
-    setSignUpModal(!signUpModal);
+  const signUpModalRef = useRef<any>(null);
+  const logInModalRef = useRef<any>(null);
+
+  function showSignUpModal() {
+    const modalEle = signUpModalRef?.current;
+    const signUpModal = new Modal(modalEle);
+    signUpModal.show();
   }
 
-  function toggleLogIn(): void {
-    setLogInModal(!logInModal);
+  function hideSignUpModal() {
+    const modalEle = signUpModalRef?.current;
+    const signUpModal = Modal.getInstance(modalEle);
+    signUpModal?.hide();
+  }
+
+  function showLogInModal() {
+    const modalEle = logInModalRef?.current;
+    const logInModal = new Modal(modalEle);
+    logInModal.show();
+  }
+
+  function hideLogInModal() {
+    const modalEle = logInModalRef?.current;
+    const logInModal = Modal.getInstance(modalEle);
+    logInModal?.hide();
   }
 
   function signUp(): void {
@@ -105,98 +115,125 @@ const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
   // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'evt' implicitly has an 'any' type.
   function handleSignUp(evt): void {
     signUp();
-    toggleSignUp();
+    hideSignUpModal();
     evt.preventDefault();
   }
 
   // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'evt' implicitly has an 'any' type.
   function handleLogIn(evt): void {
     logIn();
-    toggleLogIn();
+    hideLogInModal();
     evt.preventDefault();
   }
 
   return (
     <div className="Header">
       <span className={tips}>{response}</span>
-      <Nav className="ml-auto" navbar>
-        <NavItem>
-          {!isLogIn ? (
-            <div>
-              <Button outline color="secondary" onClick={toggleLogIn}>
-                LogIn
-              </Button>
-              &nbsp;&nbsp;&nbsp;&nbsp;
-              <Button outline color="secondary" onClick={toggleSignUp}>
+      {!isLogIn ? (
+        <div>
+          <button
+            type="button"
+            className="btn btn-outline-secondary"
+            onClick={showLogInModal}>
+            LogIn
+          </button>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <button
+            type="button"
+            className="btn btn-outline-secondary"
+            onClick={showSignUpModal}>
+            SignUp
+          </button>
+        </div>
+      ) : (
+        <div>
+          <span>{username}</span>
+          <button
+            type="button"
+            className="btn btn-outline-secondary"
+            onClick={logOut}>
+            LogOut
+          </button>
+        </div>
+      )}
+      <div className="modal fade" tabIndex={-1} ref={signUpModalRef}>
+        <div className="modal-dialog modal-sm">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">SignUp</h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+                onClick={hideSignUpModal}></button>
+            </div>
+            <div className="modal-body">
+              <div>
+                username&nbsp;&nbsp;
+                <input
+                  type="text"
+                  className="form-control"
+                  onChange={(event) => setUsername(event.target.value)}
+                />
+                password&nbsp;&nbsp;
+                <input
+                  type="password"
+                  className="form-control"
+                  onChange={(event) => setPassword(event.target.value)}
+                />
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleSignUp}>
                 SignUp
-              </Button>
+              </button>
             </div>
-          ) : (
-            <div>
-              <div className="navbar-text mr-3">{username}</div>
-              <Button outline color="secondary" onClick={logOut}>
-                LogOut
-              </Button>
+          </div>
+        </div>
+      </div>
+      <div className="modal fade" tabIndex={-1} ref={logInModalRef}>
+        <div className="modal-dialog modal-sm">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">LogIn</h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+                onClick={hideLogInModal}></button>
             </div>
-          )}
-        </NavItem>
-      </Nav>
-      <Modal isOpen={signUpModal} toggle={toggleSignUp} size="sm">
-        <ModalHeader toggle={toggleSignUp}>SignUp</ModalHeader>
-        <ModalBody>
-          <div>
-            username&nbsp;&nbsp;
-            <input
-              type="text"
-              onChange={(event) => setUsername(event.target.value)}
-            />
-            <br />
-            <br />
-            password&nbsp;&nbsp;
-            <input
-              type="password"
-              onChange={(event) => setPassword(event.target.value)}
-            />
-            <br />
-            <br />
-            <Button
-              type="submit"
-              value="submit"
-              color="secondary"
-              onClick={handleSignUp}>
-              SignUp
-            </Button>
+            <div className="modal-body">
+              <div>
+                username&nbsp;&nbsp;
+                <input
+                  type="text"
+                  className="form-control"
+                  onChange={(event) => setUsername(event.target.value)}
+                />
+                password&nbsp;&nbsp;
+                <input
+                  type="password"
+                  className="form-control"
+                  onChange={(event) => setPassword(event.target.value)}
+                />
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleLogIn}>
+                LogIn
+              </button>
+            </div>
           </div>
-        </ModalBody>
-      </Modal>
-      <Modal isOpen={logInModal} toggle={toggleLogIn} size="sm">
-        <ModalHeader toggle={toggleLogIn}>LogIn</ModalHeader>
-        <ModalBody>
-          <div>
-            username&nbsp;&nbsp;
-            <input
-              type="text"
-              onChange={(event) => setUsername(event.target.value)}
-            />
-            <br />
-            <br />
-            password&nbsp;&nbsp;
-            <input
-              type="password"
-              onChange={(event) => setPassword(event.target.value)}
-            />
-            <br />
-            <br />
-            <Button
-              type="submit"
-              value="submit"
-              color="secondary"
-              onClick={handleLogIn}>
-              LogIn
-            </Button>
-          </div>
-        </ModalBody>
-      </Modal>
+        </div>
+      </div>
     </div>
   );
 };
