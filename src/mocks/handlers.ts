@@ -1,15 +1,22 @@
 import { rest } from "msw";
 import { baseUrl } from "../components/baseUrl";
 
+interface LoginBody {
+  username: string;
+  password: string;
+}
+
 export const handlers = [
   rest.post(`${baseUrl}users/signup`, (req, res, ctx) => {
     return res(ctx.status(201), ctx.json({ success: true }));
   }),
 
-  rest.post(`${baseUrl}users/login`, (req, res, ctx) => {
+  rest.post<LoginBody, any>(`${baseUrl}users/login`, (req, res, ctx) => {
+    const { username } = req.body;
+
     return res(
       ctx.status(200),
-      ctx.json({ success: true, token: "test", username: "test" })
+      ctx.json({ success: true, token: "test", username })
     );
   }),
 
