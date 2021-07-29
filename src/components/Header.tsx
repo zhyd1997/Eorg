@@ -51,13 +51,13 @@ const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
     logInModal?.hide();
   }
 
-  function signUp(state: SignUpReqBody): void {
+  function signUp(reqBody: SignUpReqBody): void {
     fetch(`${baseUrl}users/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(state),
+      body: JSON.stringify(reqBody),
     }).then((res) => {
       res.json().then((result) => {
         if (result.success === true) {
@@ -73,13 +73,13 @@ const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
     });
   }
 
-  function logIn(state: LogInReqBody): void {
+  function logIn(reqBody: LogInReqBody): void {
     fetch(`${baseUrl}users/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(state),
+      body: JSON.stringify(reqBody),
     }).then((res) => {
       res.json().then((result) => {
         if (result.success === true) {
@@ -117,15 +117,15 @@ const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
   }
 
   // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'evt' implicitly has an 'any' type.
-  function handleSignUp(state: SignUpReqBody, evt): void {
-    signUp(state);
+  function handleSignUp(reqBody: SignUpReqBody, evt): void {
+    signUp(reqBody);
     hideSignUpModal();
     evt.preventDefault();
   }
 
   // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'evt' implicitly has an 'any' type.
-  function handleLogIn(state: LogInReqBody, evt): void {
-    logIn(state);
+  function handleLogIn(reqBody: LogInReqBody, evt): void {
+    logIn(reqBody);
     hideLogInModal();
     evt.preventDefault();
   }

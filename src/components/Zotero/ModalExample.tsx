@@ -5,7 +5,7 @@ import Loading from "../Loading";
 import TableExample from "./TableExample";
 import { zoteroUrl } from "../baseUrl";
 
-interface ZoteroAuth {
+interface ZoteroAuthReqBody {
   userID: string;
   APIkey: string;
 }
@@ -26,7 +26,7 @@ const ModalExample = ({ buttonLabel, insertCite }: ModalExampleProps) => {
     text: "",
   });
 
-  const { register, handleSubmit } = useForm<ZoteroAuth>();
+  const { register, handleSubmit } = useForm<ZoteroAuthReqBody>();
 
   const authModalRef = useRef<any>(null);
   const mainRef = useRef<any>(null);
@@ -132,48 +132,28 @@ const ModalExample = ({ buttonLabel, insertCite }: ModalExampleProps) => {
     });
   }
 
-  function verifyAuth(auth: ZoteroAuth): void {
+  function verifyAuth(reqBody: ZoteroAuthReqBody): void {
     verifyState(true, true, "");
-    if (auth.userID === "" || auth.APIkey === "") {
+    const { userID, APIkey } = reqBody;
+    if (userID === "" || APIkey === "") {
       verifyState(false, false, "empty input");
     } else {
-      fetch(`${zoteroUrl}users/${auth.userID}/items`, {
+      fetch(`${zoteroUrl}users/${userID}/items`, {
         method: "GET",
         headers: {
           "Zotero-API-Version": "3",
-          "Zotero-API-Key": auth.APIkey,
+          "Zotero-API-Key": APIkey,
         },
       }).then((res) => {
         if (res.status === 200) {
-          if (localStorage.getItem("zotero-Auth") !== null) {
-            /**
-             * every user has unique userID, and only API-key can be changed.
-             * if API-key changed, user maybe also changed.
-             * and localStorage Item 'zotero-Auth' changed.
-             */
-            const { APIkey } = JSON.parse(localStorage.getItem("zotero-Auth")!);
-            if (auth.APIkey !== APIkey) {
-              localStorage.setItem(
-                "zotero-Auth",
-                JSON.stringify({
-                  userID: auth.userID,
-                  APIkey: auth.APIkey,
-                })
-              );
-            }
-          } else {
-            localStorage.setItem(
-              "zotero-Auth",
-              JSON.stringify({
-                userID: auth.userID,
-                APIkey: auth.APIkey,
-              })
-            );
-          }
+          localStorage.setItem(
+            "zotero-Auth",
+            JSON.stringify({ userID, APIkey })
+          );
           verifyState(false, true, "");
           createCitations();
         } else if (res.status === 403) {
-          verifyState(false, false, `${auth.userID} has invalid API key`);
+          verifyState(false, false, `${userID} has invalid API key`);
         } else {
           /**
            * TODO HTTP status codes
