@@ -1,12 +1,6 @@
 import React from "react";
 import { CharacterMetadata, ContentState } from "draft-js";
 
-type TokenSpanProps = {
-  contentState: ContentState;
-  entityKey: string;
-  offsetkey: string;
-};
-
 const styles = {
   immutable: {
     backgroundColor: "rgba(0, 0, 0, 0.2)",
@@ -39,10 +33,16 @@ function getDecoratedStyle(mutability: string) {
   }
 }
 
+type TokenSpanProps = {
+  contentState: ContentState;
+  entityKey: string;
+  offsetKey: string;
+};
+
 export const TokenSpan: React.FC<TokenSpanProps> = ({
   contentState,
   entityKey,
-  offsetkey,
+  offsetKey,
   children,
 }) => {
   const style = getDecoratedStyle(
@@ -55,7 +55,7 @@ export const TokenSpan: React.FC<TokenSpanProps> = ({
     <span>
       <sup>
         <cite
-          data-offset-key={offsetkey}
+          data-offset-key={offsetKey}
           // TODO
           // @ts-ignore
           style={style}
