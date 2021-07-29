@@ -1,6 +1,17 @@
 import React, { useState, useRef } from "react";
 import { Modal } from "bootstrap";
+import { useForm } from "react-hook-form";
 import { baseUrl } from "./baseUrl";
+
+export interface LogInReqBody {
+  username: string;
+  password: string;
+}
+
+interface SignUpReqBody {
+  username: string;
+  password: string;
+}
 
 type HeaderProps = {
   storeCollector: () => void;
@@ -8,10 +19,10 @@ type HeaderProps = {
 };
 
 const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [response, setResponse] = useState("");
   const [tips, setTips] = useState("tips");
+
+  const { register, handleSubmit } = useForm();
 
   const signUpModalRef = useRef<any>(null);
   const logInModalRef = useRef<any>(null);
@@ -40,17 +51,13 @@ const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
     logInModal?.hide();
   }
 
-  function signUp(): void {
-    const state = {
-      username,
-      password,
-    };
+  function signUp(reqBody: SignUpReqBody): void {
     fetch(`${baseUrl}users/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(state),
+      body: JSON.stringify(reqBody),
     }).then((res) => {
       res.json().then((result) => {
         if (result.success === true) {
@@ -66,17 +73,13 @@ const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
     });
   }
 
-  function logIn(): void {
-    const state = {
-      username,
-      password,
-    };
+  function logIn(reqBody: LogInReqBody): void {
     fetch(`${baseUrl}users/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(state),
+      body: JSON.stringify(reqBody),
     }).then((res) => {
       res.json().then((result) => {
         if (result.success === true) {
@@ -88,6 +91,7 @@ const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
             JSON.stringify({
               login: true,
               token: result.token,
+              username: result.username,
             })
           );
           storeCollector();
@@ -113,15 +117,15 @@ const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
   }
 
   // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'evt' implicitly has an 'any' type.
-  function handleSignUp(evt): void {
-    signUp();
+  function handleSignUp(reqBody: SignUpReqBody, evt): void {
+    signUp(reqBody);
     hideSignUpModal();
     evt.preventDefault();
   }
 
   // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'evt' implicitly has an 'any' type.
-  function handleLogIn(evt): void {
-    logIn();
+  function handleLogIn(reqBody: LogInReqBody, evt): void {
+    logIn(reqBody);
     hideLogInModal();
     evt.preventDefault();
   }
@@ -147,7 +151,8 @@ const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
         </div>
       ) : (
         <div>
-          <span>{username}</span>
+          <span>{JSON.parse(localStorage.getItem("login")!).username}</span>
+          &nbsp;&nbsp;&nbsp;&nbsp;
           <button
             type="button"
             className="btn btn-outline-secondary"
@@ -174,13 +179,13 @@ const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
                 <input
                   type="text"
                   className="form-control"
-                  onChange={(event) => setUsername(event.target.value)}
+                  {...register("username", { required: true })}
                 />
                 password&nbsp;&nbsp;
                 <input
                   type="password"
                   className="form-control"
-                  onChange={(event) => setPassword(event.target.value)}
+                  {...register("password", { required: true })}
                 />
               </div>
             </div>
@@ -188,7 +193,7 @@ const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
               <button
                 type="button"
                 className="btn btn-primary"
-                onClick={handleSignUp}>
+                onClick={handleSubmit(handleSignUp)}>
                 SignUp
               </button>
             </div>
@@ -213,13 +218,13 @@ const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
                 <input
                   type="text"
                   className="form-control"
-                  onChange={(event) => setUsername(event.target.value)}
+                  {...register("username", { required: true })}
                 />
                 password&nbsp;&nbsp;
                 <input
                   type="password"
                   className="form-control"
-                  onChange={(event) => setPassword(event.target.value)}
+                  {...register("password", { required: true })}
                 />
               </div>
             </div>
@@ -227,7 +232,7 @@ const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
               <button
                 type="button"
                 className="btn btn-primary"
-                onClick={handleLogIn}>
+                onClick={handleSubmit(handleLogIn)}>
                 LogIn
               </button>
             </div>

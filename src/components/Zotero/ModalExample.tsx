@@ -1,8 +1,14 @@
 import React, { useState, useRef } from "react";
 import { Modal } from "bootstrap";
+import { useForm } from "react-hook-form";
 import Loading from "../Loading";
 import TableExample from "./TableExample";
 import { zoteroUrl } from "../baseUrl";
+
+interface ZoteroAuthReqBody {
+  userID: string;
+  APIkey: string;
+}
 
 type ModalExampleProps = {
   buttonLabel: string;
@@ -15,14 +21,12 @@ const ModalExample = ({ buttonLabel, insertCite }: ModalExampleProps) => {
   const [isClick, setIsClick] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [fetchText, setFetchText] = useState([]);
-  const [auth, setAuth] = useState({
-    userID: "",
-    APIkey: "",
-  });
   const [feedback, setFeedback] = useState({
     isValid: true,
     text: "",
   });
+
+  const { register, handleSubmit } = useForm<ZoteroAuthReqBody>();
 
   const authModalRef = useRef<any>(null);
   const mainRef = useRef<any>(null);
@@ -49,14 +53,6 @@ const ModalExample = ({ buttonLabel, insertCite }: ModalExampleProps) => {
     const modalEle = mainRef?.current;
     const authModal = Modal.getInstance(modalEle);
     authModal?.hide();
-  }
-
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-  function handleChange(e): void {
-    setAuth({
-      ...auth,
-      [e.target.name]: e.target.value,
-    });
   }
 
   function cite(): void {
@@ -136,48 +132,28 @@ const ModalExample = ({ buttonLabel, insertCite }: ModalExampleProps) => {
     });
   }
 
-  function verifyAuth(): void {
+  function verifyAuth(reqBody: ZoteroAuthReqBody): void {
     verifyState(true, true, "");
-    if (auth.userID === "" || auth.APIkey === "") {
+    const { userID, APIkey } = reqBody;
+    if (userID === "" || APIkey === "") {
       verifyState(false, false, "empty input");
     } else {
-      fetch(`${zoteroUrl}users/${auth.userID}/items`, {
+      fetch(`${zoteroUrl}users/${userID}/items`, {
         method: "GET",
         headers: {
           "Zotero-API-Version": "3",
-          "Zotero-API-Key": auth.APIkey,
+          "Zotero-API-Key": APIkey,
         },
       }).then((res) => {
         if (res.status === 200) {
-          if (localStorage.getItem("zotero-Auth") !== null) {
-            /**
-             * every user has unique userID, and only API-key can be changed.
-             * if API-key changed, user maybe also changed.
-             * and localStorage Item 'zotero-Auth' changed.
-             */
-            const { APIkey } = JSON.parse(localStorage.getItem("zotero-Auth")!);
-            if (auth.APIkey !== APIkey) {
-              localStorage.setItem(
-                "zotero-Auth",
-                JSON.stringify({
-                  userID: auth.userID,
-                  APIkey: auth.APIkey,
-                })
-              );
-            }
-          } else {
-            localStorage.setItem(
-              "zotero-Auth",
-              JSON.stringify({
-                userID: auth.userID,
-                APIkey: auth.APIkey,
-              })
-            );
-          }
+          localStorage.setItem(
+            "zotero-Auth",
+            JSON.stringify({ userID, APIkey })
+          );
           verifyState(false, true, "");
           createCitations();
         } else if (res.status === 403) {
-          verifyState(false, false, `${auth.userID} has invalid API key`);
+          verifyState(false, false, `${userID} has invalid API key`);
         } else {
           /**
            * TODO HTTP status codes
@@ -232,11 +208,10 @@ const ModalExample = ({ buttonLabel, insertCite }: ModalExampleProps) => {
                 <div>
                   <input
                     type="text"
-                    name="userID"
                     id="userID"
                     placeholder="userID"
-                    onChange={handleChange}
                     className="form-control"
+                    {...register("userID", { required: true })}
                   />
                   {localStorage.getItem("zotero-Auth") !== null ? (
                     <div>
@@ -249,11 +224,10 @@ const ModalExample = ({ buttonLabel, insertCite }: ModalExampleProps) => {
                 <div>
                   <input
                     type="text"
-                    name="APIkey"
                     id="APIkey"
                     placeholder="API key"
                     className="form-control"
-                    onChange={handleChange}
+                    {...register("APIkey", { required: true })}
                   />
                   {!feedback.isValid ? <p>{feedback.text}</p> : ""}
                   <div>
@@ -281,7 +255,7 @@ const ModalExample = ({ buttonLabel, insertCite }: ModalExampleProps) => {
               <button
                 type="button"
                 className="btn btn-primary"
-                onClick={verifyAuth}>
+                onClick={handleSubmit(verifyAuth)}>
                 Next
               </button>
             </div>
