@@ -2,10 +2,12 @@ authors:
   - family-names: Zhang
     given-names: Yadong
 cff-version: "1.1.0"
+date-released: 2020-09-15
 keywords: 
   - "Draft.js"
   - LaTeX
 license: "Apache-2.0"
 message: "If you use this software, please cite it using these metadata."
+version: "0.0.9"
 repository-code: "https://github.com/zhyd1997/Eorg"
 title: Eorg
