@@ -5,17 +5,17 @@ import { SignUp } from "./SignUp";
 
 type HeaderProps = {
   storeCollector: () => void;
-  isLogIn: boolean;
+  isAuthenticated: boolean;
 };
 
-export const Header = ({ storeCollector, isLogIn }: HeaderProps) => {
+export const Header = ({ storeCollector, isAuthenticated }: HeaderProps) => {
   const [response, setResponse] = useState("");
   const [tips, setTips] = useState("tips");
 
   return (
     <div className="Header">
       <span className={tips}>{response}</span>
-      {!isLogIn ? (
+      {!isAuthenticated ? (
         <div className="nav-item-auth">
           <LogIn
             storeCollector={storeCollector}
