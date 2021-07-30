@@ -1,60 +1,58 @@
-import React, { useState } from "react";
-import {
-  Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Form,
-  FormGroup,
-  Input,
-  FormFeedback,
-  FormText,
-} from "reactstrap";
+import React, { useState, useRef } from "react";
+import { Modal } from "bootstrap";
+import { useForm } from "react-hook-form";
 import Loading from "../Loading";
 import TableExample from "./TableExample";
 import { zoteroUrl } from "../baseUrl";
 
+interface ZoteroAuthReqBody {
+  userID: string;
+  APIkey: string;
+}
+
 type ModalExampleProps = {
   buttonLabel: string;
-  className?: string;
   /** (biblatex entry, selected biblatex item) */
   insertCite: (text: any[], value: number) => void;
 };
 
-const ModalExample = ({
-  buttonLabel,
-  className,
-  insertCite,
-}: ModalExampleProps) => {
-  const [modal, setModal] = useState(false);
-  const [modalInput, setModalInput] = useState(false);
+const ModalExample = ({ buttonLabel, insertCite }: ModalExampleProps) => {
   const [targetValue, setTargetValue] = useState(0);
   const [isClick, setIsClick] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [fetchText, setFetchText] = useState([]);
-  const [auth, setAuth] = useState({
-    userID: "",
-    APIkey: "",
-  });
   const [feedback, setFeedback] = useState({
     isValid: true,
     text: "",
   });
 
-  function toggle(): void {
-    setModal(!modal);
-  }
-  function toggleInput(): void {
-    setModalInput(!modalInput);
+  const { register, handleSubmit } = useForm<ZoteroAuthReqBody>();
+
+  const authModalRef = useRef<any>(null);
+  const mainRef = useRef<any>(null);
+
+  function showAuthModal() {
+    const modalEle = authModalRef?.current;
+    const authModal = new Modal(modalEle);
+    authModal.show();
   }
 
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-  function handleChange(e): void {
-    setAuth({
-      ...auth,
-      [e.target.name]: e.target.value,
-    });
+  function hideAuthModal() {
+    const modalEle = authModalRef?.current;
+    const authModal = Modal.getInstance(modalEle);
+    authModal?.hide();
+  }
+
+  function showMainModal() {
+    const modalEle = mainRef?.current;
+    const mainModal = new Modal(modalEle);
+    mainModal.show();
+  }
+
+  function hideMainModal() {
+    const modalEle = mainRef?.current;
+    const authModal = Modal.getInstance(modalEle);
+    authModal?.hide();
   }
 
   function cite(): void {
@@ -121,8 +119,8 @@ const ModalExample = ({
   function createCitations(): void {
     // 2. close input modal
     // and open cite modal, fetch citations.
-    toggleInput();
-    toggle();
+    hideAuthModal();
+    showMainModal();
     fetchItems();
   }
 
@@ -134,48 +132,28 @@ const ModalExample = ({
     });
   }
 
-  function verifyAuth(): void {
+  function verifyAuth(reqBody: ZoteroAuthReqBody): void {
     verifyState(true, true, "");
-    if (auth.userID === "" || auth.APIkey === "") {
+    const { userID, APIkey } = reqBody;
+    if (userID === "" || APIkey === "") {
       verifyState(false, false, "empty input");
     } else {
-      fetch(`${zoteroUrl}users/${auth.userID}/items`, {
+      fetch(`${zoteroUrl}users/${userID}/items`, {
         method: "GET",
         headers: {
           "Zotero-API-Version": "3",
-          "Zotero-API-Key": auth.APIkey,
+          "Zotero-API-Key": APIkey,
         },
       }).then((res) => {
         if (res.status === 200) {
-          if (localStorage.getItem("zotero-Auth") !== null) {
-            /**
-             * every user has unique userID, and only API-key can be changed.
-             * if API-key changed, user maybe also changed.
-             * and localStorage Item 'zotero-Auth' changed.
-             */
-            const { APIkey } = JSON.parse(localStorage.getItem("zotero-Auth")!);
-            if (auth.APIkey !== APIkey) {
-              localStorage.setItem(
-                "zotero-Auth",
-                JSON.stringify({
-                  userID: auth.userID,
-                  APIkey: auth.APIkey,
-                })
-              );
-            }
-          } else {
-            localStorage.setItem(
-              "zotero-Auth",
-              JSON.stringify({
-                userID: auth.userID,
-                APIkey: auth.APIkey,
-              })
-            );
-          }
+          localStorage.setItem(
+            "zotero-Auth",
+            JSON.stringify({ userID, APIkey })
+          );
           verifyState(false, true, "");
           createCitations();
         } else if (res.status === 403) {
-          verifyState(false, false, `${auth.userID} has invalid API key`);
+          verifyState(false, false, `${userID} has invalid API key`);
         } else {
           /**
            * TODO HTTP status codes
@@ -188,14 +166,9 @@ const ModalExample = ({
     }
   }
 
-  function handleNext(): void {
-    // 1. open input modal
-    toggleInput();
-  }
-
   function handleClick(): void {
     // 3. close cite modal
-    toggle();
+    hideMainModal();
     cite();
   }
 
@@ -213,100 +186,119 @@ const ModalExample = ({
     <>
       <button
         type="button"
-        onClick={handleNext}
+        onClick={showAuthModal}
         className="math RichEditor-styleButton">
         {buttonLabel}
       </button>
-      <Modal
-        size="sm"
-        isOpen={modalInput}
-        toggle={toggleInput}
-        className={className}>
-        <ModalHeader toggle={toggleInput}>Zotero</ModalHeader>
-        <ModalBody>
-          {isLoading ? <Loading isLoading={isLoading} /> : null}
-          <Form>
-            <FormGroup>
-              <Input
-                type="text"
-                name="userID"
-                id="userID"
-                placeholder="userID"
-                onChange={handleChange}
-                // @ts-expect-error ts-migrate(2769)
-                // FIXME: Type 'string' is not assignable to type '((instanc...
-                //  Remove this comment to see the full error message
-                innerRef={auth.userID}
-                invalid={!feedback.isValid}
-              />
+      <div className="modal fade" tabIndex={-1} ref={authModalRef}>
+        <div className="modal-dialog modal-sm">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">Zotero</h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+                onClick={hideAuthModal}></button>
+            </div>
+            <div className="modal-body">
+              {isLoading ? <Loading isLoading={isLoading} /> : null}
+              <form>
+                <div>
+                  <input
+                    type="text"
+                    id="userID"
+                    placeholder="userID"
+                    className="form-control"
+                    {...register("userID", { required: true })}
+                  />
+                  {localStorage.getItem("zotero-Auth") !== null ? (
+                    <div>
+                      Still use previous API key? please click&nbsp;
+                      <kbd>Restore User</kbd>
+                      &nbsp;button.
+                    </div>
+                  ) : null}
+                </div>
+                <div>
+                  <input
+                    type="text"
+                    id="APIkey"
+                    placeholder="API key"
+                    className="form-control"
+                    {...register("APIkey", { required: true })}
+                  />
+                  {!feedback.isValid ? <p>{feedback.text}</p> : ""}
+                  <div>
+                    You can create API keys via&nbsp;
+                    <a
+                      href="https://www.zotero.org/settings/keys/new"
+                      rel="noopener noreferrer"
+                      target="_blank">
+                      your Zotero account settings
+                    </a>
+                    .
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div className="modal-footer">
               {localStorage.getItem("zotero-Auth") !== null ? (
-                <FormText>
-                  Still use previous API key? please click&nbsp;
-                  <kbd>Restore User</kbd>
-                  &nbsp;button.
-                </FormText>
+                <button
+                  type="button"
+                  className="btn btn-dark"
+                  onClick={createCitations}>
+                  Restore User
+                </button>
               ) : null}
-            </FormGroup>
-            <FormGroup>
-              <Input
-                type="text"
-                name="APIkey"
-                id="APIkey"
-                placeholder="API key"
-                onChange={handleChange}
-                // @ts-expect-error ts-migrate(2769)
-                // FIXME: Type 'string' is not assignable to type '((instanc...
-                //  Remove this comment to see the full error message
-                innerRef={auth.APIkey}
-                invalid={!feedback.isValid}
-              />
-              {!feedback.isValid ? (
-                <FormFeedback>{feedback.text}</FormFeedback>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleSubmit(verifyAuth)}>
+                Next
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="modal fade" tabIndex={-1} ref={mainRef}>
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">Zotero</h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+                onClick={hideMainModal}></button>
+            </div>
+            <div className="modal-body">
+              {isLoading ? (
+                <Loading isLoading={isLoading} />
               ) : (
-                ""
+                <TableExample handleClick={selectItem} fetchText={fetchText} />
               )}
-              <FormText>
-                You can create API keys via&nbsp;
-                <a
-                  href="https://www.zotero.org/settings/keys/new"
-                  rel="noopener noreferrer"
-                  target="_blank">
-                  your Zotero account settings
-                </a>
-                .
-              </FormText>
-            </FormGroup>
-          </Form>
-        </ModalBody>
-        <ModalFooter>
-          {localStorage.getItem("zotero-Auth") !== null ? (
-            <Button color="dark" onClick={createCitations}>
-              Restore User
-            </Button>
-          ) : null}
-          <Button color="primary" onClick={verifyAuth}>
-            Next
-          </Button>
-        </ModalFooter>
-      </Modal>
-      <Modal isOpen={modal} toggle={toggle} className={className}>
-        <ModalHeader toggle={toggle}>Zotero</ModalHeader>
-        <ModalBody style={{ height: "200px", overflow: "auto" }}>
-          {isLoading ? (
-            <Loading isLoading={isLoading} />
-          ) : (
-            <TableExample handleClick={selectItem} fetchText={fetchText} />
-          )}
-        </ModalBody>
-        <ModalFooter>
-          <Button color="primary" disabled={!isClick} onClick={handleClick}>
-            Insert
-          </Button>{" "}
-          <Button color="secondary" onClick={toggle}>
-            Cancel
-          </Button>
-        </ModalFooter>
-      </Modal>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-primary"
+                disabled={!isClick}
+                onClick={handleClick}>
+                Insert
+              </button>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={hideMainModal}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 };

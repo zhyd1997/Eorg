@@ -21,9 +21,9 @@ const Toolbar = ({ login, store, disabled, onClick }: ToolbarProps) => {
 
   const preview = (
     <button
-      disabled={disabled}
-      className="save"
       type="button"
+      disabled={disabled}
+      className="btn btn-sm btn-secondary"
       onClick={onClick}>
       preview
     </button>

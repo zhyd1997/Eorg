@@ -1,12 +1,5 @@
 import React from "react";
 import { CharacterMetadata, ContentState } from "draft-js";
-import Example from "./ToolTipExample";
-
-type TokenSpanProps = {
-  contentState: ContentState;
-  entityKey: string;
-  offsetkey: string;
-};
 
 const styles = {
   immutable: {
@@ -40,10 +33,16 @@ function getDecoratedStyle(mutability: string) {
   }
 }
 
+type TokenSpanProps = {
+  contentState: ContentState;
+  entityKey: string;
+  offsetKey: string;
+};
+
 export const TokenSpan: React.FC<TokenSpanProps> = ({
   contentState,
   entityKey,
-  offsetkey,
+  offsetKey,
   children,
 }) => {
   const style = getDecoratedStyle(
@@ -56,7 +55,7 @@ export const TokenSpan: React.FC<TokenSpanProps> = ({
     <span>
       <sup>
         <cite
-          data-offset-key={offsetkey}
+          data-offset-key={offsetKey}
           // TODO
           // @ts-ignore
           style={style}
@@ -64,7 +63,7 @@ export const TokenSpan: React.FC<TokenSpanProps> = ({
           {children}
         </cite>
       </sup>
-      <Example target={`Popover-${entityKey}`} text={text} />
+      {/* TODO tooltip */}
     </span>
   );
 };
