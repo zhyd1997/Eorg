@@ -23,7 +23,7 @@ const Toolbar = ({ login, store, disabled, onClick }: ToolbarProps) => {
     <button
       type="button"
       disabled={disabled}
-      className="btn btn-sm btn-outline-secondary"
+      className="btn btn-sm btn-secondary"
       onClick={onClick}>
       preview
     </button>

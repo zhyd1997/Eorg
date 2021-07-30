@@ -82,6 +82,16 @@
   background: #f8d7da;
 }
 
+.nav-item-auth {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.nav-item-auth > div + div {
+  margin-left: 16px;
+}
+
 body {
   counter-reset: section;
 }
