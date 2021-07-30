@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import RichTextEditor from "./Editor";
-import Header from "./Header";
+import { Header } from "./Header";
 
 const Main = () => {
   const [login, setLogin] = useState(false);

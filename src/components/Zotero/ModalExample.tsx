@@ -291,7 +291,7 @@ const ModalExample = ({ buttonLabel, insertCite }: ModalExampleProps) => {
               </button>
               <button
                 type="button"
-                className="btn btn-primary"
+                className="btn btn-secondary"
                 onClick={hideMainModal}>
                 Cancel
               </button>
