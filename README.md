@@ -1,7 +1,7 @@
 # README
 ![GitHub](https://img.shields.io/github/license/zhyd1997/Eorg)
 
-Migrated to [blog](https://zhangyadong.me/)
+Migrated to [blog](https://zhyd1997.github.io/)
 
 # Plan *New~*
 
