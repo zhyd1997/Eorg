@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
 import { Modal } from "bootstrap";
+import TableIcon from "../../../../icons/table.svg";
 
 export const tableShape = [];
 
@@ -31,7 +32,7 @@ const ModalTable = (props) => {
         type="button"
         className="math RichEditor-styleButton"
         onClick={showTableModal}>
-        {buttonLabel}
+        <TableIcon />
       </button>
       <div className="modal fade" tabIndex={-1} ref={tableModalRef}>
         <div className="modal-dialog">

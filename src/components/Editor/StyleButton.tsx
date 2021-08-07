@@ -3,7 +3,7 @@ import React from "react";
 type StyleButtonProps = {
   style: string;
   active: boolean;
-  label: string;
+  icon: any;
   onToggle: (style: string) => void;
 };
 
@@ -11,7 +11,7 @@ export const StyleButton = ({
   onToggle,
   style,
   active,
-  label,
+  icon,
 }: StyleButtonProps) => {
   function onToggleStyle(e: any): void {
     e.preventDefault();
@@ -26,7 +26,7 @@ export const StyleButton = ({
   return (
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <span className={className} onMouseDown={onToggleStyle}>
-      {label}
+      {icon}
     </span>
   );
 };

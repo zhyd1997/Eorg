@@ -1,12 +1,16 @@
 import React from "react";
 import { StyleButton } from "./StyleButton";
 import { StyleControlsProps } from "./types";
+import BoldIcon from "../../icons/type-bold.svg";
+import ItalicIcon from "../../icons/type-italic.svg";
+import UnderlineIcon from "../../icons/type-underline.svg";
+import InlineCodeIcon from "../../icons/code.svg";
 
 const INLINE_STYLES = [
-  { label: "Bold", style: "BOLD" },
-  { label: "Italic", style: "ITALIC" },
-  { label: "Underline", style: "UNDERLINE" },
-  { label: "Code", style: "CODE" },
+  { label: "Bold", style: "BOLD", icon: <BoldIcon /> },
+  { label: "Italic", style: "ITALIC", icon: <ItalicIcon /> },
+  { label: "Underline", style: "UNDERLINE", icon: <UnderlineIcon /> },
+  { label: "InlineCode", style: "CODE", icon: <InlineCodeIcon /> },
 ];
 
 export const InlineStyleControls = ({
@@ -21,7 +25,7 @@ export const InlineStyleControls = ({
         <StyleButton
           key={type.label}
           active={currentStyle.has(type.style)}
-          label={type.label}
+          icon={type.icon}
           onToggle={onToggle}
           style={type.style}
         />

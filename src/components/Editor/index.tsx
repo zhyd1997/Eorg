@@ -205,17 +205,17 @@ const RichTextEditor = ({ login, store }: RichTextEditorProps) => {
     <div className="double-column">
       <div className="RichEditor-root">
         <div className="Menu">
-          <BlockStyleControls
-            editorState={editorState}
-            onToggle={toggleBlockType}
-          />
           <InlineStyleControls
             editorState={editorState}
             onToggle={toggleInlineStyle}
           />
+          <BlockStyleControls
+            editorState={editorState}
+            onToggle={toggleBlockType}
+          />
           <div className="RichEditor-controls">
-            <ModalTable onClick={insertTable} buttonLabel="Table" />
-            <ModalExample insertCite={insertCite} buttonLabel="Cite" />
+            <ModalTable onClick={insertTable} />
+            <ModalExample insertCite={insertCite} />
           </div>
         </div>
         {/* eslint-disable-next-line max-len */}
