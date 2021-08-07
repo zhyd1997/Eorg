@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import Loading from "../Loading";
 import TableExample from "./TableExample";
 import { zoteroUrl } from "../baseUrl";
+import CiteIcon from "../../icons/citation.svg";
 
 interface ZoteroAuthReqBody {
   userID: string;
@@ -11,7 +12,7 @@ interface ZoteroAuthReqBody {
 }
 
 type ModalExampleProps = {
-  buttonLabel: string;
+  buttonLabel?: string;
   /** (biblatex entry, selected biblatex item) */
   insertCite: (text: any[], value: number) => void;
 };
@@ -188,7 +189,7 @@ const ModalExample = ({ buttonLabel, insertCite }: ModalExampleProps) => {
         type="button"
         onClick={showAuthModal}
         className="math RichEditor-styleButton">
-        {buttonLabel}
+        <CiteIcon />
       </button>
       <div className="modal fade" tabIndex={-1} ref={authModalRef}>
         <div className="modal-dialog modal-sm">
