@@ -6,7 +6,7 @@ import {
 } from "draft-js";
 import { baseUrl, zoteroUrl } from "@/baseUrl";
 
-interface StoreType {
+export interface StoreType {
   token: string;
 }
 

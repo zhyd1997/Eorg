@@ -40,14 +40,7 @@ import { InlineStyleControls } from "./InlineStyleControls";
  *
  */
 
-type RichTextEditorProps = {
-  login: boolean;
-  store: {
-    token: string;
-  };
-};
-
-const RichTextEditor = ({ login, store }: RichTextEditorProps) => {
+const RichTextEditor = () => {
   const decorator = new CompositeDecorator([
     {
       strategy: getEntityStrategy("IMMUTABLE"),
@@ -236,7 +229,7 @@ const RichTextEditor = ({ login, store }: RichTextEditorProps) => {
           />
         </div>
       </div>
-      <Preview login={login} store={store} contentState={contentState} />
+      <Preview contentState={contentState} />
     </div>
   );
 };

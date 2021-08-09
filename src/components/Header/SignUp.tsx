@@ -1,25 +1,23 @@
 import React, { useRef } from "react";
 import { Modal } from "bootstrap";
 import { useForm } from "react-hook-form";
-import { baseUrl } from "@/baseUrl";
+import { useAuth } from "@/hooks/useAuth";
 
-interface SignUpReqBody {
+export interface SignUpReqBody {
   username: string;
+  email: string;
   password: string;
 }
 
-type SignUpProps = {
-  setResponse: any;
-  setTips: any;
-};
+export const SignUp = () => {
+  const auth = useAuth();
 
-export const SignUp = ({ setResponse, setTips }: SignUpProps) => {
   const {
     register,
     formState: { errors },
     handleSubmit,
     clearErrors,
-  } = useForm();
+  } = useForm<SignUpReqBody>();
 
   const signUpModalRef = useRef<any>(null);
 
@@ -33,36 +31,14 @@ export const SignUp = ({ setResponse, setTips }: SignUpProps) => {
     const modalEle = signUpModalRef?.current;
     const signUpModal = Modal.getInstance(modalEle);
     signUpModal?.hide();
-    if (errors.username || errors.password) {
+    if (errors.username || errors.email || errors.password) {
       clearErrors();
     }
   }
 
-  function signUp(reqBody: SignUpReqBody): void {
-    fetch(`${baseUrl}/users/signup`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(reqBody),
-    }).then((res) => {
-      res.json().then((result) => {
-        if (result.success === true) {
-          setResponse(result.status);
-          setTips("tips success");
-          setTimeout(() => setTips("tips-fade"), 3000);
-        } else {
-          setResponse(result.err.message);
-          setTips("tips error");
-          setTimeout(() => setTips("tips-fade"), 3000);
-        }
-      });
-    });
-  }
-
   // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'evt' implicitly has an 'any' type.
   function handleSignUp(reqBody: SignUpReqBody, evt): void {
-    signUp(reqBody);
+    auth.signup(reqBody);
     hideSignUpModal();
     evt.preventDefault();
   }
@@ -97,6 +73,14 @@ export const SignUp = ({ setResponse, setTips }: SignUpProps) => {
                   {...register("username", { required: true })}
                 />
                 {errors.username && <p>Username is required!</p>}
+                <label htmlFor="emailForSignUp">email</label>
+                <input
+                  type="email"
+                  id="emailForSignUp"
+                  className="form-control"
+                  {...register("email", { required: true })}
+                />
+                {errors.email && <p>Email is required!</p>}
                 <label htmlFor="passwordForSignUp">password</label>
                 <input
                   type="password"

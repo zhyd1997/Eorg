@@ -9,16 +9,15 @@ import {
   postData,
   fetchBibEntry,
 } from "./utils";
+import { useAuth } from "@/hooks/useAuth";
 
 type PreviewProps = {
   contentState: ContentState;
-  store: {
-    token: string;
-  };
-  login: boolean;
 };
 
-const Preview = ({ contentState, store, login }: PreviewProps) => {
+const Preview = ({ contentState }: PreviewProps) => {
+  const auth = useAuth();
+
   const [content, setContent] = useState<string[]>([]);
   const [citations, setCitations] = useState<{
     biblatex: string[];
@@ -135,7 +134,7 @@ const Preview = ({ contentState, store, login }: PreviewProps) => {
   }
 
   function preview(): void {
-    if (login) {
+    if (auth.isAuthenticated) {
       /**
        * TODO load pdf
        *  if and only if
@@ -160,12 +159,12 @@ const Preview = ({ contentState, store, login }: PreviewProps) => {
 
   useEffect(() => {
     // do not postData when logout.
-    if (content.length !== 0 && store.token.length !== 0) {
+    if (content.length !== 0 && auth.isAuthenticated) {
       // disabled initial render
-      postData(content, store).then((data) => {
+      postData(content, auth.token).then((data) => {
         const { status, body } = data;
         if (status === "success") {
-          previewPDF(store);
+          previewPDF(auth.token);
         } else {
           displayError(body);
         }
@@ -181,7 +180,7 @@ const Preview = ({ contentState, store, login }: PreviewProps) => {
         });
       });
     }
-  }, [content, store]);
+  }, [content, auth.isAuthenticated]);
 
   useEffect(() => {
     const { biblatex, bib, hasCite } = citations;
@@ -190,21 +189,16 @@ const Preview = ({ contentState, store, login }: PreviewProps) => {
       setContent(allTeX);
     }
     if (biblatex.length !== 0) {
-      postBib(bib, store);
+      postBib(bib, auth.token);
     }
-  }, [citations, store, contentState]);
+  }, [citations, auth.token, contentState]);
 
   const ErrorMessage = () => <p className={message.style}>{message.text}</p>;
 
   return (
     <div className={loading.style}>
       <ErrorMessage />
-      <Toolbar
-        login={login}
-        store={store}
-        disabled={loading.disabled}
-        onClick={preview}
-      />
+      <Toolbar disabled={loading.disabled} onClick={preview} />
       <iframe id="pdf" title="hello" />
       <Loading isLoading={loading.isLoading} />
     </div>

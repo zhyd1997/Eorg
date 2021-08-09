@@ -1,20 +1,15 @@
 import React, { useRef } from "react";
 import { Modal } from "bootstrap";
 import { useForm } from "react-hook-form";
-import { baseUrl } from "@/baseUrl";
+import { useAuth } from "@/hooks/useAuth";
 
 export interface LogInReqBody {
-  username: string;
+  email: string;
   password: string;
 }
 
-type LogInProps = {
-  setResponse: any;
-  setTips: any;
-  storeCollector: any;
-};
-
-export const LogIn = ({ setResponse, setTips, storeCollector }: LogInProps) => {
+export const LogIn = () => {
+  const auth = useAuth();
   const logInModalRef = useRef<any>(null);
 
   const {
@@ -22,7 +17,7 @@ export const LogIn = ({ setResponse, setTips, storeCollector }: LogInProps) => {
     formState: { errors },
     handleSubmit,
     clearErrors,
-  } = useForm();
+  } = useForm<LogInReqBody>();
 
   function showLogInModal() {
     const modalEle = logInModalRef?.current;
@@ -34,45 +29,14 @@ export const LogIn = ({ setResponse, setTips, storeCollector }: LogInProps) => {
     const modalEle = logInModalRef?.current;
     const logInModal = Modal.getInstance(modalEle);
     logInModal?.hide();
-    if (errors.username || errors.password) {
+    if (errors.email || errors.password) {
       clearErrors();
     }
   }
 
-  function logIn(reqBody: LogInReqBody): void {
-    fetch(`${baseUrl}/users/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(reqBody),
-    }).then((res) => {
-      res.json().then((result) => {
-        if (result.success === true) {
-          setResponse(result.status);
-          setTips("tips success");
-          setTimeout(() => setTips("tips-fade"), 3000);
-          localStorage.setItem(
-            "login",
-            JSON.stringify({
-              login: true,
-              token: result.token,
-              username: result.username,
-            })
-          );
-          storeCollector();
-        } else {
-          setResponse(result.err.message);
-          setTips("tips error");
-          setTimeout(() => setTips("tips-fade"), 3000);
-        }
-      });
-    });
-  }
-
   // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'evt' implicitly has an 'any' type.
   function handleLogIn(reqBody: LogInReqBody, evt): void {
-    logIn(reqBody);
+    auth.signin(reqBody);
     hideLogInModal();
     evt.preventDefault();
   }
@@ -99,14 +63,14 @@ export const LogIn = ({ setResponse, setTips, storeCollector }: LogInProps) => {
             </div>
             <div className="modal-body">
               <form>
-                <label htmlFor="usernameForLogin">username</label>
+                <label htmlFor="emailForLogin">email</label>
                 <input
-                  type="text"
-                  id="usernameForLogin"
+                  type="email"
+                  id="emailForLogin"
                   className="form-control"
-                  {...register("username", { required: true })}
+                  {...register("email", { required: true })}
                 />
-                {errors.username && <p>Username is required!</p>}
+                {errors.email && <p>Email is required!</p>}
                 <label htmlFor="passwordForLogin">password</label>
                 <input
                   type="password"
