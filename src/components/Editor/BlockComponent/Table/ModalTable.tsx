@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { Modal } from "bootstrap";
-import TableIcon from "../../../../icons/table.svg";
+import TableIcon from "@/icons/table.svg";
 
 export const tableShape = [];
 

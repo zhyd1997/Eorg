@@ -1,5 +1,5 @@
 import React from "react";
-import { baseUrl } from "../../../baseUrl";
+import { baseUrl } from "@/baseUrl";
 
 type ImageProps = {
   id: string;
@@ -17,7 +17,7 @@ const Image = ({ id, update, save }: ImageProps) => {
     const formData = new FormData();
     formData.append("test", image);
     formData.append("id", id);
-    fetch(`${baseUrl}figure`, {
+    fetch(`${baseUrl}/figure`, {
       method: "POST",
       headers: {
         // There is no need to assign a header:

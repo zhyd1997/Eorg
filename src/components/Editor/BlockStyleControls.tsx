@@ -1,12 +1,12 @@
 import React from "react";
 import { StyleButton } from "./StyleButton";
 import { StyleControlsProps } from "./types";
-import H1Icon from "../../icons/type-h1.svg";
-import H2Icon from "../../icons/type-h2.svg";
-import H3Icon from "../../icons/type-h3.svg";
-import MathIcon from "../../icons/math.svg";
-import ImageIcon from "../../icons/image.svg";
-import ULIcon from "../../icons/list-ul.svg";
+import H1Icon from "@/icons/type-h1.svg";
+import H2Icon from "@/icons/type-h2.svg";
+import H3Icon from "@/icons/type-h3.svg";
+import MathIcon from "@/icons/math.svg";
+import ImageIcon from "@/icons/image.svg";
+import ULIcon from "@/icons/list-ul.svg";
 
 const BLOCK_TYPES = [
   { label: "H1", style: "header-one", icon: <H1Icon /> },

@@ -1,10 +1,10 @@
 import React from "react";
 import { StyleButton } from "./StyleButton";
 import { StyleControlsProps } from "./types";
-import BoldIcon from "../../icons/type-bold.svg";
-import ItalicIcon from "../../icons/type-italic.svg";
-import UnderlineIcon from "../../icons/type-underline.svg";
-import InlineCodeIcon from "../../icons/code.svg";
+import BoldIcon from "@/icons/type-bold.svg";
+import ItalicIcon from "@/icons/type-italic.svg";
+import UnderlineIcon from "@/icons/type-underline.svg";
+import InlineCodeIcon from "@/icons/code.svg";
 
 const INLINE_STYLES = [
   { label: "Bold", style: "BOLD", icon: <BoldIcon /> },

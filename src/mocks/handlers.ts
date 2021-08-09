@@ -1,16 +1,16 @@
 import { rest } from "msw";
-import { baseUrl } from "../components/baseUrl";
-import { LogInReqBody } from "../components/Header";
+import { baseUrl } from "@/baseUrl";
+import { LogInReqBody } from "@/components/Header";
 
 export const handlers = [
-  rest.post(`${baseUrl}users/signup`, (req, res, ctx) => {
+  rest.post(`${baseUrl}/users/signup`, (req, res, ctx) => {
     return res(
       ctx.status(201),
       ctx.json({ success: true, status: "SignUp successfully!" })
     );
   }),
 
-  rest.post<LogInReqBody, any>(`${baseUrl}users/login`, (req, res, ctx) => {
+  rest.post<LogInReqBody, any>(`${baseUrl}/users/login`, (req, res, ctx) => {
     const { username } = req.body;
 
     return res(
@@ -25,7 +25,7 @@ export const handlers = [
     );
   }),
 
-  rest.get(`${baseUrl}users/logout`, (req, res, ctx) => {
+  rest.get(`${baseUrl}/users/logout`, (req, res, ctx) => {
     return res(ctx.status(200));
   }),
 ];
