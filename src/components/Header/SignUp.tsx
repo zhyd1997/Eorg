@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { Modal } from "bootstrap";
 import { useForm } from "react-hook-form";
-import { baseUrl } from "../baseUrl";
+import { baseUrl } from "@/baseUrl";
 
 interface SignUpReqBody {
   username: string;
@@ -39,7 +39,7 @@ export const SignUp = ({ setResponse, setTips }: SignUpProps) => {
   }
 
   function signUp(reqBody: SignUpReqBody): void {
-    fetch(`${baseUrl}users/signup`, {
+    fetch(`${baseUrl}/users/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

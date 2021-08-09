@@ -3,8 +3,8 @@ import { Modal } from "bootstrap";
 import { useForm } from "react-hook-form";
 import Loading from "../Loading";
 import TableExample from "./TableExample";
-import { zoteroUrl } from "../baseUrl";
-import CiteIcon from "../../icons/citation.svg";
+import { zoteroUrl } from "@/baseUrl";
+import CiteIcon from "@/icons/citation.svg";
 
 interface ZoteroAuthReqBody {
   userID: string;
@@ -64,7 +64,7 @@ const ModalExample = ({ buttonLabel, insertCite }: ModalExampleProps) => {
   function fetchItems(): void {
     setIsLoading(true);
     const { userID, APIkey } = JSON.parse(localStorage.getItem("zotero-Auth")!);
-    fetch(`${zoteroUrl}users/${userID}/items`, {
+    fetch(`${zoteroUrl}/users/${userID}/items`, {
       method: "GET",
       headers: {
         "Zotero-API-Version": "3",
@@ -139,7 +139,7 @@ const ModalExample = ({ buttonLabel, insertCite }: ModalExampleProps) => {
     if (userID === "" || APIkey === "") {
       verifyState(false, false, "empty input");
     } else {
-      fetch(`${zoteroUrl}users/${userID}/items`, {
+      fetch(`${zoteroUrl}/users/${userID}/items`, {
         method: "GET",
         headers: {
           "Zotero-API-Version": "3",

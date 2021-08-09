@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { ContentState } from "draft-js";
 import Block from "../blockTypes";
 import Image from "./image";
-import { baseUrl } from "../../../baseUrl";
+import { baseUrl } from "@/baseUrl";
 
 const ImageBlock = ({ block, contentState, blockProps }: Block) => {
   function getValue() {
@@ -100,7 +100,7 @@ const ImageBlock = ({ block, contentState, blockProps }: Block) => {
 
   function update(filename: string) {
     const TOKEN = `Bearer ${store.token}`;
-    fetch(`${baseUrl}figure/${blockKey}`, {
+    fetch(`${baseUrl}/figure/${blockKey}`, {
       method: "GET",
       headers: {
         "Content-Type": "image/jpeg",

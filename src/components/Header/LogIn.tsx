@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { Modal } from "bootstrap";
 import { useForm } from "react-hook-form";
-import { baseUrl } from "../baseUrl";
+import { baseUrl } from "@/baseUrl";
 
 export interface LogInReqBody {
   username: string;
@@ -40,7 +40,7 @@ export const LogIn = ({ setResponse, setTips, storeCollector }: LogInProps) => {
   }
 
   function logIn(reqBody: LogInReqBody): void {
-    fetch(`${baseUrl}users/login`, {
+    fetch(`${baseUrl}/users/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

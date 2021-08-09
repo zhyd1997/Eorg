@@ -1,5 +1,5 @@
 import React from "react";
-import { baseUrl } from "../baseUrl";
+import { baseUrl } from "@/baseUrl";
 
 type LogOutProps = {
   setResponse: any;
@@ -13,7 +13,7 @@ export const LogOut = ({
   storeCollector,
 }: LogOutProps) => {
   function logOut(): void {
-    fetch(`${baseUrl}users/logout`, {
+    fetch(`${baseUrl}/users/logout`, {
       method: "GET",
     }).then(() => {
       localStorage.removeItem("login");

@@ -4,7 +4,7 @@ import {
   RawDraftEntityRange,
   RawDraftInlineStyleRange,
 } from "draft-js";
-import { baseUrl, zoteroUrl } from "../baseUrl";
+import { baseUrl, zoteroUrl } from "@/baseUrl";
 
 interface StoreType {
   token: string;
@@ -183,7 +183,7 @@ export function parseRawContent(
 
 export function previewPDF(store: StoreType): void {
   const TOKEN = `Bearer ${store.token}`;
-  fetch(`${baseUrl}draftJS/pdf`, {
+  fetch(`${baseUrl}/draftJS/pdf`, {
     method: "GET",
     headers: {
       "Content-Type": "application/pdf",
@@ -202,7 +202,7 @@ export function previewPDF(store: StoreType): void {
 
 export function postData(content: string[], store: StoreType) {
   const TOKEN = `Bearer ${store.token}`;
-  return fetch(`${baseUrl}draftJS`, {
+  return fetch(`${baseUrl}/draftJS`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -214,7 +214,7 @@ export function postData(content: string[], store: StoreType) {
 
 export function postBib(bib: {}, store: StoreType) {
   const TOKEN = `Bearer ${store.token}`;
-  fetch(`${baseUrl}draftJS/tex`, {
+  fetch(`${baseUrl}/draftJS/tex`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -225,7 +225,7 @@ export function postBib(bib: {}, store: StoreType) {
 }
 
 export function fetchBibEntry(key: string, userID: string, APIkey: string) {
-  return fetch(`${zoteroUrl}users/${userID}/items/${key}/?format=biblatex`, {
+  return fetch(`${zoteroUrl}/users/${userID}/items/${key}/?format=biblatex`, {
     method: "GET",
     headers: {
       "Zotero-API-Version": "3",
@@ -240,7 +240,7 @@ export function download(
   fileExtension: string
 ): void {
   const TOKEN = `Bearer ${store.token}`;
-  fetch(`${baseUrl}draftJS/${fileExtension}`, {
+  fetch(`${baseUrl}/draftJS/${fileExtension}`, {
     method: "GET",
     headers: {
       "Content-Type": `${contentType}`,
