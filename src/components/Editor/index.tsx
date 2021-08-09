@@ -1,32 +1,34 @@
-import React, { useState, useEffect, useRef } from "react";
-import {
-  Editor,
-  EditorState,
-  getDefaultKeyBinding,
-  RichUtils,
-  CompositeDecorator,
-  Modifier,
-  ContentState,
-  ContentBlock,
-} from "draft-js";
 import "./index.css";
 import "draft-js/dist/Draft.css";
-import { Map } from "immutable";
-import BlockComponent from "./BlockComponent";
-import {
-  insertCustomBlock,
-  removeCustomBlock,
-} from "./BlockComponent/modifiers";
-import ModalTable from "./BlockComponent/Table/ModalTable";
-import Preview from "../Preview";
-import { getEntityStrategy, TokenSpan } from "../Zotero";
-import ModalExample from "../Zotero/ModalExample";
 import "./BlockComponent/TeX/TeXEditor.css";
 import "./BlockComponent/Table/Table.css";
 import "./BlockComponent/Image/imageBlockStyle.css";
-import { styleMap, getBlockStyle } from "./utils";
+
+import {
+  CompositeDecorator,
+  ContentBlock,
+  ContentState,
+  Editor,
+  EditorState,
+  getDefaultKeyBinding,
+  Modifier,
+  RichUtils
+} from "draft-js";
+import { Map } from "immutable";
+import React, { useEffect, useRef, useState } from "react";
+
+import Preview from "../Preview";
+import { getEntityStrategy, TokenSpan } from "../Zotero";
+import ModalExample from "../Zotero/ModalExample";
+import BlockComponent from "./BlockComponent";
+import {
+  insertCustomBlock,
+  removeCustomBlock
+} from "./BlockComponent/modifiers";
+import ModalTable from "./BlockComponent/Table/ModalTable";
 import { BlockStyleControls } from "./BlockStyleControls";
 import { InlineStyleControls } from "./InlineStyleControls";
+import { getBlockStyle, styleMap } from "./utils";
 
 /**
  * Editor Template and KaTeX support are all referenced to Draft.js official example.
@@ -44,8 +46,8 @@ const RichTextEditor = () => {
   const decorator = new CompositeDecorator([
     {
       strategy: getEntityStrategy("IMMUTABLE"),
-      component: TokenSpan,
-    },
+      component: TokenSpan
+    }
   ]);
 
   const [editorState, setEditorState] = useState(
@@ -76,7 +78,7 @@ const RichTextEditor = () => {
     setLiveCustomBlockEdits(Map());
     setEditorState(
       insertCustomBlock(editorState, "TOKEN", {
-        content: "\\sin{x^2} + \\cos{x^2} = 1",
+        content: "\\sin{x^2} + \\cos{x^2} = 1"
       })
     );
   }
@@ -86,7 +88,7 @@ const RichTextEditor = () => {
     setEditorState(
       insertCustomBlock(editorState, "IMAGE", {
         path: "logo192.png",
-        caption: "This is a caption",
+        caption: "This is a caption"
       })
     );
   }
@@ -101,7 +103,7 @@ const RichTextEditor = () => {
     const entityKey = currentContent
       .createEntity("CITATION", "IMMUTABLE", {
         key: `${fetchText[targetValue - 1].key}`,
-        value: `${fetchText[targetValue - 1].title}`,
+        value: `${fetchText[targetValue - 1].title}`
       })
       .getLastCreatedEntityKey();
 
@@ -137,8 +139,8 @@ const RichTextEditor = () => {
               )
             );
           },
-          onRemove: (blockKey: string) => removeBlock(blockKey),
-        },
+          onRemove: (blockKey: string) => removeBlock(blockKey)
+        }
       };
     }
     return null;

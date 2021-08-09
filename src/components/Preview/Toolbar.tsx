@@ -1,5 +1,7 @@
-import { useAuth } from "@/hooks/useAuth";
 import React from "react";
+
+import { useAuth } from "@/hooks/useAuth";
+
 import { download } from "./utils";
 
 type ToolbarProps = {
@@ -23,7 +25,8 @@ const Toolbar = ({ disabled, onClick }: ToolbarProps) => {
       type="button"
       disabled={disabled}
       className="btn btn-sm btn-secondary"
-      onClick={onClick}>
+      onClick={onClick}
+    >
       preview
     </button>
   );

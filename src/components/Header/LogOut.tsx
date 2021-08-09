@@ -1,5 +1,6 @@
-import { useAuth } from "@/hooks/useAuth";
 import React from "react";
+
+import { useAuth } from "@/hooks/useAuth";
 
 export const LogOut = () => {
   const auth = useAuth();
@@ -13,7 +14,8 @@ export const LogOut = () => {
       <button
         type="button"
         className="btn btn-outline-secondary"
-        onClick={logOut}>
+        onClick={logOut}
+      >
         LogOut
       </button>
     </div>

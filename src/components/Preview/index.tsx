@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { convertToRaw, ContentState } from "draft-js";
-import Toolbar from "./Toolbar";
+import { ContentState, convertToRaw } from "draft-js";
+import React, { useEffect, useState } from "react";
+
+import { useAuth } from "@/hooks/useAuth";
+
 import Loading from "../Loading";
+import Toolbar from "./Toolbar";
 import {
+  fetchBibEntry,
   parseRawContent,
-  previewPDF,
   postBib,
   postData,
-  fetchBibEntry,
+  previewPDF
 } from "./utils";
-import { useAuth } from "@/hooks/useAuth";
 
 type PreviewProps = {
   contentState: ContentState;
@@ -26,27 +28,27 @@ const Preview = ({ contentState }: PreviewProps) => {
   }>({
     biblatex: [],
     bib: {},
-    hasCite: "waiting...",
+    hasCite: "waiting..."
   });
   const [loading, setLoading] = useState({
     isLoading: false,
     style: "preview",
-    disabled: false,
+    disabled: false
   });
   const [message, setMessage] = useState({
     text: "",
-    style: "error-message",
+    style: "error-message"
   });
 
   function displayError(errorMessage: string): void {
     setMessage((prevState) => ({
       text: errorMessage,
-      style: `${prevState.style} error-message-active`,
+      style: `${prevState.style} error-message-active`
     }));
     setTimeout(() => {
       setMessage({
         ...message,
-        style: "tips-fade",
+        style: "tips-fade"
       });
     }, 3000);
   }
@@ -69,7 +71,7 @@ const Preview = ({ contentState }: PreviewProps) => {
       setCitations({
         biblatex: [],
         bib: {},
-        hasCite: "no",
+        hasCite: "no"
       });
     } else {
       const { userID, APIkey } = JSON.parse(
@@ -116,7 +118,7 @@ const Preview = ({ contentState }: PreviewProps) => {
               setCitations({
                 biblatex: tempBiblatex,
                 bib: tempBib,
-                hasCite: "yes",
+                hasCite: "yes"
               });
             }
           });
@@ -128,7 +130,7 @@ const Preview = ({ contentState }: PreviewProps) => {
     setLoading((prevState) => ({
       isLoading: true,
       style: `${prevState.style} loading`,
-      disabled: true,
+      disabled: true
     }));
     saveCitations();
   }
@@ -148,7 +150,7 @@ const Preview = ({ contentState }: PreviewProps) => {
         setLoading({
           isLoading: false,
           style: "preview",
-          disabled: false,
+          disabled: false
         });
         displayError("Nothing you wrote");
       }
@@ -171,12 +173,12 @@ const Preview = ({ contentState }: PreviewProps) => {
         setLoading({
           isLoading: false,
           style: "preview",
-          disabled: false,
+          disabled: false
         });
         setCitations({
           biblatex: [],
           bib: {},
-          hasCite: "waiting...",
+          hasCite: "waiting..."
         });
       });
     }

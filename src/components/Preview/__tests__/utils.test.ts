@@ -1,4 +1,5 @@
 import { RawDraftEntityRange, RawDraftInlineStyleRange } from "draft-js";
+
 import { mergeSortedRanges, RangesType } from "../utils";
 
 // TODO random data for Jest.
@@ -6,19 +7,19 @@ import { mergeSortedRanges, RangesType } from "../utils";
 
 const inline1: RawDraftInlineStyleRange[] = [
   { offset: 1, length: 1, style: "BOLD" },
-  { offset: 9, length: 2, style: "ITALIC" },
+  { offset: 9, length: 2, style: "ITALIC" }
 ];
 
 const entity1: RawDraftEntityRange[] = [
   { offset: 4, length: 1, key: 0 },
-  { offset: 12, length: 1, key: 1 },
+  { offset: 12, length: 1, key: 1 }
 ];
 
 const result1: RangesType[] = [
   { offset: 1, length: 1, style: "BOLD" },
   { offset: 4, length: 1, key: 0 },
   { offset: 9, length: 2, style: "ITALIC" },
-  { offset: 12, length: 1, key: 1 },
+  { offset: 12, length: 1, key: 1 }
 ];
 
 // Case 2: inlineRanges.length > EntityRanges.length
@@ -26,12 +27,12 @@ const result1: RangesType[] = [
 const inline2: RawDraftInlineStyleRange[] = [
   { offset: 1, length: 1, style: "BOLD" },
   { offset: 9, length: 2, style: "ITALIC" },
-  { offset: 10, length: 2, style: "ITALIC" },
+  { offset: 10, length: 2, style: "ITALIC" }
 ];
 
 const entity2: RawDraftEntityRange[] = [
   { offset: 4, length: 1, key: 0 },
-  { offset: 12, length: 1, key: 1 },
+  { offset: 12, length: 1, key: 1 }
 ];
 
 const result2: RangesType[] = [
@@ -39,20 +40,20 @@ const result2: RangesType[] = [
   { offset: 4, length: 1, key: 0 },
   { offset: 9, length: 2, style: "ITALIC" },
   { offset: 10, length: 2, style: "ITALIC" },
-  { offset: 12, length: 1, key: 1 },
+  { offset: 12, length: 1, key: 1 }
 ];
 
 // Case 3: inlineRanges.length < EntityRanges.length
 
 const inline3: RawDraftInlineStyleRange[] = [
   { offset: 1, length: 1, style: "BOLD" },
-  { offset: 9, length: 2, style: "ITALIC" },
+  { offset: 9, length: 2, style: "ITALIC" }
 ];
 
 const entity3: RawDraftEntityRange[] = [
   { offset: 4, length: 1, key: 0 },
   { offset: 12, length: 1, key: 1 },
-  { offset: 13, length: 1, key: 1 },
+  { offset: 13, length: 1, key: 1 }
 ];
 
 const result3: RangesType[] = [
@@ -60,7 +61,7 @@ const result3: RangesType[] = [
   { offset: 4, length: 1, key: 0 },
   { offset: 9, length: 2, style: "ITALIC" },
   { offset: 12, length: 1, key: 1 },
-  { offset: 13, length: 1, key: 1 },
+  { offset: 13, length: 1, key: 1 }
 ];
 
 describe("mergeSortedRanges", () => {
@@ -88,14 +89,14 @@ describe("mergeSortedRanges", () => {
  */
 const blocks = [
   { depth: 0, text: "hello", type: "unordered-list-item" },
-  { depth: 0, text: "world", type: "unordered-list-item" },
+  { depth: 0, text: "world", type: "unordered-list-item" }
 ];
 
 const blocks1 = [
   { depth: 0, text: "hello", type: "unordered-list-item" },
   { depth: 1, text: "Mai", type: "unordered-list-item" },
   { depth: 1, text: "Mai", type: "unordered-list-item" },
-  { depth: 0, text: "world", type: "unordered-list-item" },
+  { depth: 0, text: "world", type: "unordered-list-item" }
 ];
 
 const blocks2 = [{ depth: 0, text: "hello", type: "unordered-list-item" }];
@@ -103,13 +104,13 @@ const blocks2 = [{ depth: 0, text: "hello", type: "unordered-list-item" }];
 const blocks3 = [
   { depth: 0, text: "hello", type: "unordered-list-item" },
   { depth: 1, text: "Mai", type: "unordered-list-item" },
-  { depth: 0, text: "world", type: "unordered-list-item" },
+  { depth: 0, text: "world", type: "unordered-list-item" }
 ];
 
 const blocks4 = [
   { depth: 0, text: "hello", type: "unordered-list-item" },
   { depth: 1, text: "Mai", type: "unordered-list-item" },
-  { depth: 2, text: "world", type: "unordered-list-item" },
+  { depth: 2, text: "world", type: "unordered-list-item" }
 ];
 
 // TODO
@@ -117,53 +118,48 @@ const blocks5 = [
   { depth: 0, text: "hello", type: "unordered-list-item" },
   { depth: 1, text: "world", type: "unordered-list-item" },
   { depth: 2, text: "Mai", type: "unordered-list-item" },
-  { depth: 0, text: "hello", type: "unordered-list-item" },
+  { depth: 0, text: "hello", type: "unordered-list-item" }
 ];
 
-const single5 =
-  "\\begin{itemize}" +
-  "\\item hello" +
-  "\\begin{itemize}" +
-  "\\item world" +
-  "\\begin{itemize}" +
-  "\\item Mai" +
-  "\\end{itemize}" +
-  "\\end{itemize}" +
-  "\\begin{itemize}" +
-  "\\item hello" +
-  "\\end{itemize}";
+const single5 = "\\begin{itemize}"
+  + "\\item hello"
+  + "\\begin{itemize}"
+  + "\\item world"
+  + "\\begin{itemize}"
+  + "\\item Mai"
+  + "\\end{itemize}"
+  + "\\end{itemize}"
+  + "\\begin{itemize}"
+  + "\\item hello"
+  + "\\end{itemize}";
 
-const result =
-  "\\begin{itemize}" + "\\item hello" + "\\item world" + "\\end{itemize}";
-const single =
-  "\\begin{itemize}" +
-  "\\item hello" +
-  "\\begin{itemize}" +
-  "\\item Mai" +
-  "\\item Mai" +
-  "\\end{itemize}" +
-  "\\item world" +
-  "\\end{itemize}";
+const result = "\\begin{itemize}" + "\\item hello" + "\\item world" + "\\end{itemize}";
+const single = "\\begin{itemize}"
+  + "\\item hello"
+  + "\\begin{itemize}"
+  + "\\item Mai"
+  + "\\item Mai"
+  + "\\end{itemize}"
+  + "\\item world"
+  + "\\end{itemize}";
 const single1 = "\\begin{itemize}" + "\\item hello" + "\\end{itemize}";
-const single2 =
-  "\\begin{itemize}" +
-  "\\item hello" +
-  "\\begin{itemize}" +
-  "\\item Mai" +
-  "\\end{itemize}" +
-  "\\item world" +
-  "\\end{itemize}";
+const single2 = "\\begin{itemize}"
+  + "\\item hello"
+  + "\\begin{itemize}"
+  + "\\item Mai"
+  + "\\end{itemize}"
+  + "\\item world"
+  + "\\end{itemize}";
 
-const single3 =
-  "\\begin{itemize}" +
-  "\\item hello" +
-  "\\begin{itemize}" +
-  "\\item Mai" +
-  "\\begin{itemize}" +
-  "\\item world" +
-  "\\end{itemize}" +
-  "\\end{itemize}" +
-  "\\end{itemize}";
+const single3 = "\\begin{itemize}"
+  + "\\item hello"
+  + "\\begin{itemize}"
+  + "\\item Mai"
+  + "\\begin{itemize}"
+  + "\\item world"
+  + "\\end{itemize}"
+  + "\\end{itemize}"
+  + "\\end{itemize}";
 
 function parseItems(
   items: { type: string; text: string; depth: number }[]

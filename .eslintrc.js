@@ -17,25 +17,28 @@ module.exports = {
     project: "./tsconfig.json",
     sourceType: "module",
   },
-  plugins: ["react", "react-hooks", "@typescript-eslint"],
+  plugins: ["react", "react-hooks", "@typescript-eslint", "simple-import-sort"],
   rules: {
     "react-hooks/rules-of-hooks": "error",
     // It warns when dependencies are specified incorrectly and suggests a fix.
     "react-hooks/exhaustive-deps": "warn",
-    "react/jsx-indent-props": [2, "tab"],
+    "react/jsx-indent-props": [2, 2],
     "react/prop-types": [0],
     "linebreak-style": ["error", "unix"],
     // semi
     semi: "off",
-    "@typescript-eslint/semi": ["error", "never"],
+    "@typescript-eslint/semi": ["error", "always"],
+    // trailing comma
+    "comma-dangle": "off",
+    "@typescript-eslint/comma-dangle": ["error", "never"],
     // indent
     indent: "off",
-    "@typescript-eslint/indent": ["error", "tab"],
-    "react/jsx-indent": ["error", "tab"],
+    "@typescript-eslint/indent": ["error", 2],
+    "react/jsx-indent": ["error", 2],
     "no-tabs": "off",
     // quote
-    quote: "double",
-    "@typescript-eslint/quotes": ["error", "single"],
+    quote: "off",
+    "@typescript-eslint/quotes": ["error", "double"],
     // no-shadow
     "no-shadow": "off",
     // except test files
@@ -51,5 +54,7 @@ module.exports = {
         ],
       },
     ],
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
   },
 };

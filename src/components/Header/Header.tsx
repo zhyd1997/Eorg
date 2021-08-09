@@ -1,8 +1,10 @@
 import React from "react";
+
+import { useAuth } from "@/hooks/useAuth";
+
 import { LogIn } from "./LogIn";
 import { LogOut } from "./LogOut";
 import { SignUp } from "./SignUp";
-import { useAuth } from "@/hooks/useAuth";
 
 export const Header = () => {
   const auth = useAuth();

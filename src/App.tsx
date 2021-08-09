@@ -1,11 +1,15 @@
-import React from "react";
 import "./App.css";
+
+import React from "react";
 import { isMobile } from "react-device-detect";
+
 import Main from "./components/Main";
 
 const MobileTips = () => (
   <p>
-    Sorry, but&nbsp;<b>Eorg</b>&nbsp;haven&#39;t supported on mobile phone, and
+    Sorry, but&nbsp;
+    <b>Eorg</b>
+    &nbsp;haven&#39;t supported on mobile phone, and
     open it on PC please.
   </p>
 );

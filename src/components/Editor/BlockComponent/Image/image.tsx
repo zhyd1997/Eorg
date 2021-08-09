@@ -1,4 +1,5 @@
 import React from "react";
+
 import { baseUrl } from "@/baseUrl";
 
 type ImageProps = {
@@ -23,9 +24,9 @@ const Image = ({ id, update, save }: ImageProps) => {
         // There is no need to assign a header:
         // 'Content-Type': 'multipart/form-data',
         // The browser substitutes its own.
-        Authorization: TOKEN,
+        Authorization: TOKEN
       },
-      body: formData,
+      body: formData
     }).then(() => update(image.name));
   }
 
@@ -57,7 +58,8 @@ const Image = ({ id, update, save }: ImageProps) => {
       <button
         type="button"
         className="TeXEditor-removeButton"
-        onClick={handleClick}>
+        onClick={handleClick}
+      >
         Cancel
       </button>
     </form>

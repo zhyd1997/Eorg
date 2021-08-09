@@ -1,6 +1,7 @@
-import React, { useRef } from "react";
 import { Modal } from "bootstrap";
+import React, { useRef } from "react";
 import { useForm } from "react-hook-form";
+
 import { useAuth } from "@/hooks/useAuth";
 
 export interface LogInReqBody {
@@ -16,7 +17,7 @@ export const LogIn = () => {
     register,
     formState: { errors },
     handleSubmit,
-    clearErrors,
+    clearErrors
   } = useForm<LogInReqBody>();
 
   function showLogInModal() {
@@ -46,7 +47,8 @@ export const LogIn = () => {
       <button
         type="button"
         className="btn btn-outline-secondary"
-        onClick={showLogInModal}>
+        onClick={showLogInModal}
+      >
         LogIn
       </button>
       <div className="modal fade" tabIndex={-1} ref={logInModalRef}>
@@ -59,7 +61,8 @@ export const LogIn = () => {
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
-                onClick={hideLogInModal}></button>
+                onClick={hideLogInModal}
+              />
             </div>
             <div className="modal-body">
               <form>
@@ -85,7 +88,8 @@ export const LogIn = () => {
               <button
                 type="button"
                 className="btn btn-primary"
-                onClick={handleSubmit(handleLogIn)}>
+                onClick={handleSubmit(handleLogIn)}
+              >
                 LogIn
               </button>
             </div>

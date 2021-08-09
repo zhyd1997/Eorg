@@ -11,7 +11,7 @@ export function removeCustomBlock(
     anchorKey: blockKey,
     anchorOffset: 0,
     focusKey: blockKey,
-    focusOffset: block.getLength(),
+    focusOffset: block.getLength()
   });
 
   const withoutTeX = Modifier.removeRange(content, targetRange, "backward");

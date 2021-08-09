@@ -1,8 +1,9 @@
+import React, { createContext, useContext, useState } from "react";
+
 import { baseUrl } from "@/baseUrl";
 import { LogInReqBody } from "@/components/Header/LogIn";
 import { SignUpReqBody } from "@/components/Header/SignUp";
 import { StoreType } from "@/components/Preview/utils";
-import React, { createContext, useContext, useState } from "react";
 
 interface ProvideAuthInterface {
   user: string | null;
@@ -27,7 +28,7 @@ function useProvideAuth() {
     store !== null
   );
   const [token, setToken] = useState<StoreType>({
-    token: store ? store.token : "",
+    token: store ? store.token : ""
   });
   const [response, setResponse] = useState<string>("");
   const [tips, setTips] = useState<string>("tips");
@@ -36,9 +37,9 @@ function useProvideAuth() {
     fetch(`${baseUrl}/api/v1/auth/login`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify(reqBody),
+      body: JSON.stringify(reqBody)
     }).then((res) => {
       res.json().then((result) => {
         if (result.success === true) {
@@ -46,7 +47,7 @@ function useProvideAuth() {
             "login",
             JSON.stringify({
               token: result.token,
-              username: result.username,
+              username: result.username
             })
           );
           setResponse("LogIn successfully!");
@@ -71,9 +72,9 @@ function useProvideAuth() {
     fetch(`${baseUrl}/api/v1/auth/register`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify(reqBody),
+      body: JSON.stringify(reqBody)
     }).then((res) => {
       res.json().then((result) => {
         if (result.success === true) {
@@ -94,8 +95,8 @@ function useProvideAuth() {
     fetch(`${baseUrl}/api/v1/auth/logout`, {
       method: "GET",
       headers: {
-        Authorization: TOKEN,
-      },
+        Authorization: TOKEN
+      }
     }).then(() => {
       localStorage.removeItem("login");
       setResponse("Logout Successfully!");
@@ -115,13 +116,11 @@ function useProvideAuth() {
     tips,
     signin,
     signup,
-    signout,
+    signout
   };
 }
 
-export const useAuth = () => {
-  return useContext(authContext);
-};
+export const useAuth = () => useContext(authContext);
 
 export function ProvideAuth({ children }: any) {
   const auth = useProvideAuth();

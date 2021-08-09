@@ -1,8 +1,10 @@
-import React, { useState, useRef, useEffect } from "react";
 import { ContentState } from "draft-js";
+import React, { useEffect, useRef, useState } from "react";
+
+import { baseUrl } from "@/baseUrl";
+
 import Block from "../blockTypes";
 import Image from "./image";
-import { baseUrl } from "@/baseUrl";
 
 const ImageBlock = ({ block, contentState, blockProps }: Block) => {
   function getValue() {
@@ -54,7 +56,7 @@ const ImageBlock = ({ block, contentState, blockProps }: Block) => {
     }
     const newContentState = contentState.mergeEntityData(entityKey, {
       path,
-      caption: currentCaption,
+      caption: currentCaption
     });
 
     setEditCaption(false);
@@ -73,7 +75,7 @@ const ImageBlock = ({ block, contentState, blockProps }: Block) => {
     const entityKey = block.getEntityAt(0);
     const newContentState = contentState.mergeEntityData(entityKey, {
       path: currentPath,
-      caption,
+      caption
     });
     setEditImage(false);
     setClassName("img-initial");
@@ -104,8 +106,8 @@ const ImageBlock = ({ block, contentState, blockProps }: Block) => {
       method: "GET",
       headers: {
         "Content-Type": "image/jpeg",
-        Authorization: TOKEN,
-      },
+        Authorization: TOKEN
+      }
     })
       .then((res) => res.blob())
       .then((data) => {
@@ -147,8 +149,8 @@ const ImageBlock = ({ block, contentState, blockProps }: Block) => {
   }
 
   return (
-    // eslint-disable-next-line max-len
-    // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions
+  // eslint-disable-next-line max-len
+  // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions
     <span className={spanClassName} onClick={handleClick}>
       <img src={src} alt="Inuyasha" className={className} />
       {editImage ? (
