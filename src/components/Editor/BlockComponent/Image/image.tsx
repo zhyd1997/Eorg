@@ -1,24 +1,29 @@
 import React from "react";
+import { useForm } from "react-hook-form";
 
 import { baseUrl } from "@/baseUrl";
+import { useAuth } from "@/hooks/useAuth";
 
 type ImageProps = {
-  id: string;
+  blockKey: string;
   update: (name: string) => void;
   save: (name?: string) => void;
 };
 
-const Image = ({ id, update, save }: ImageProps) => {
+const Image = ({
+  blockKey, update, save
+}: ImageProps) => {
+  const { register, handleSubmit } = useForm();
   let image: File;
-  const store = JSON.parse(localStorage.getItem("login")!);
+  const auth = useAuth();
   // @ts-ignore
-  function handleSubmit(e) {
+  function onSubmit(data, e) {
     e.preventDefault();
-    const TOKEN = `Bearer ${store.token}`;
+    const TOKEN = `Bearer ${auth.token.token}`;
     const formData = new FormData();
-    formData.append("test", image);
-    formData.append("id", id);
-    fetch(`${baseUrl}/figure`, {
+    formData.append("test", data.test[0]);
+    formData.append("blockKey", blockKey);
+    fetch(`${baseUrl}/api/v1/figures/upload`, {
       method: "POST",
       headers: {
         // There is no need to assign a header:
@@ -30,25 +35,19 @@ const Image = ({ id, update, save }: ImageProps) => {
     }).then(() => update(image.name));
   }
 
-  // @ts-ignore
-  function handleChange(e) {
-    [image] = e.target.files;
-  }
-
   function handleClick() {
     save(image.name);
   }
 
   return (
-    <form className="img-form" onSubmit={handleSubmit}>
+    <form className="img-form" onSubmit={handleSubmit(onSubmit)}>
       <label htmlFor="fileElem">
         <input
           type="file"
           id="fileElem"
           accept="image/png, image/jpeg"
           className="visually-hidden"
-          name="test"
-          onChange={handleChange}
+          {...register("test")}
         />
       </label>
       <br />
