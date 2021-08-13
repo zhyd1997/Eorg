@@ -1,8 +1,9 @@
 import React from "react";
+
 import Block from "./blockTypes";
-import TeXBlock from "./TeX";
 import ImageBlock from "./Image";
 import TableBlock from "./Table";
+import TeXBlock from "./TeX";
 
 const BlockComponent = ({ contentState, block, blockProps }: Block) => {
   const entity = contentState.getEntity(block.getEntityAt(0));

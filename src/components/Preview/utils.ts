@@ -2,18 +2,19 @@ import {
   ContentState,
   convertToRaw,
   RawDraftEntityRange,
-  RawDraftInlineStyleRange,
+  RawDraftInlineStyleRange
 } from "draft-js";
+
 import { baseUrl, zoteroUrl } from "@/baseUrl";
 
-interface StoreType {
+export interface StoreType {
   token: string;
 }
 
 export type RangesType = Partial<
-  Pick<RawDraftInlineStyleRange & RawDraftEntityRange, "key" | "style">
+Pick<RawDraftInlineStyleRange & RawDraftEntityRange, "key" | "style">
 > &
-  Omit<RawDraftInlineStyleRange & RawDraftEntityRange, "key" | "style">;
+Omit<RawDraftInlineStyleRange & RawDraftEntityRange, "key" | "style">;
 
 const texMap = {
   "header-one": "\\section",
@@ -23,7 +24,7 @@ const texMap = {
   BOLD: "\\textbf",
   ITALIC: "\\textit",
   UNDERLINE: "\\underline",
-  CODE: "\\texttt",
+  CODE: "\\texttt"
 };
 
 /**
@@ -81,7 +82,9 @@ export function parseRawContent(
    */
   blocks.forEach((row) => {
     // by row
-    const { type, text, inlineStyleRanges, entityRanges } = row;
+    const {
+      type, text, inlineStyleRanges, entityRanges
+    } = row;
     let tex = "";
 
     let ranges: RangesType[];
@@ -170,7 +173,7 @@ export function parseRawContent(
       case "unordered-list-item":
         // TODO
         break;
-      // block style, except for 'atomic', 'code-block', 'list-item'
+        // block style, except for 'atomic', 'code-block', 'list-item'
       default:
         // @ts-ignore
         tex += `${texMap[type]}{${text}}`;
@@ -187,8 +190,8 @@ export function previewPDF(store: StoreType): void {
     method: "GET",
     headers: {
       "Content-Type": "application/pdf",
-      Authorization: TOKEN,
-    },
+      Authorization: TOKEN
+    }
   }).then((res) => {
     res.blob().then((data) => {
       const fileURL = URL.createObjectURL(data);
@@ -206,9 +209,9 @@ export function postData(content: string[], store: StoreType) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: TOKEN,
+      Authorization: TOKEN
     },
-    body: JSON.stringify(content),
+    body: JSON.stringify(content)
   }).then((res) => res.json());
 }
 
@@ -218,9 +221,9 @@ export function postBib(bib: {}, store: StoreType) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: TOKEN,
+      Authorization: TOKEN
     },
-    body: JSON.stringify(bib),
+    body: JSON.stringify(bib)
   }).then((res) => res.json());
 }
 
@@ -229,8 +232,8 @@ export function fetchBibEntry(key: string, userID: string, APIkey: string) {
     method: "GET",
     headers: {
       "Zotero-API-Version": "3",
-      "Zotero-API-Key": APIkey,
-    },
+      "Zotero-API-Key": APIkey
+    }
   }).then((res) => res.text());
 }
 
@@ -244,8 +247,8 @@ export function download(
     method: "GET",
     headers: {
       "Content-Type": `${contentType}`,
-      Authorization: TOKEN,
-    },
+      Authorization: TOKEN
+    }
   }).then((res) => {
     res.blob().then((data) => {
       const fileURL = URL.createObjectURL(data);

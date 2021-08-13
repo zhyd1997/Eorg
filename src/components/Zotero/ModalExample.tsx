@@ -1,10 +1,12 @@
-import React, { useState, useRef } from "react";
 import { Modal } from "bootstrap";
+import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import Loading from "../Loading";
-import TableExample from "./TableExample";
+
 import { zoteroUrl } from "@/baseUrl";
 import CiteIcon from "@/icons/citation.svg";
+
+import Loading from "../Loading";
+import TableExample from "./TableExample";
 
 interface ZoteroAuthReqBody {
   userID: string;
@@ -24,7 +26,7 @@ const ModalExample = ({ buttonLabel, insertCite }: ModalExampleProps) => {
   const [fetchText, setFetchText] = useState([]);
   const [feedback, setFeedback] = useState({
     isValid: true,
-    text: "",
+    text: ""
   });
 
   const { register, handleSubmit } = useForm<ZoteroAuthReqBody>();
@@ -68,8 +70,8 @@ const ModalExample = ({ buttonLabel, insertCite }: ModalExampleProps) => {
       method: "GET",
       headers: {
         "Zotero-API-Version": "3",
-        "Zotero-API-Key": APIkey,
-      },
+        "Zotero-API-Key": APIkey
+      }
     }).then((res) => {
       res.json().then((data) => {
         /**
@@ -129,7 +131,7 @@ const ModalExample = ({ buttonLabel, insertCite }: ModalExampleProps) => {
     setIsLoading(loading);
     setFeedback({
       isValid: valid,
-      text: detail,
+      text: detail
     });
   }
 
@@ -143,8 +145,8 @@ const ModalExample = ({ buttonLabel, insertCite }: ModalExampleProps) => {
         method: "GET",
         headers: {
           "Zotero-API-Version": "3",
-          "Zotero-API-Key": APIkey,
-        },
+          "Zotero-API-Key": APIkey
+        }
       }).then((res) => {
         if (res.status === 200) {
           localStorage.setItem(
@@ -188,7 +190,8 @@ const ModalExample = ({ buttonLabel, insertCite }: ModalExampleProps) => {
       <button
         type="button"
         onClick={showAuthModal}
-        className="math RichEditor-styleButton">
+        className="math RichEditor-styleButton"
+      >
         <CiteIcon />
       </button>
       <div className="modal fade" tabIndex={-1} ref={authModalRef}>
@@ -201,7 +204,8 @@ const ModalExample = ({ buttonLabel, insertCite }: ModalExampleProps) => {
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
-                onClick={hideAuthModal}></button>
+                onClick={hideAuthModal}
+              />
             </div>
             <div className="modal-body">
               {isLoading ? <Loading isLoading={isLoading} /> : null}
@@ -236,7 +240,8 @@ const ModalExample = ({ buttonLabel, insertCite }: ModalExampleProps) => {
                     <a
                       href="https://www.zotero.org/settings/keys/new"
                       rel="noopener noreferrer"
-                      target="_blank">
+                      target="_blank"
+                    >
                       your Zotero account settings
                     </a>
                     .
@@ -249,14 +254,16 @@ const ModalExample = ({ buttonLabel, insertCite }: ModalExampleProps) => {
                 <button
                   type="button"
                   className="btn btn-dark"
-                  onClick={createCitations}>
+                  onClick={createCitations}
+                >
                   Restore User
                 </button>
               ) : null}
               <button
                 type="button"
                 className="btn btn-primary"
-                onClick={handleSubmit(verifyAuth)}>
+                onClick={handleSubmit(verifyAuth)}
+              >
                 Next
               </button>
             </div>
@@ -273,7 +280,8 @@ const ModalExample = ({ buttonLabel, insertCite }: ModalExampleProps) => {
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
-                onClick={hideMainModal}></button>
+                onClick={hideMainModal}
+              />
             </div>
             <div className="modal-body">
               {isLoading ? (
@@ -287,13 +295,15 @@ const ModalExample = ({ buttonLabel, insertCite }: ModalExampleProps) => {
                 type="button"
                 className="btn btn-primary"
                 disabled={!isClick}
-                onClick={handleClick}>
+                onClick={handleClick}
+              >
                 Insert
               </button>
               <button
                 type="button"
                 className="btn btn-secondary"
-                onClick={hideMainModal}>
+                onClick={hideMainModal}
+              >
                 Cancel
               </button>
             </div>

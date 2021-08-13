@@ -1,7 +1,9 @@
-import React, { useState, useRef } from "react";
+import React, { useRef, useState } from "react";
 
 const TableOutput = (props: any) => {
-  const { row, column, caption, cell, block, blockProps } = props;
+  const {
+    row, column, caption, cell, block, blockProps
+  } = props;
   const container = useRef(null);
 
   /**
@@ -64,7 +66,8 @@ const TableOutput = (props: any) => {
           <td
             key={i + j} // TODO key-2
             onClick={() => setCoordinate([i, j])}
-            id={`Tooltip-${i + j}`}>
+            id={`Tooltip-${i + j}`}
+          >
             {cell[i][j]}
           </td>
         );
@@ -74,13 +77,14 @@ const TableOutput = (props: any) => {
   }
 
   return (
-    // eslint-disable-next-line max-len
-    // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-noninteractive-element-interactions
+  // eslint-disable-next-line max-len
+  // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-noninteractive-element-interactions
     <table
       className="hoverTable"
       onClick={handleClick}
       ref={container}
-      onBlur={handleBlur}>
+      onBlur={handleBlur}
+    >
       <caption>{caption}</caption>
       {rowsTh}
       <tbody>{rows}</tbody>

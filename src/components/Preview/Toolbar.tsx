@@ -1,22 +1,23 @@
 import React from "react";
+
+import { useAuth } from "@/hooks/useAuth";
+
 import { download } from "./utils";
 
 type ToolbarProps = {
-  login: boolean;
-  store: {
-    token: string;
-  };
   disabled: boolean;
   onClick: () => void;
 };
 
-const Toolbar = ({ login, store, disabled, onClick }: ToolbarProps) => {
+const Toolbar = ({ disabled, onClick }: ToolbarProps) => {
+  const auth = useAuth();
+
   function handleZipDownload(): void {
-    download(store, "application/zip", "zip");
+    download(auth.token, "application/zip", "zip");
   }
 
   function handlePDFDownload(): void {
-    download(store, "application/pdf", "pdf");
+    download(auth.token, "application/pdf", "pdf");
   }
 
   const preview = (
@@ -24,10 +25,12 @@ const Toolbar = ({ login, store, disabled, onClick }: ToolbarProps) => {
       type="button"
       disabled={disabled}
       className="btn btn-sm btn-secondary"
-      onClick={onClick}>
+      onClick={onClick}
+    >
       preview
     </button>
   );
+
   const downloadButtons = (
     <span style={{ position: "absolute", margin: 0, left: "100px" }}>
       <i
@@ -55,7 +58,7 @@ const Toolbar = ({ login, store, disabled, onClick }: ToolbarProps) => {
   return (
     <div className="download">
       {preview}
-      {!login ? null : downloadButtons}
+      {!auth.isAuthenticated ? null : downloadButtons}
     </div>
   );
 };

@@ -1,24 +1,25 @@
-import React, { useState, useEffect } from "react";
-import { convertToRaw, ContentState } from "draft-js";
-import Toolbar from "./Toolbar";
+import { ContentState, convertToRaw } from "draft-js";
+import React, { useEffect, useState } from "react";
+
+import { useAuth } from "@/hooks/useAuth";
+
 import Loading from "../Loading";
+import Toolbar from "./Toolbar";
 import {
+  fetchBibEntry,
   parseRawContent,
-  previewPDF,
   postBib,
   postData,
-  fetchBibEntry,
+  previewPDF
 } from "./utils";
 
 type PreviewProps = {
   contentState: ContentState;
-  store: {
-    token: string;
-  };
-  login: boolean;
 };
 
-const Preview = ({ contentState, store, login }: PreviewProps) => {
+const Preview = ({ contentState }: PreviewProps) => {
+  const auth = useAuth();
+
   const [content, setContent] = useState<string[]>([]);
   const [citations, setCitations] = useState<{
     biblatex: string[];
@@ -27,27 +28,27 @@ const Preview = ({ contentState, store, login }: PreviewProps) => {
   }>({
     biblatex: [],
     bib: {},
-    hasCite: "waiting...",
+    hasCite: "waiting..."
   });
   const [loading, setLoading] = useState({
     isLoading: false,
     style: "preview",
-    disabled: false,
+    disabled: false
   });
   const [message, setMessage] = useState({
     text: "",
-    style: "error-message",
+    style: "error-message"
   });
 
   function displayError(errorMessage: string): void {
     setMessage((prevState) => ({
       text: errorMessage,
-      style: `${prevState.style} error-message-active`,
+      style: `${prevState.style} error-message-active`
     }));
     setTimeout(() => {
       setMessage({
         ...message,
-        style: "tips-fade",
+        style: "tips-fade"
       });
     }, 3000);
   }
@@ -70,7 +71,7 @@ const Preview = ({ contentState, store, login }: PreviewProps) => {
       setCitations({
         biblatex: [],
         bib: {},
-        hasCite: "no",
+        hasCite: "no"
       });
     } else {
       const { userID, APIkey } = JSON.parse(
@@ -117,7 +118,7 @@ const Preview = ({ contentState, store, login }: PreviewProps) => {
               setCitations({
                 biblatex: tempBiblatex,
                 bib: tempBib,
-                hasCite: "yes",
+                hasCite: "yes"
               });
             }
           });
@@ -129,13 +130,13 @@ const Preview = ({ contentState, store, login }: PreviewProps) => {
     setLoading((prevState) => ({
       isLoading: true,
       style: `${prevState.style} loading`,
-      disabled: true,
+      disabled: true
     }));
     saveCitations();
   }
 
   function preview(): void {
-    if (login) {
+    if (auth.isAuthenticated) {
       /**
        * TODO load pdf
        *  if and only if
@@ -149,7 +150,7 @@ const Preview = ({ contentState, store, login }: PreviewProps) => {
         setLoading({
           isLoading: false,
           style: "preview",
-          disabled: false,
+          disabled: false
         });
         displayError("Nothing you wrote");
       }
@@ -160,28 +161,28 @@ const Preview = ({ contentState, store, login }: PreviewProps) => {
 
   useEffect(() => {
     // do not postData when logout.
-    if (content.length !== 0 && store.token.length !== 0) {
+    if (content.length !== 0 && auth.isAuthenticated) {
       // disabled initial render
-      postData(content, store).then((data) => {
+      postData(content, auth.token).then((data) => {
         const { status, body } = data;
         if (status === "success") {
-          previewPDF(store);
+          previewPDF(auth.token);
         } else {
           displayError(body);
         }
         setLoading({
           isLoading: false,
           style: "preview",
-          disabled: false,
+          disabled: false
         });
         setCitations({
           biblatex: [],
           bib: {},
-          hasCite: "waiting...",
+          hasCite: "waiting..."
         });
       });
     }
-  }, [content, store]);
+  }, [content, auth.isAuthenticated]);
 
   useEffect(() => {
     const { biblatex, bib, hasCite } = citations;
@@ -190,21 +191,16 @@ const Preview = ({ contentState, store, login }: PreviewProps) => {
       setContent(allTeX);
     }
     if (biblatex.length !== 0) {
-      postBib(bib, store);
+      postBib(bib, auth.token);
     }
-  }, [citations, store, contentState]);
+  }, [citations, auth.token, contentState]);
 
   const ErrorMessage = () => <p className={message.style}>{message.text}</p>;
 
   return (
     <div className={loading.style}>
       <ErrorMessage />
-      <Toolbar
-        login={login}
-        store={store}
-        disabled={loading.disabled}
-        onClick={preview}
-      />
+      <Toolbar disabled={loading.disabled} onClick={preview} />
       <iframe id="pdf" title="hello" />
       <Loading isLoading={loading.isLoading} />
     </div>

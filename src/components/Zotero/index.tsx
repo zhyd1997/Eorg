@@ -1,12 +1,12 @@
-import React from "react";
 import { CharacterMetadata, ContentState } from "draft-js";
+import React from "react";
 
 const styles = {
   immutable: {
     backgroundColor: "rgba(0, 0, 0, 0.2)",
     padding: "2px 0",
-    cursor: "pointer",
-  },
+    cursor: "pointer"
+  }
 };
 
 export function getEntityStrategy(mutability: string) {
@@ -43,7 +43,7 @@ export const TokenSpan: React.FC<TokenSpanProps> = ({
   contentState,
   entityKey,
   offsetKey,
-  children,
+  children
 }) => {
   const style = getDecoratedStyle(
     contentState.getEntity(entityKey).getMutability()
@@ -59,7 +59,8 @@ export const TokenSpan: React.FC<TokenSpanProps> = ({
           // TODO
           // @ts-ignore
           style={style}
-          id={`Popover-${entityKey}`}>
+          id={`Popover-${entityKey}`}
+        >
           {children}
         </cite>
       </sup>

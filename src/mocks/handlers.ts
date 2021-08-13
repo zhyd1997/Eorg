@@ -1,31 +1,22 @@
 import { rest } from "msw";
+
 import { baseUrl } from "@/baseUrl";
-import { LogInReqBody } from "@/components/Header";
+import { LogInReqBody } from "@/components/Header/LogIn";
 
 export const handlers = [
-  rest.post(`${baseUrl}/users/signup`, (req, res, ctx) => {
-    return res(
-      ctx.status(201),
-      ctx.json({ success: true, status: "SignUp successfully!" })
-    );
-  }),
+  rest.post(`${baseUrl}/api/v1/auth/register`, (req, res, ctx) => res(ctx.status(201), ctx.json({ success: true, token: "test" }))),
 
-  rest.post<LogInReqBody, any>(`${baseUrl}/users/login`, (req, res, ctx) => {
-    const { username } = req.body;
-
-    return res(
+  rest.post<LogInReqBody, any>(
+    `${baseUrl}/api/v1/auth/login`,
+    (req, res, ctx) => res(
       ctx.status(200),
       ctx.json({
         success: true,
-        status: "LogIn successfully!",
-        login: true,
         token: "test",
-        username,
+        username: "test"
       })
-    );
-  }),
+    )
+  ),
 
-  rest.get(`${baseUrl}/users/logout`, (req, res, ctx) => {
-    return res(ctx.status(200));
-  }),
+  rest.get(`${baseUrl}/api/v1/auth/logout`, (req, res, ctx) => res(ctx.status(200)))
 ];

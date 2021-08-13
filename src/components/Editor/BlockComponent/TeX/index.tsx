@@ -1,6 +1,7 @@
-import katex from "katex";
-import React, { useState, useRef, useEffect } from "react";
 import { ContentState } from "draft-js";
+import katex from "katex";
+import React, { useEffect, useRef, useState } from "react";
+
 import Block from "../blockTypes";
 
 type KaTeXOutputProps = {
@@ -83,7 +84,7 @@ const TeXBlock = ({ block, contentState, blockProps }: Block) => {
   function save(): void {
     const entityKey = block.getEntityAt(0);
     const newContentState = contentState.mergeEntityData(entityKey, {
-      content: texValue,
+      content: texValue
     });
     setInvalidTeX(false);
     setEditMode(false);
@@ -127,13 +128,15 @@ const TeXBlock = ({ block, contentState, blockProps }: Block) => {
             className={buttonClass}
             disabled={invalidTeX}
             onClick={save}
-            type="button">
+            type="button"
+          >
             {invalidTeX ? "Invalid TeX" : "Done"}
           </button>
           <button
             className="TeXEditor-removeButton"
             onClick={remove}
-            type="button">
+            type="button"
+          >
             Remove
           </button>
         </div>

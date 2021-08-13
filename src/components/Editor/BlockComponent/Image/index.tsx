@@ -1,8 +1,11 @@
-import React, { useState, useRef, useEffect } from "react";
 import { ContentState } from "draft-js";
+import React, { useEffect, useRef, useState } from "react";
+
+import { baseUrl } from "@/baseUrl";
+import { useAuth } from "@/hooks/useAuth";
+
 import Block from "../blockTypes";
 import Image from "./image";
-import { baseUrl } from "@/baseUrl";
 
 const ImageBlock = ({ block, contentState, blockProps }: Block) => {
   function getValue() {
@@ -19,7 +22,7 @@ const ImageBlock = ({ block, contentState, blockProps }: Block) => {
   const textareaRef = useRef(null);
 
   const blockKey = block.getKey();
-  const store = JSON.parse(localStorage.getItem("login")!);
+  const auth = useAuth();
 
   // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'value' implicitly has an 'any' type.
   function usePrevious(value) {
@@ -54,7 +57,7 @@ const ImageBlock = ({ block, contentState, blockProps }: Block) => {
     }
     const newContentState = contentState.mergeEntityData(entityKey, {
       path,
-      caption: currentCaption,
+      caption: currentCaption
     });
 
     setEditCaption(false);
@@ -73,7 +76,7 @@ const ImageBlock = ({ block, contentState, blockProps }: Block) => {
     const entityKey = block.getEntityAt(0);
     const newContentState = contentState.mergeEntityData(entityKey, {
       path: currentPath,
-      caption,
+      caption
     });
     setEditImage(false);
     setClassName("img-initial");
@@ -83,7 +86,7 @@ const ImageBlock = ({ block, contentState, blockProps }: Block) => {
 
   // @ts-ignore
   function handleClick(e) {
-    if (store === null) return;
+    if (auth === null) return;
 
     const targetTag = ["IMG", "FIGCAPTION"];
     const { tagName } = e.target;
@@ -99,13 +102,13 @@ const ImageBlock = ({ block, contentState, blockProps }: Block) => {
   }
 
   function update(filename: string) {
-    const TOKEN = `Bearer ${store.token}`;
-    fetch(`${baseUrl}/figure/${blockKey}`, {
+    const TOKEN = `Bearer ${auth.token.token}`;
+    fetch(`${baseUrl}/api/v1/figures/${blockKey}`, {
       method: "GET",
       headers: {
         "Content-Type": "image/jpeg",
-        Authorization: TOKEN,
-      },
+        Authorization: TOKEN
+      }
     })
       .then((res) => res.blob())
       .then((data) => {
@@ -147,12 +150,12 @@ const ImageBlock = ({ block, contentState, blockProps }: Block) => {
   }
 
   return (
-    // eslint-disable-next-line max-len
-    // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions
+  // eslint-disable-next-line max-len
+  // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions
     <span className={spanClassName} onClick={handleClick}>
-      <img src={src} alt="Inuyasha" className={className} />
+      <img src={src} alt="defaultImage" className={className} />
       {editImage ? (
-        <Image id={blockKey} update={update} save={saveImage} />
+        <Image blockKey={blockKey} update={update} save={saveImage} />
       ) : null}
       <figcaption>{title}</figcaption>
       {editCaption ? editPanel : null}

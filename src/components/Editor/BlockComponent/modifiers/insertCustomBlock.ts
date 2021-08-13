@@ -13,7 +13,7 @@ export function insertCustomBlock(
   );
   const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
   const newEditorState = EditorState.set(editorState, {
-    currentContent: contentStateWithEntity,
+    currentContent: contentStateWithEntity
   });
   return AtomicBlockUtils.insertAtomicBlock(newEditorState, entityKey, " ");
 }

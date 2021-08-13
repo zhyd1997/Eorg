@@ -1,21 +1,23 @@
 import React from "react";
-import { StyleButton } from "./StyleButton";
-import { StyleControlsProps } from "./types";
+
+import InlineCodeIcon from "@/icons/code.svg";
 import BoldIcon from "@/icons/type-bold.svg";
 import ItalicIcon from "@/icons/type-italic.svg";
 import UnderlineIcon from "@/icons/type-underline.svg";
-import InlineCodeIcon from "@/icons/code.svg";
+
+import { StyleButton } from "./StyleButton";
+import { StyleControlsProps } from "./types";
 
 const INLINE_STYLES = [
   { label: "Bold", style: "BOLD", icon: <BoldIcon /> },
   { label: "Italic", style: "ITALIC", icon: <ItalicIcon /> },
   { label: "Underline", style: "UNDERLINE", icon: <UnderlineIcon /> },
-  { label: "InlineCode", style: "CODE", icon: <InlineCodeIcon /> },
+  { label: "InlineCode", style: "CODE", icon: <InlineCodeIcon /> }
 ];
 
 export const InlineStyleControls = ({
   editorState,
-  onToggle,
+  onToggle
 }: StyleControlsProps) => {
   const currentStyle = editorState.getCurrentInlineStyle();
 

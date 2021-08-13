@@ -11,7 +11,7 @@ export const StyleButton = ({
   onToggle,
   style,
   active,
-  icon,
+  icon
 }: StyleButtonProps) => {
   function onToggleStyle(e: any): void {
     e.preventDefault();
@@ -24,7 +24,7 @@ export const StyleButton = ({
   }
 
   return (
-    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+  // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <span className={className} onMouseDown={onToggleStyle}>
       {icon}
     </span>
