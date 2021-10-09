@@ -11,6 +11,7 @@ module.exports = merge(common, {
     },
     compress: true,
     hot: true,
+    open: true,
   },
   optimization: {
     moduleIds: "deterministic",
