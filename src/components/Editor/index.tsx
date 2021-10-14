@@ -93,9 +93,9 @@ const RichTextEditor = () => {
     );
   }
 
-  function insertTable(): void {
-    setEditorState(insertCustomBlock(editorState, "TABLE"));
-  }
+  // function insertTable(): void {
+  //   setEditorState(insertCustomBlock(editorState, "TABLE"));
+  // }
 
   function insertCite(fetchText: any[], targetValue: number): void {
     const currentContent = editorState.getCurrentContent();
@@ -209,12 +209,11 @@ const RichTextEditor = () => {
             onToggle={toggleBlockType}
           />
           <div className="RichEditor-controls">
-            <ModalTable onClick={insertTable} />
+            <ModalTable />
             <ModalExample insertCite={insertCite} />
           </div>
         </div>
         {/* eslint-disable-next-line max-len */}
-        {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
         <div className={className} onClick={focusEditor}>
           <Editor
             blockRendererFn={blockRenderer}

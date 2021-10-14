@@ -17,7 +17,7 @@ module.exports = {
     project: "./tsconfig.json",
     sourceType: "module",
   },
-  plugins: ["react", "react-hooks", "@typescript-eslint", "simple-import-sort"],
+  plugins: ["react", "react-hooks", "@typescript-eslint", "simple-import-sort", "import"],
   rules: {
     "react-hooks/rules-of-hooks": "error",
     // It warns when dependencies are specified incorrectly and suggests a fix.
@@ -56,5 +56,10 @@ module.exports = {
     ],
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error",
+  },
+  settings: {
+    "import/resolver": {
+      "typescript": {}
+    }
   },
 };

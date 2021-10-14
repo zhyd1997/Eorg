@@ -151,7 +151,6 @@ const ImageBlock = ({ block, contentState, blockProps }: Block) => {
 
   return (
   // eslint-disable-next-line max-len
-  // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions
     <span className={spanClassName} onClick={handleClick}>
       <img src={src} alt="defaultImage" className={className} />
       {editImage ? (
