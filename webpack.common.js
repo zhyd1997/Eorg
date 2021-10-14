@@ -29,11 +29,20 @@ module.exports = {
   },
   module: {
     rules: [
-      { test: /\.tsx?$/,include: path.resolve(__dirname, 'src'), loader: "ts-loader", options: {
-        transpileOnly: true,
-      } },
+      {
+        test: /\.tsx?$/,
+        include: path.resolve(__dirname, 'src'),
+        loader: "ts-loader",
+        options: {
+          transpileOnly: true,
+        },
+      },
       { test: /\.css$/i, use: ["style-loader", "css-loader"] },
-      { test: /\.svg$/,include: path.resolve(__dirname, 'src'), use: ["@svgr/webpack"] },
+      {
+        test: /\.svg$/,
+        include: path.resolve(__dirname, 'src'),
+        use: ["@svgr/webpack"]
+      },
     ],
   },
 };
