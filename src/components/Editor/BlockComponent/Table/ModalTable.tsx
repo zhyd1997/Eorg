@@ -8,8 +8,8 @@ export const tableShape = [];
 // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'props' implicitly has an 'any' type.
 const ModalTable = (props) => {
   const {
-    buttonLabel,
-    className
+    // buttonLabel,
+    // className
     // onClick,
   } = props;
 

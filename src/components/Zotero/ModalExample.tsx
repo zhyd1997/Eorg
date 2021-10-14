@@ -14,12 +14,11 @@ interface ZoteroAuthReqBody {
 }
 
 type ModalExampleProps = {
-  buttonLabel?: string;
   /** (biblatex entry, selected biblatex item) */
   insertCite: (text: any[], value: number) => void;
 };
 
-const ModalExample = ({ buttonLabel, insertCite }: ModalExampleProps) => {
+const ModalExample = ({ insertCite }: ModalExampleProps) => {
   const [targetValue, setTargetValue] = useState(0);
   const [isClick, setIsClick] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

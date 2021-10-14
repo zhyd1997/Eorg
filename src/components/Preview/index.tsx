@@ -1,5 +1,5 @@
 import { ContentState, convertToRaw } from "draft-js";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import { useAuth } from "@/hooks/useAuth";
 
@@ -40,7 +40,7 @@ const Preview = ({ contentState }: PreviewProps) => {
     style: "error-message"
   });
 
-  function displayError(errorMessage: string): void {
+  const displayError = useCallback((errorMessage: string): void => {
     setMessage((prevState) => ({
       text: errorMessage,
       style: `${prevState.style} error-message-active`
@@ -51,7 +51,7 @@ const Preview = ({ contentState }: PreviewProps) => {
         style: "tips-fade"
       });
     }, 3000);
-  }
+  }, [message]);
 
   function saveCitations() {
     const editorContentRaw = convertToRaw(contentState);
@@ -182,7 +182,7 @@ const Preview = ({ contentState }: PreviewProps) => {
         });
       });
     }
-  }, [content, auth.isAuthenticated]);
+  }, [content, auth.isAuthenticated, auth.token, displayError]);
 
   useEffect(() => {
     const { biblatex, bib, hasCite } = citations;

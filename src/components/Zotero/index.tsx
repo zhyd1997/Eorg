@@ -49,7 +49,7 @@ export const TokenSpan: React.FC<TokenSpanProps> = ({
     contentState.getEntity(entityKey).getMutability()
   );
 
-  const text = contentState.getEntity(entityKey).getData().value;
+  // const text = contentState.getEntity(entityKey).getData().value;
 
   return (
     <span>

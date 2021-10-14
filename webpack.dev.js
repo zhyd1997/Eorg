@@ -14,6 +14,7 @@ module.exports = merge(common, {
     open: true,
   },
   optimization: {
+    runtimeChunk: true,
     moduleIds: "deterministic",
   },
 });

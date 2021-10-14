@@ -24,7 +24,6 @@ export const StyleButton = ({
   }
 
   return (
-  // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <span className={className} onMouseDown={onToggleStyle}>
       {icon}
     </span>

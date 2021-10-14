@@ -62,7 +62,6 @@ const TableOutput = (props: any) => {
       for (let j = 0; j < column; j += 1) {
         cols.push(
           // eslint-disable-next-line max-len
-          // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-noninteractive-element-interactions
           <td
             key={i + j} // TODO key-2
             onClick={() => setCoordinate([i, j])}
@@ -78,7 +77,6 @@ const TableOutput = (props: any) => {
 
   return (
   // eslint-disable-next-line max-len
-  // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-noninteractive-element-interactions
     <table
       className="hoverTable"
       onClick={handleClick}

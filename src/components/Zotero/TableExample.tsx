@@ -25,7 +25,6 @@ const TableExample = ({ fetchText, handleClick }: TableExampleProps) => {
         </tr>
       </thead>
       {/* eslint-disable-next-line max-len */}
-      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-noninteractive-element-interactions */}
       <tbody onClick={handleClick}>
         {/* eslint-disable-next-line no-return-assign */}
         {fetchText.map((data) => (
