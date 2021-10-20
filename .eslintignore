@@ -7,3 +7,6 @@ jest.config.js
 
 build
 node_modules
+
+coverage
+public

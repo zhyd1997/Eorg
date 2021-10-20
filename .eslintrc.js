@@ -4,6 +4,7 @@ module.exports = {
     es6: true,
   },
   extends: [
+    "airbnb",
     "airbnb-typescript",
     "airbnb/hooks",
     "plugin:react/recommended",
@@ -56,6 +57,8 @@ module.exports = {
     ],
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error",
+    // diable default import
+    "import/prefer-default-export": "off",
   },
   settings: {
     "import/resolver": {

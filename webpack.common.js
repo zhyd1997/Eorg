@@ -1,7 +1,7 @@
 const path = require("path");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const htmlWebpackPlugin = require("html-webpack-plugin");
-const ForkTsCheckerWebpackPluginv = require("fork-ts-checker-webpack-plugin")
+const ForkTsCheckerWebpackPluginv = require("fork-ts-checker-webpack-plugin");
 
 module.exports = {
   context: __dirname,
