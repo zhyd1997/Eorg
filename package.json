@@ -2,6 +2,7 @@
   "name": "rich_text_editor",
   "version": "0.1.0",
   "private": true,
+  "sideEffects": false,
   "dependencies": {
     "bootstrap": "^5.1.1",
     "core-js": "^3.18.1",
