@@ -1,0 +1,6 @@
+{
+  "bumpVersion": "minor",
+  "extends": [
+    "config:base"
+  ]
+}
