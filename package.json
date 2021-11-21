@@ -1,6 +1,6 @@
 {
   "name": "rich_text_editor",
-  "version": "0.14.0",
+  "version": "0.15.0",
   "private": true,
   "sideEffects": false,
   "dependencies": {
@@ -61,7 +61,7 @@
     "eslint-plugin-simple-import-sort": "7.0.0",
     "fork-ts-checker-webpack-plugin": "6.4.0",
     "fsevents": "2.3.2",
-    "html-webpack-plugin": "5.4.0",
+    "html-webpack-plugin": "5.5.0",
     "jest": "27.3.1",
     "msw": "0.35.0",
     "prettier": "2.4.1",
