@@ -1,6 +1,6 @@
 {
   "name": "rich_text_editor",
-  "version": "0.64.0",
+  "version": "0.65.0",
   "private": true,
   "sideEffects": false,
   "dependencies": {
@@ -12,7 +12,7 @@
     "react": "17.0.2",
     "react-device-detect": "2.1.2",
     "react-dom": "17.0.2",
-    "react-hook-form": "7.21.0"
+    "react-hook-form": "7.21.2"
   },
   "scripts": {
     "start": "webpack serve --config webpack.dev.js",
