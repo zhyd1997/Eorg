@@ -1,6 +1,6 @@
 {
   "name": "rich_text_editor",
-  "version": "0.70.0",
+  "version": "0.71.0",
   "private": true,
   "sideEffects": false,
   "dependencies": {
@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@popperjs/core": "2.11.0",
-    "@svgr/webpack": "5.5.0",
+    "@svgr/webpack": "6.1.2",
     "@testing-library/jest-dom": "5.16.1",
     "@testing-library/react": "12.1.2",
     "@types/bootstrap": "5.1.6",
