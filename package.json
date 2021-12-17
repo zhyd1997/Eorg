@@ -1,6 +1,6 @@
 {
   "name": "rich_text_editor",
-  "version": "0.72.0",
+  "version": "0.73.0",
   "private": true,
   "sideEffects": false,
   "dependencies": {
@@ -50,7 +50,7 @@
     "clean-webpack-plugin": "4.0.0",
     "css-loader": "6.5.1",
     "cz-conventional-changelog": "3.3.0",
-    "eslint": "8.4.1",
+    "eslint": "8.5.0",
     "eslint-config-airbnb": "19.0.2",
     "eslint-config-airbnb-typescript": "16.1.0",
     "eslint-import-resolver-typescript": "2.5.0",
