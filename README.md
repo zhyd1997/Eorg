@@ -1,3 +1,4 @@
+> new version: https://github.com/SoftMaple/Editor
 # README
 ![GitHub](https://img.shields.io/github/license/zhyd1997/Eorg)
 [![codecov](https://codecov.io/gh/zhyd1997/Eorg/branch/main/graph/badge.svg?token=FQZAL6N34R)](https://codecov.io/gh/zhyd1997/Eorg)
