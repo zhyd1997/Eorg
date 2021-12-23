@@ -1,6 +1,6 @@
 {
   "name": "rich_text_editor",
-  "version": "0.74.0",
+  "version": "0.75.0",
   "private": true,
   "sideEffects": false,
   "dependencies": {
@@ -56,7 +56,7 @@
     "eslint-import-resolver-typescript": "2.5.0",
     "eslint-plugin-import": "2.25.3",
     "eslint-plugin-jsx-a11y": "6.5.1",
-    "eslint-plugin-react": "7.27.1",
+    "eslint-plugin-react": "7.28.0",
     "eslint-plugin-react-hooks": "4.3.0",
     "eslint-plugin-simple-import-sort": "7.0.0",
     "fork-ts-checker-webpack-plugin": "6.5.0",
