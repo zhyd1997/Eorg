@@ -1,6 +1,6 @@
 {
   "bumpVersion": "minor",
   "extends": [
-    "config:base"
+    "config:base", ":disableDependencyDashboard"
   ]
 }
