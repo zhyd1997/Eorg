@@ -4,7 +4,7 @@
   "private": true,
   "sideEffects": false,
   "dependencies": {
-    "bootstrap": "5.1.3",
+    "bootstrap": "5.2.0",
     "core-js": "3.20.1",
     "draft-js": "0.11.7",
     "immutable": "4.0.0",
